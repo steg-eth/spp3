@@ -1,12 +1,12 @@
 # Appendix E — Substrate Inheritance
 
-*This appendix excerpts substrate-inheritance detail that the body of the proposal (§10) summarizes. The canonical, normative source for these inheritance and deployment rules is the [prototype specification](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing), §4 (AuthResolverImpl). The summary below is for reviewers who want substrate detail without leaving the application bundle.*
+*This appendix excerpts substrate-inheritance detail that the body of the proposal (§10) summarizes. The canonical, normative source for these inheritance and deployment rules is the [prototype specification](../spec/prototype_spec.v1.0-draft.02.publish.md) (working copy: [Google Doc](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing)), §4 (AuthResolverImpl). The summary below is for reviewers who want substrate detail without leaving the application bundle.*
 
 ---
 
 ## 1. Composition with ENSv2 access-control primitives
 
-The AuthResolver is designed to inherit ENSv2's access-control substrate rather than introduce a parallel permission model. The substrate lives in the [`ensdomains/ens-contracts-v2`](https://github.com/ensdomains/ens-contracts-v2) repository (all file paths below are within that repo).
+The AuthResolver is designed to inherit ENSv2's access-control substrate rather than introduce a parallel permission model. The substrate lives in the [`ensdomains/contracts-v2`](https://github.com/ensdomains/contracts-v2) repository (all file paths below are within that repo).
 
 The AuthResolver specifically inherits:
 
@@ -48,6 +48,6 @@ Deployment artifacts (`AuthResolverImpl` address, `VerifiableFactory` integratio
 
 The full normative inheritance, deployment, and conformance rules — including `IVerifier` interface signatures, `verifyAction` orchestration ordering, record schemas, and the deferred `getFreshSignedState` extension — live in the prototype specification:
 
-- [Prototype specification](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing) — §4 (AuthResolverImpl), §5 (`verifyAction` orchestration), §6 (record schemas)
+- [Prototype specification](../spec/prototype_spec.v1.0-draft.02.publish.md) (working copy: [Google Doc](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing)) — §4 (AuthResolverImpl), §5 (`verifyAction` orchestration), §6 (record schemas)
 
 Reviewers seeking the canonical detail should treat the specification as authoritative; this appendix is a reviewer-convenience excerpt.

@@ -11,7 +11,7 @@ has been rotated, expired, or revoked. Built on ENSv2 primitives; complements co
 
 | Path | What it is |
 |---|---|
-| [`application_beta.md`](./application_beta.md) | The SPP3 application |
+| [`application.md`](./application.md) | The SPP3 application |
 | [`appendices/`](./appendices) | Supporting appendices (A–E) |
 | [`maip_taxonomy.md`](./maip_taxonomy.md) | MAIP taxonomy referenced by the application |
 | [`spec/prototype_spec.v1.0-draft.02.publish.md`](./spec/prototype_spec.v1.0-draft.02.publish.md) | Normative prototype spec (Verifier + AuthResolverImpl), published cut |
@@ -22,9 +22,12 @@ has been rotated, expired, or revoked. Built on ENSv2 primitives; complements co
 
 - **`estmcmxci.eth`** — ENS architecture, the spec, and ecosystem integration. Merged upstream
   contributor to canonical ENS contracts ([PR #509](https://github.com/ensdomains/ens-contracts/pull/509),
-  shipped in v1.7.0); ENS Public Goods grantee (the Universal Resolver Matrix research that seeded
-  this proposal); independent jury validation (Synthesis Hackathon 1st place, ENS Identity; ETHGlobal
-  HackMoney Finalist).
+  shipped in v1.7.0); independent jury validation (Synthesis Hackathon 1st place, ENS Identity;
+  ETHGlobal HackMoney Finalist). ENS Public Goods grantee for the **Universal Resolver Matrix**
+  ([URM](https://discuss.ens.domains/t/universal-resolver-matrix-a-design-framework-for-heterogeneous-resolver-architecture/21734)) —
+  a design framework that maps resolver architectures across trust model, proof system, lifecycle, and
+  verification path to find which verifier unlocks the most namespaces per unit of effort. This
+  proposal productionizes the cell that analysis surfaced as highest-leverage: agent authority resolution.
 - **`mouzayan.eth`** (Mouzayan Delbourgo) — protocol engineering, smart-contract delivery, and
   security. Production smart-contract systems across DeFi and NFT finance (Arcade.xyz NFT-lending,
   accounting, and governance contracts; a Uniswap Foundation competition–winning Uniswap v4 hook);

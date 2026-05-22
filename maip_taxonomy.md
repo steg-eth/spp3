@@ -3,7 +3,7 @@
 **Author:** Steg (`estmcmxci.eth`)
 **Version:** 0.1 — Draft
 **Status:** Architectural reference
-**Companion artifacts:** SPP3 application (`application_draft.md`); IEEE-style empirical paper (forthcoming, post-SPP3 cycle)
+**Companion artifacts:** SPP3 application ([`application.md`](./application.md)); IEEE-style empirical paper (forthcoming, post-SPP3 cycle)
 
 ---
 
@@ -174,7 +174,7 @@ A third related case is **registry-NFT ownership transfer** — when an external
 
 For MARP-hosted agents, the MARP itself signs over the endpoints and capability advertisements published under the agent's name. A counterparty resolving the AuthResolver can verify not only "the agent claims to have an MCP endpoint" but "the MARP attested that this endpoint belongs to this agent in this runtime." This raises the cost of endpoint forgery from "compromise the agent's key" to "compromise the MARP's signer."
 
-**These four primitives are jointly the SPP3 cycle scope.** They ship as: two contracts (Verifier + AuthResolver) deployed to ENSv2, a TypeScript SDK that resolves and verifies, a conformance suite, integration guides, and three Wave-1 pilot integrations across MARP archetypes. Full milestone, budget, and pilot structure is in `application_draft.md`.
+**These four primitives are jointly the SPP3 cycle scope.** They ship as: two contracts (Verifier + AuthResolver) deployed to ENSv2, a TypeScript SDK that resolves and verifies, a conformance suite, integration guides, and three Wave-1 pilot integrations across MARP archetypes. Full milestone, budget, and pilot structure is in [`application.md`](./application.md).
 
 ---
 
@@ -227,15 +227,15 @@ The MAIP framing is what gives this positioning structure. Without the three-tie
 
 ## 8. Roadmap and Phasing
 
-### Phase 1 — Authority tier (SPP3 cycle, May 2026 – May 2027)
+### Phase 1 — Authority tier (SPP3 cycle, July 2026 – July 2027)
 
 Verifier + AuthResolver contracts deployed to ENSv2; TypeScript SDK; conformance suite; integration guides; three Wave-1 pilot integrations across MARP archetypes:
 
 - **Operator archetype** — Pinata Agents (crypto-native hosted runtime with existing live operator experience)
 - **Protocol-native archetype** — Virtuals Protocol (per-agent identity as a first-class protocol object)
-- **Capability publisher archetype** — Namera (infrastructure platform publishing capability records that AuthResolver verifies)
+- **Capability publisher archetype** — x402 (Coinbase's open agentic payments protocol, publishing capability records that the AuthResolver verifies)
 
-A fourth archetype — **Web2-flavored MARP** (e.g., Anthropic Claude Managed Agents) — is under access research and may be added contingent on integration readiness. See `application_draft.md` for full milestone, KPI, and budget structure.
+A fourth archetype — **Web2-flavored MARP** (e.g., Anthropic Claude Managed Agents) — is under access research and may be added contingent on integration readiness. See [`application.md`](./application.md) for full milestone, KPI, and budget structure.
 
 ### Phase 2 — Selective discovery (post-SPP3, contingent on Phase 1 outcomes)
 
@@ -280,8 +280,8 @@ Empirical evaluation of the Authority tier primitives across Pinata Agents and (
 - Test deployment: ERC-8004 agent #19327 at `alpha-go.bankrtest.eth`
 
 **Companion artifacts**
-- SPP3 application: `application_draft.md`
-- Capability-token architectural patterns: `appendix-b-capability-tokens.md`
-- Pinata `/verify` integration shape: `appendix-a-pinata-verify.md`
-- Verifier flow walkthrough: `appendix-c-verifier-flow.md`
+- SPP3 application: [`application.md`](./application.md)
+- Capability-token architectural patterns: [`appendix-b-capability-tokens.md`](./appendices/appendix-b-capability-tokens.md)
+- Pinata `/verify` integration shape: [`appendix-a-pinata-verify.md`](./appendices/appendix-a-pinata-verify.md)
+- Verifier flow walkthrough: [`appendix-c-verifier-flow.md`](./appendices/appendix-c-verifier-flow.md)
 - IEEE-style empirical paper: forthcoming, post-SPP3 cycle

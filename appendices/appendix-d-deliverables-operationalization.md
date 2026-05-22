@@ -1,6 +1,6 @@
 # Appendix D — Deliverables Mapped to What They Operationalize
 
-*Supporting material for §6 and §8 of the application draft. This appendix maps each of the six deliverable categories to the specific function it operationalizes, so a reviewer can see that every funded artifact corresponds to a concrete role in the verification system — not to research time or runway. It also states the architectural through-line for the three core components (AuthResolver, Verifier, SDK).*
+*Supporting material for §6 and §8 of [the application](../application.md). This appendix maps each of the six deliverable categories to the specific function it operationalizes, so a reviewer can see that every funded artifact corresponds to a concrete role in the verification system — not to research time or runway. It also states the architectural through-line for the three core components (AuthResolver, Verifier, SDK).*
 
 ---
 

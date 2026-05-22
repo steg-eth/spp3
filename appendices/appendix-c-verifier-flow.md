@@ -1,6 +1,6 @@
 # Appendix C — The Verifier in Practice: End-to-End Verification Flow
 
-*Supporting material for §6 and §10 of the application draft. This appendix walks through how the Verifier contract operates in practice — its narrow role as a stateless crypto primitive, the end-to-end flow from credential publication to a counterparty's allow/deny decision, what the "WebAuthn / P-256 verifier" actually does beyond invoking the EIP-7951 precompile, and how the dispatch surface supports extension in future cycles without changing the integration contract.*
+*Supporting material for §6 and §10 of [the application](../application.md). This appendix walks through how the Verifier contract operates in practice — its narrow role as a stateless crypto primitive, the end-to-end flow from credential publication to a counterparty's allow/deny decision, what the "WebAuthn / P-256 verifier" actually does beyond invoking the EIP-7951 precompile, and how the dispatch surface supports extension in future cycles without changing the integration contract.*
 
 ---
 
@@ -64,4 +64,4 @@ The Verifier is more than a thin set of wrappers around its underlying primitive
 
 The `method` parameter in step 3 is the extension point. In this funding cycle the Verifier implements three branches: `P256/WebAuthn → EIP-7951` (passkey/WebAuthn-backed agents), `secp256k1 → ecrecover` (EOA-backed agents), and `EIP-1271 → staticcall` (smart-account and EIP-7702-routed signatures, including ZeroDev Kernel and Safe). The v1 scheme set is anchored in verified MARP support — see [Appendix D](./appendix-d-deliverables-operationalization.md). Future cycles add additional schemes (e.g. BLS) behind the same interface.
 
-This is what "extensible signature verifier" means in the application draft: the v1 scheme set is fixed and deployed under this cycle's scope, but the integration contract — the function signature the SDK and relying parties call — is stable from M1. Adding a method in a future cycle does not change how existing integrators call the Verifier.
+This is what "extensible signature verifier" means in [the application](../application.md): the v1 scheme set is fixed and deployed under this cycle's scope, but the integration contract — the function signature the SDK and relying parties call — is stable from M1. Adding a method in a future cycle does not change how existing integrators call the Verifier.

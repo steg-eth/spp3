@@ -1,6 +1,6 @@
 # Appendix B — AuthResolver vs. Capability Tokens (UCAN, CACAO): Differentiation and Composition
 
-*Supporting material for §5 and §10 of the application draft. This appendix expands on the architectural distinction between the AuthResolver and capability-token systems (UCAN, CACAO), the specific properties each provides that the other structurally cannot, and three concrete composition patterns relying parties can use to combine them.*
+*Supporting material for §5 and §10 of [the application](../application.md). This appendix expands on the architectural distinction between the AuthResolver and capability-token systems (UCAN, CACAO), the specific properties each provides that the other structurally cannot, and three concrete composition patterns relying parties can use to combine them.*
 
 ---
 

@@ -1,6 +1,6 @@
 # Appendix A — Pinata `/verify` Integration Shape
 
-This appendix specifies the concrete shape of the verification endpoint that the Wave-1 Pinata Agents pilot ships in M1. It is provided as an integration reference for committee review and as the working specification the team will implement against. The same shape generalizes to the Virtuals and Namera pilots in M3.
+This appendix specifies the concrete shape of the verification endpoint that the Wave-1 Pinata Agents pilot ships in M1. It is provided as an integration reference for committee review and as the working specification the team will implement against. The same shape generalizes to the Virtuals and x402 pilots in M3.
 
 ---
 
