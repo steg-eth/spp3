@@ -47,11 +47,13 @@ A single agent runs on one MARP at a time (or migrates between MARPs over time);
 
 A MAIP is decomposable into three architectural tiers:
 
-| Tier | Question it answers | Primary primitives |
-|---|---|---|
-| **Display** | What is this agent? | Identity binding, naming, profile metadata |
-| **Discovery** | Where do I reach it and what can it do? | Service endpoints, capability descriptors, wallet pointers |
-| **Authority** | Is this action currently authorized? | Real-time capability validity, revocation, signed-freshness state |
+
+| Tier          | Question it answers                     | Primary primitives                                                |
+| ------------- | --------------------------------------- | ----------------------------------------------------------------- |
+| **Display**   | What is this agent?                     | Identity binding, naming, profile metadata                        |
+| **Discovery** | Where do I reach it and what can it do? | Service endpoints, capability descriptors, wallet pointers        |
+| **Authority** | Is this action currently authorized?    | Real-time capability validity, revocation, signed-freshness state |
+
 
 The tiers compose. Display alone is insufficient for any consequential interaction. Discovery without Authority opens an attack surface — a service endpoint resolved publicly can be invoked with stale or revoked credentials. Authority without Display has no name to attach to. Real MAIP interactions traverse all three tiers in sequence.
 
@@ -105,37 +107,43 @@ Three architectural paths exist for selective discovery on ENS resolution. Each 
 
 Ciphertext lives in the text record (or behind a pointer). A key-management layer — Lit Protocol, a threshold network, or a custodial KMS — gates decryption on access conditions (token-gating, signature verification, attestation presentation).
 
-| Property | Notes |
-|---|---|
-| **Works today** | Yes — composes with every standard resolver, indexer, and client library |
-| **Indexability** | Existence is visible (ciphertext blob is public); content is not |
-| **Trust shift** | Decryption gatekeeper becomes a trusted party |
-| **Unlinkability** | Preserved at the ENS resolution path (decryption happens off-chain post-resolution) |
-| **Standardization cost** | Low — pure convention layer over existing ENS |
+
+| Property                 | Notes                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| **Works today**          | Yes — composes with every standard resolver, indexer, and client library            |
+| **Indexability**         | Existence is visible (ciphertext blob is public); content is not                    |
+| **Trust shift**          | Decryption gatekeeper becomes a trusted party                                       |
+| **Unlinkability**        | Preserved at the ENS resolution path (decryption happens off-chain post-resolution) |
+| **Standardization cost** | Low — pure convention layer over existing ENS                                       |
+
 
 #### Path B — Caller-bound CCIP-Read gateways
 
 The CCIP-Read gateway, which already implements ENSIP-10 off-chain resolution, additionally accepts a caller-signed challenge — likely an EIP-712 typed message binding caller address + node + record key + nonce — and returns gated values only to authenticated callers.
 
-| Property | Notes |
-|---|---|
-| **Works today** | Partially — uses existing EIP-3668 plumbing, but requires extending standard client libraries (ethers `ccipReadFetchFunc`, viem `ccipRead` option) to inject auth and sign challenges |
-| **Indexability** | Public records remain indexable; gated records reveal only an offchain-lookup signal in `TextChanged` events |
-| **Trust shift** | Gateway operator sees every read and who asked — no unlinkability against the gateway |
-| **Caller-conditional values** | Yes — different responses can be returned per caller |
-| **Standardization cost** | Medium — needs an ENSIP defining the EIP-712 schema and client convention |
+
+| Property                      | Notes                                                                                                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Works today**               | Partially — uses existing EIP-3668 plumbing, but requires extending standard client libraries (ethers `ccipReadFetchFunc`, viem `ccipRead` option) to inject auth and sign challenges |
+| **Indexability**              | Public records remain indexable; gated records reveal only an offchain-lookup signal in `TextChanged` events                                                                          |
+| **Trust shift**               | Gateway operator sees every read and who asked — no unlinkability against the gateway                                                                                                 |
+| **Caller-conditional values** | Yes — different responses can be returned per caller                                                                                                                                  |
+| **Standardization cost**      | Medium — needs an ENSIP defining the EIP-712 schema and client convention                                                                                                             |
+
 
 #### Path C — Authenticated-resolution interface
 
 A new resolver surface — conceptually `textAuth(node, key, proof)` — where the resolver itself enforces access, either by verifying a proof on-chain (zk attestation, signature) or by delegating to a CCIP-Read gateway with caller-bound semantics.
 
-| Property | Notes |
-|---|---|
-| **Works today** | No — requires new resolver interface, new client behavior, new wallet support |
-| **Indexability** | Public records remain indexable; gated records require authenticated calls |
-| **Policy expression** | Most flexible — supports richer policies than "is this caller allowed" |
-| **Composability** | Strongest when combined with on-chain verifiable proofs (zk, attestation) |
-| **Standardization cost** | High — new ENSIP, ecosystem-wide library updates |
+
+| Property                 | Notes                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| **Works today**          | No — requires new resolver interface, new client behavior, new wallet support |
+| **Indexability**         | Public records remain indexable; gated records require authenticated calls    |
+| **Policy expression**    | Most flexible — supports richer policies than "is this caller allowed"        |
+| **Composability**        | Strongest when combined with on-chain verifiable proofs (zk, attestation)     |
+| **Standardization cost** | High — new ENSIP, ecosystem-wide library updates                              |
+
 
 **Selective discovery is the post-cycle Phase 2 work.** It is not in the SPP3 cycle scope. It is named, mapped, and reserved here because the Authority tier work that *is* in SPP3 scope establishes architectural patterns (signed CCIP-Read with caller-bound semantics, dispatch-based resolver extensions, EIP-712 typed-data signatures) that Phase 2 selective-discovery work composes with rather than competes against.
 
@@ -212,14 +220,16 @@ This is what the MAIP framing buys: a structured way to articulate "we have Disp
 
 The agent identity landscape has several initiatives in flight or shipped today. None of them deliver the full MAIP stack alone; each occupies a specific architectural position.
 
-| Adjacent layer | Role | Relationship to MAIP |
-|---|---|---|
-| **MCP / A2A wire-protocol auth** | Did the connecting client present valid credentials? | Upstream consumer of Authority tier. MCP/A2A enforces what AuthResolver publishes. |
-| **ERC-4337 on-chain delegation** | Execute scoped permissions on-chain | Authority tier is the discovery and validity layer for which 4337 delegations are live per ENS name. |
-| **UCAN / CACAO capability tokens** | Prove a delegation existed at signing time, verified offline | Architecturally distinct from Authority tier (presentation flow vs. lookup flow); relying parties may compose both. |
-| **EIP-8121 cross-chain hooks** | Encode "fetch data from contract X on chain Y" via CCIP-Read | Consumed by AuthResolver for the optional cross-chain credential-discovery path. |
-| **Microsoft Entra Agent ID** | Vendor-specific agent identity-and-authorization framework | Competitor at the MAIP layer. ENS-based MAIP is the open, vendor-neutral alternative. |
-| **Lighthouse Agent schema (ENS metadata #46)** | Profile field convention for agent records | Display tier convention. MAIP composes with this; selective discovery (§4.2) extends to cover the `agent-wallet` and `services[*]` fields the Lighthouse schema names. |
+
+| Adjacent layer                                 | Role                                                         | Relationship to MAIP                                                                                                                                                   |
+| ---------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **MCP / A2A wire-protocol auth**               | Did the connecting client present valid credentials?         | Upstream consumer of Authority tier. MCP/A2A enforces what AuthResolver publishes.                                                                                     |
+| **ERC-4337 on-chain delegation**               | Execute scoped permissions on-chain                          | Authority tier is the discovery and validity layer for which 4337 delegations are live per ENS name.                                                                   |
+| **UCAN / CACAO capability tokens**             | Prove a delegation existed at signing time, verified offline | Architecturally distinct from Authority tier (presentation flow vs. lookup flow); relying parties may compose both.                                                    |
+| **EIP-8121 cross-chain hooks**                 | Encode "fetch data from contract X on chain Y" via CCIP-Read | Consumed by AuthResolver for the optional cross-chain credential-discovery path.                                                                                       |
+| **Microsoft Entra Agent ID**                   | Vendor-specific agent identity-and-authorization framework   | Competitor at the MAIP layer. ENS-based MAIP is the open, vendor-neutral alternative.                                                                                  |
+| **Lighthouse Agent schema (ENS metadata #46)** | Profile field convention for agent records                   | Display tier convention. MAIP composes with this; selective discovery (§4.2) extends to cover the `agent-wallet` and `services[*]` fields the Lighthouse schema names. |
+
 
 The MAIP framing is what gives this positioning structure. Without the three-tier framework, the temptation is to debate whether MCP auth, capability tokens, or ERC-4337 delegations are "the answer" — when in fact each lives at a different architectural layer and solves a different problem. The tiers make the layers explicit.
 
@@ -256,32 +266,38 @@ Empirical evaluation of the Authority tier primitives across Pinata Agents and (
 ## 9. References
 
 **ENS standards**
+
 - ENSIP-10: Wildcard Resolution / Off-Chain Resolution
 - ENSIP-25: Verifiable Agent Identity (merged May 2026)
 - ENSIP-26: Agent-Context and Agent-Endpoint Records
 - ENSIP-64: Typed Text Records
 
 **EIPs / ERCs**
-- EIP-3668: CCIP Read — Secure Off-chain Data Retrieval. https://eips.ethereum.org/EIPS/eip-3668
+
+- EIP-3668: CCIP Read — Secure Off-chain Data Retrieval. [https://eips.ethereum.org/EIPS/eip-3668](https://eips.ethereum.org/EIPS/eip-3668)
 - EIP-7951: P-256 Precompile
 - EIP-8121: Cross-Chain Hook Format (draft, Dec 2025)
-- ERC-8004: AI Agent Identity Registry. https://eips.ethereum.org/EIPS/eip-8004
+- ERC-8004: AI Agent Identity Registry. [https://eips.ethereum.org/EIPS/eip-8004](https://eips.ethereum.org/EIPS/eip-8004)
 - ERC-8122: Minimal Agent Registry (merged Feb 2026)
 
 **Forum and external posts**
-- "The Next Operator Class: Managed Agent Runtime Platforms." Steg (estmcmxci.eth), ENS Forum, 2026. https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121
-- "Reference Implementation of an ENS-Bound Agent." Steg (estmcmxci.eth), ENS Forum, 2026. https://discuss.ens.domains/t/reference-implementation-of-an-ens-bound-agent/22100
-- "Use Case: AI Agents on ENS." 0xLighthouse, GitHub Issue. https://github.com/0xLighthouse/ens-metadata/issues/46
+
+- "The Next Operator Class: Managed Agent Runtime Platforms." Steg (estmcmxci.eth), ENS Forum, 2026. [https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121)
+- "Reference Implementation of an ENS-Bound Agent." Steg (estmcmxci.eth), ENS Forum, 2026. [https://discuss.ens.domains/t/reference-implementation-of-an-ens-bound-agent/22100](https://discuss.ens.domains/t/reference-implementation-of-an-ens-bound-agent/22100)
+- "Use Case: AI Agents on ENS." 0xLighthouse, GitHub Issue. [https://github.com/0xLighthouse/ens-metadata/issues/46](https://github.com/0xLighthouse/ens-metadata/issues/46)
 
 **Reference implementation and deployment**
-- Synthesis repository (TypeScript Trust Resolution Layer): https://github.com/estmcmxci/synthesis
-- Live reference deployment: https://estmcmxci.co/agent/emilemarcelagustin.eth
+
+- Synthesis repository (TypeScript Trust Resolution Layer): [https://github.com/estmcmxci/synthesis](https://github.com/estmcmxci/synthesis)
+- Live reference deployment: [https://estmcmxci.co/agent/emilemarcelagustin.eth](https://estmcmxci.co/agent/emilemarcelagustin.eth)
 - ERC-8004 reference agent #24994 on Base mainnet
 - Test deployment: ERC-8004 agent #19327 at `alpha-go.bankrtest.eth`
 
 **Companion artifacts**
+
 - SPP3 application: [`application.md`](./application.md)
 - Capability-token architectural patterns: [`appendix-b-capability-tokens.md`](./appendices/appendix-b-capability-tokens.md)
 - Pinata `/verify` integration shape: [`appendix-a-pinata-verify.md`](./appendices/appendix-a-pinata-verify.md)
 - Verifier flow walkthrough: [`appendix-c-verifier-flow.md`](./appendices/appendix-c-verifier-flow.md)
 - IEEE-style empirical paper: forthcoming, post-SPP3 cycle
+
