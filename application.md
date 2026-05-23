@@ -60,7 +60,7 @@ Two committed deliverables, both completed.
 
 ### **Upstream contribution to canonical ENS contracts (Jan 2026, unfunded).**
 
-Replaced software-implemented `EllipticCurve` verification with the EIP-7951 P-256 precompile in ENS's DNSSEC oracle (Algorithm 13). Merged into `ensdomains/ens-contracts` as [PR #509](https://github.com/ensdomains/ens-contracts/pull/509) by Makoto Inoue (ENS Labs) on 26 January 2026; shipped to production in the [v1.7.0 release](https://github.com/ensdomains/ens-contracts/releases/tag/v1.7.0) on 13 March 2026. Adds `P256Precompile.sol` following the `ModexpPrecompile` pattern, switches `P256SHA256Algorithm` to call the precompile at `0x100`, and removes the `EllipticCurve` dependency — ~~98% gas reduction (~~200k+ gas → ~3,500 gas per verification) for ENS-side DNSSEC validation. 
+Replaced software-implemented `EllipticCurve` verification with the EIP-7951 P-256 precompile in ENS's DNSSEC oracle (Algorithm 13). Merged into `ensdomains/ens-contracts` as [PR #509](https://github.com/ensdomains/ens-contracts/pull/509) by Makoto Inoue (ENS Labs) on 26 January 2026; shipped to production in the [v1.7.0 release](https://github.com/ensdomains/ens-contracts/releases/tag/v1.7.0) on 13 March 2026. Adds `P256Precompile.sol` following the `ModexpPrecompile` pattern, switches `P256SHA256Algorithm` to call the precompile at `0x100`, and removes the `EllipticCurve` dependency — ~98% gas reduction (~200k+ gas → ~3,500 gas per verification) for ENS-side DNSSEC validation. 
 
 The same precompile this PR brings into ENS's canonical contracts is what this proposal's v1 Verifier consumes for WebAuthn-backed credential verification.
 
