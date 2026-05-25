@@ -1,0 +1,218 @@
+/* Match steg.eth.link tokens (from eureka.etcetera/app/globals.css). */
+:root {
+  --body-bg-color: oklch(0.92 0.01 85);
+  --body-color: oklch(0.145 0 0);
+  --pre-bg-color: oklch(0.88 0.01 85);
+  --kbd-bg-color: oklch(0.88 0.01 85);
+  --kbd-border-color: oklch(0.78 0.01 85);
+  --table-border-color: oklch(0.78 0.01 85);
+  --footnotes-border-color: oklch(0.78 0.01 85);
+  --sidenote-target-border-color: oklch(0.556 0 0);
+  --muted-fg: oklch(0.556 0 0);
+  --border-soft: oklch(0.82 0.01 85);
+  --status-done-bg: oklch(0.88 0.08 145);
+  --status-done-fg: oklch(0.35 0.12 145);
+  --status-progress-bg: oklch(0.92 0.10 85);
+  --status-progress-fg: oklch(0.40 0.13 70);
+  --status-pending-bg: oklch(0.86 0.01 85);
+  --status-pending-fg: oklch(0.40 0 0);
+}
+
+/* Dark theme triggered manually via .dark on <html> — matches landing's toggle. */
+html.dark {
+  --body-bg-color: oklch(0.145 0 0);
+  --body-color: oklch(0.985 0 0);
+  --pre-bg-color: oklch(0.22 0 0);
+  --kbd-bg-color: oklch(0.22 0 0);
+  --kbd-border-color: oklch(0.32 0 0);
+  --table-border-color: oklch(0.32 0 0);
+  --footnotes-border-color: oklch(0.32 0 0);
+  --sidenote-target-border-color: oklch(0.708 0 0);
+  --muted-fg: oklch(0.708 0 0);
+  --border-soft: oklch(0.30 0 0);
+  --status-done-bg: oklch(0.30 0.08 145);
+  --status-done-fg: oklch(0.86 0.10 145);
+  --status-progress-bg: oklch(0.30 0.10 85);
+  --status-progress-fg: oklch(0.88 0.13 85);
+  --status-pending-bg: oklch(0.25 0 0);
+  --status-pending-fg: oklch(0.78 0 0);
+}
+
+/* Match landing body font (Geist) with IBM Plex Sans as accent on headings. */
+body,
+.spp3-dossier {
+  font-family: "Geist", "Geist Fallback", system-ui, sans-serif;
+}
+.spp3-dossier h1,
+.spp3-dossier h2,
+.spp3-dossier h3,
+.spp3-dossier h4 {
+  font-family: "IBM Plex Sans", "IBM Plex Sans Fallback", sans-serif;
+}
+.spp3-dossier code,
+.spp3-dossier pre,
+.spp3-dossier kbd,
+.spp3-dossier .status {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* Latex.css caps body at 80ch — widen so KPI tables/proof grids breathe. */
+body {
+  max-width: 95ch !important;
+  padding: 4rem 1.5rem 6rem !important;
+}
+
+.spp3-dossier {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.spp3-dossier h1 {
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+.spp3-dossier h2 {
+  margin-top: 3rem;
+  scroll-margin-top: 1rem;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+}
+.spp3-dossier h3 {
+  scroll-margin-top: 1rem;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+
+.spp3-dossier .meta {
+  font-size: 0.9rem;
+  color: var(--muted-fg);
+  margin-bottom: 2rem;
+}
+
+.spp3-dossier .toc {
+  border: 1px solid var(--border-soft);
+  padding: 1rem 1.5rem;
+  margin: 2rem 0 3rem;
+  background: transparent;
+}
+.spp3-dossier .toc h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-fg);
+  font-weight: 500;
+}
+.spp3-dossier .toc ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.spp3-dossier .toc ol ol {
+  margin-top: 0.25rem;
+}
+
+.spp3-dossier table.kpi {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+.spp3-dossier table.kpi th,
+.spp3-dossier table.kpi td {
+  border-bottom: 1px solid var(--border-soft);
+  padding: 0.6rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+.spp3-dossier table.kpi th {
+  font-weight: 500;
+  border-bottom: 1.5px solid var(--body-color);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  color: var(--muted-fg);
+}
+
+.spp3-dossier .status {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+.spp3-dossier .status-done { background: var(--status-done-bg); color: var(--status-done-fg); }
+.spp3-dossier .status-progress { background: var(--status-progress-bg); color: var(--status-progress-fg); }
+.spp3-dossier .status-pending { background: var(--status-pending-bg); color: var(--status-pending-fg); }
+
+.spp3-dossier .footer-nav {
+  margin-top: 5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-soft);
+  font-size: 0.9rem;
+  color: var(--muted-fg);
+}
+
+.spp3-dossier .callout {
+  border-left: 3px solid var(--body-color);
+  background: color-mix(in oklch, var(--body-bg-color) 60%, var(--border-soft) 40%);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+.spp3-dossier .callout > p:first-child { margin-top: 0; }
+.spp3-dossier .callout > p:last-child { margin-bottom: 0; }
+.spp3-dossier .callout-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted-fg);
+  margin-bottom: 0.4rem;
+}
+
+.spp3-dossier .draft-tag {
+  display: inline-block;
+  padding: 0.05rem 0.4rem;
+  margin-left: 0.5rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 3px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-fg);
+  vertical-align: middle;
+}
+
+.spp3-dossier table.kpi td.dim-label {
+  font-weight: 500;
+  color: var(--body-color);
+  width: 18%;
+}
+
+.spp3-dossier .faq {
+  margin-top: 1rem;
+}
+.spp3-dossier .faq-item {
+  border-top: 1px solid var(--border-soft);
+  padding: 1.35rem 0;
+}
+.spp3-dossier .faq-item:last-child {
+  border-bottom: 1px solid var(--border-soft);
+}
+.spp3-dossier .faq-item h4 {
+  margin: 0 0 0.6rem 0;
+  font-family: "IBM Plex Sans", "IBM Plex Sans Fallback", sans-serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--body-color);
+}
+.spp3-dossier .faq-item p {
+  margin: 0;
+  line-height: 1.6;
+}
+.spp3-dossier .faq-item p + p {
+  margin-top: 0.6rem;
+}
