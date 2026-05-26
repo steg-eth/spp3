@@ -137,7 +137,7 @@ This gap matters now because agent identity systems are being defined in paralle
 
 ## 6. Proposed Service
 
-This proposal funds a defined integration service for teams building apps, APIs, MARPs, and relying services that need to verify whether an action attributed to an ENS-named agent is currently authorized. MARPs are the wedge — the integration class with the most to gain from a portable, ENS-bound verification layer.
+This proposal funds a defined integration service for teams building apps, APIs, managed agent runtimes (MARPs), and relying services that need to verify whether an action attributed to an ENS-named agent is currently authorized. MARPs represent the initial operator class with strong need for a portable, ENS-bound verification and authorization layer.
 
 The service ships as a toolkit:
 
@@ -148,9 +148,18 @@ The service ships as a toolkit:
 - **Hands-on pilot support** for three Wave-1 integrations: engineering office hours, reference integration code, and pilot-side debugging.
 - **Security package + completed third-party audit** of the Verifier and AuthResolver contracts — threat model, deterministic verifier checks, revocation precedence, replay protection, lifecycle semantics, and hardening checklist.
 
-With the toolkit, an integrator can resolve an ENS-named agent's published authorization state, verify a signed request against that state in real time, and enforce expiry, rotation, and revocation with normalized allow/deny reason codes — across crypto-native and Web2 MARPs alike.
+With the toolkit, integrators can resolve an ENS-named agent’s published authorization state, verify signed requests against current ENS state in real time, and enforce expiry, rotation, and revocation through normalized allow/deny reason codes across crypto-native and Web2 agent environments alike.
 
-**By July 2027:** Verifier and AuthResolver deployed and **audited by a third party**; SDK 1.0 published; three Wave-1 pilots live against audited contracts (Pinata, Virtuals, x402); conformance suite with passing CI; operational KPIs verified per pilot (<60s revocation propagation, ≥99.9% replay rejection, 100% policy-deny correctness, <1 day developer onboarding).
+**By April 2027** the project delivers:
+
+- audited Verifier and AuthResolver contracts,
+- SDK v1.0,
+- conformance suite and integration tooling,
+- reference validation flows across all supported signing models,
+- operational verification metrics,
+- and a mainnet-ready hardened release validated in production-like environments.
+
+An expanded scope extends the infrastructure into an external Wave-1 ecosystem integration, interoperability validation, and deployment support for early operator environments.
 
 ### Milestones
 
