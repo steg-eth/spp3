@@ -183,6 +183,8 @@ Per SPP3 conventions, milestones are targets (not gates) with target dates, ship
 
 ## 7. Team & Working Model
 
+### Team
+
 **A two-person senior team, plus the committee as a third seat.** Steg is led by two senior builders:
 
 - **`estmcmxci.eth` — ENS architecture, the spec, and ecosystem integration.** Track record in §4: a merged contribution to canonical ENS contracts (PR #509 / v1.7.0); the ENS Public Goods grant whose research output — the **Universal Resolver Matrix** — reframed ENS as a trust-routing system and seeded this proposal (this SPP productionizes one of its cells); a live multi-chain reference implementation; and independent jury validation.
