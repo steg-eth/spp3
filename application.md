@@ -29,21 +29,37 @@ The value proposition is infrastructure leverage: creating an open ENS-native ve
 
 ## 3. Abstract
 
-ENS lacks a standardized, resolver-native “agent trust runtime” for dynamic control, validity, permissions, and portable reputation.
+ENS lacks a standardized, resolver-native authorization and verification layer for dynamic permissions, credential validity, revocation, and portable agent identity.
 
-The agent stack today has naming + discovery (ENSIP-25, ENSIP-26), registry (ERC-8004, ERC-8122), wire-protocol auth (MCP, A2A), on-chain delegation execution (ERC-4337), and attestation (EAS) — but no neutral, ENS-keyed, resolver-level surface that ties any of them to _current_ authority.
+The agent stack today has naming and discovery (ENSIP-25, ENSIP-26), registry (ERC-8004, ERC-8122), wire-protocol authentication (MCP, A2A), on-chain delegated execution (ERC-4337), and attestation (EAS) — but no neutral, ENS-keyed, resolver-level authority surface tying those systems to _current_ authorization state.
 
 No service today can verify, in real time, whether an action attributed to an ENS-named agent is currently authorized.
 
-This SPP fills that gap as a defined integration service for teams building apps, APIs, and managed agent runtimes (MARPs). It delivers a practical ENS verification and revocation toolkit deployed on ENSv2:
+This SPP fills that gap as a defined ENS-native interoperability and verification layer for teams building apps, APIs, relying services, and managed agent runtimes (MARPs). It delivers a practical ENS verification and revocation toolkit composed on top of ENSv2 primitives:
 
-- **Verifier contract** — an extensible signature verifier shipping three schemes this cycle: WebAuthn / P-256 via the EIP-7951 precompile, ECDSA secp256k1 via ecrecover, and EIP-1271 via staticcall to the signing contract's `isValidSignature(bytes32,bytes)`. Covers EOA, smart-contract-account, and passkey-backed signing models; dispatch surface designed to extend to BLS in future cycles.
-- **AuthResolver contract** — holds credential, capability, and revocation records under any ENS name; deployed per-name (not a singleton)
-- **TypeScript SDK** — resolves ENS-published authorization state, verifies signed requests against current ENS state, returns normalized allow / deny reason codes.
-- **Conformance tests and integration guides** for apps, APIs, and managed agent runtimes.
-- **Hands-on support** for three Wave-1 pilot integrations.
+**Tier 1 (core infrastructure)**:
 
-Integrators can resolve ENS-published authorization state, verify signed requests against current ENS state, and enforce expiry, rotation, and revocation with normalized allow / deny reason codes.
+- Verifier
+- AuthResolver
+- SDK
+- conformance suite
+- reference validation flows
+- documentation/spec work
+- security review/audit
+- production-like validation environments
+
+**Success measured by**: shipped contracts/tooling, successful end-to-end validation, conformance coverage, audit completion, operational metrics.
+
+**Tier (strategic upside)**:
+
+- One external Wave-1 ecosystem integration
+- integration engineering support
+- interoperability report
+- deployment support
+
+**Success measured by**: successful external integration deployment, integration report, operational interoperability validation.
+
+Integrators can resolve ENS-published authorization state, verify signed requests against current ENS state, and enforce expiry, rotation, and revocation through normalized allow/deny reason codes.
 
 ### **Success metrics**
 
