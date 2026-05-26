@@ -45,7 +45,23 @@ This SPP fills that gap as a defined integration service for teams building apps
 
 Integrators can resolve ENS-published authorization state, verify signed requests against current ENS state, and enforce expiry, rotation, and revocation with normalized allow / deny reason codes.
 
-Success is measured by shipped onchain contracts and tooling, three working pilot integrations deploying ENS-bound agent authority verification in production-like environments, a completed third-party security audit of the Verifier and AuthResolver, and operational metrics: revocation propagation latency, replay rejection rate, policy-deny correctness, and developer onboarding under one day for basic verification.
+### **Success metrics**
+
+#### **Tier 1 (core infrastructure) success is measured by:**
+
+- shipped Verifier and AuthResolver contracts,
+- released SDK and conformance tooling,
+- successful end-to-end validation flows across all supported signing models,
+- completed third-party security review/audit,
+- successful revocation, rotation, expiry, and replay-protection validation in production-like environments,
+- and operational correctness metrics around authorization and verification behavior.
+
+#### **Tier 2 (ecosystem validation / strategic expansion) success is measured by:**
+
+- one successful external Wave-1 integration deployment,
+- interoperability validation across a real managed-agent environment,
+- integration engineering and deployment support deliverables,
+- and publication of ecosystem interoperability findings and integration guidance.
 
 ---
 
