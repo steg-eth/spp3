@@ -247,10 +247,24 @@ The technical foundation is the [WebAuthn-for-ENS specification](https://docs.st
 
 ## 11. Conclusion
 
-This proposal funds a defined integration service for ENS-keyed authority-policy lookup, delivered to managed agent runtime platforms. Over 12 months and $350,000, the work ships in four quarterly milestones (§6): the Verifier and AuthResolver deployed with an SDK alpha and a third-party audit firm engaged; the audit completed and remediated alongside SDK 1.0, the conformance suite, and integration guides; all three Wave-1 pilots integrated against the audited contracts with KPIs measured; and a final threat-model, hardening, and governance-roadmap package for the ENS DAO.
+This proposal funds a defined ENS-native authority and verification infrastructure layer for apps, APIs, relying services, managed agent runtimes, and emerging operator environments that need to verify whether an action attributed to an ENS-named agent is currently authorized.
 
-The service operationalizes existing ENS standards (ENSIP-25, ENSIP-26, ENSIP-64, ERC-8004) and optionally consumes EIP-8121 for an emerging integration category, delivering a reusable, scheme-extensible verification pattern. Three Wave-1 pilots — currently targeted at Pinata Agents (operator), Virtuals Protocol (protocol-native), and x402 (capability publisher) — demonstrate the pattern across the MARP ecosystem; Bankr Agents, whose signing model is already verified day-zero-compatible with the v1 Verifier (§2; Appendix D), is the lead near-term integration target.
+The proposal is structured in two tiers:
 
-The proposal does not replace existing ENS primitives; it operationalizes ENS as the interoperable authority-policy lookup layer for managed agent runtime platforms.
+- **Tier 1 ($265k)** delivers the core infrastructure scope: the Verifier and AuthResolver contracts, SDK, conformance suite, integration guides, end-to-end operational validation flows, third-party security audit, and a mainnet-ready hardened release.
+- **Tier 2 ($175k)** is an expanded ecosystem expansion scope focused on external interoperability validation, deployment support, and an early ecosystem integration across a potential operator environment.
+
+Over a 12-month cycle, the work ships through quarterly milestones: initial deployment artifacts and SDK alpha; completed third-party audit and remediation alongside SDK v1.0 and conformance coverage; operational validation of the verification and authorization flows across supported signing models; and a Tier 2 scope for ecosystem expansion phase centered on external interoperability, integration and support.
+
+The service operationalizes existing ENS standards (ENSIP-25, ENSIP-26, ENSIP-64, ERC-8004) and optionally composes with EIP-8121 as an extensible discovery mechanism for emerging agent environments. The proposal’s purpose is not to prove adoption across the MARP ecosystem, but to establish and validate:
+
+- the architecture,
+- the interoperability pattern,
+- the verification flow,
+- and the authorization semantics
+
+required for portable ENS-native agent identity and authorization.
+
+The proposal does not replace existing ENS primitives; it operationalizes ENS as an interoperable authority-policy lookup layer for persistent agent identity and authorization across heterogeneous systems.
 
 ---
