@@ -190,9 +190,22 @@ Per SPP3 conventions, milestones are targets (not gates) with target dates, ship
 
 This proposal’s highest-risk surface is the authorization layer itself, the Verifier and per-name AuthResolver, whose job is to make authorization decisions that remain correct under adversarial conditions. That surface is hardened through formal specification discipline, conformance testing, and a funded third-party security audit (§6 / M6).
 
-**The committee is the third seat — board, not staff.** We treat the SPP committee as a board-like member of this effort: an oversight and capital-allocation role, not day-to-day steering. The working model makes that concrete — quarterly status reports (§6), milestone targets verifiable against public artifacts (§6), and every deliverable shipped in the open (MIT-licensed, public PRs, public demos). The committee sees the same evidence the public does, on a cadence, and can hold the work to its stated KPIs.
+### Working model
 
-**Why this framing matters.** This proposal is not only funding a software deliverable; it is funding an infrastructure thesis: that managed agent runtimes represent an emerging operator category, and that ENS has an opportunity to become the neutral authority and coordination layer for that category before vendor-specific identity systems harden into closed ecosystems (§2; [forum post](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121)). The toolkit is the implementation surface of that thesis: an ENS-native verification and authorization layer designed to establish open interoperability patterns early in the formation of the category.
+The committee functions as a third seat in an oversight and capital-allocation capacity, closer to a board role than day-to-day project management. The working model reflects that structure through:
+
+- quarterly status reporting (§6),
+- milestone verification against public artifacts,
+- open-source development (MIT licensed),
+- public PRs,
+- public demos,
+- and independently verifiable deliverables.
+
+The committee and the public evaluate the same evidence on the same cadence.
+
+### Why this framing matters
+
+This proposal is not only funding a software deliverable; it is funding an infrastructure thesis: that managed agent runtimes represent an emerging operator category, and that ENS has an opportunity to become the neutral authority and coordination layer for that category before vendor-specific identity systems harden into closed ecosystems (§2; [forum post](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121)). The toolkit is the implementation surface of that thesis: an ENS-native verification and authorization layer designed to establish open interoperability patterns early in the formation of the category.
 
 ---
 
