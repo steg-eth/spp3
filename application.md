@@ -213,17 +213,34 @@ This proposal is not only funding a software deliverable; it is funding an infra
 
 ## 8. Budget Request
 
-**Line-item breakdown:**
+### Tier 1 — Core Infrastructure / Reference Architecture
 
-| Line item                                        | Amount       | What it funds                                                                                                                                                                                                                                                                    |
-| ------------------------------------------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Onchain engineering and contract deployment      | $130,000     | Specification adaptation, contract implementation, integration with ENSv2 access-control substrate (`EnhancedAccessControl`, `HCAContextUpgradeable`), deployment, and reference deployment artifacts for the verification and resolver infrastructure (Verifier + AuthResolver) |
-| SDK and verifier tooling                         | $55,000      | TypeScript SDK with versioned releases, reason-code taxonomy, developer-facing API, conformance-suite test harness                                                                                                                                                               |
-| Reference integrations                           | $75,000      | Hands-on integration work for three Wave-1 pilots — engineering office hours, reference integration code, pilot-side debugging, per-pilot integration reports (~$25K per pilot)                                                                                                  |
-| Third-party security audit and hardening package | $60,000      | Third-party security audit of the Verifier and AuthResolver contracts, threat model, deterministic verifier checks, revocation precedence rules, replay protection, lifecycle semantics, and the audit-ready hardening checklist                                                 |
-| Documentation and integration support            | $15,000      | Integration guides, conformance suite documentation, public references                                                                                                                                                                                                           |
-| Project management and reporting                 | $15,000      | Quarterly status updates, milestone tracking, committee reporting                                                                                                                                                                                                                |
-| **Total**                                        | **$350,000** |                                                                                                                                                                                                                                                                                  |
+**Core Public-Good Deliverable**
+
+| Line item                                   | Amount   | Purpose                                                                                                                                                                                                                                                |
+| ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Onchain engineering and contract deployment | $140,000 | Contract implementation, integration with ENSv2 access-control substrate (`EnhancedAccessControl`, `HCAContextUpgradeable`), deployment, and reference deployment artifacts for the verification and resolver infrastructure (Verifier + AuthResolver) |
+| SDK and verifier tooling                    | $55,000  | TypeScript SDK, developer tooling, reason-code taxonomy, conformance harness                                                                                                                                                                           |
+| Documentation                               | $15,000  | Spec refinement, integration guides, public references                                                                                                                                                                                                 |
+| Project management and reporting            | $15,000  | Quarterly status updates, milestone tracking, committee reporting                                                                                                                                                                                      |
+| Core security review                        | $40,000  | Targeted third-party review, lifecycle/auth analysis, threat-model validation                                                                                                                                                                          |
+
+**Tier 1 Total**: $265K
+
+### Tier 2 — Ecosystem Validation / Integration Expansion
+
+**Ecosystem Activation + Production Hardening**
+
+| Line item                                         | Amount          | Purpose                                                                                                                                                                                                                    |
+| ------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wave-1 ecosystem validation                       | $80,000         | Wave-1 ecosystem validation across early MARP environments, including reference integrations, interoperability testing, deployment support, and integration reports validating the architecture under operating conditions |
+| Expanded production audit and ecosystem hardening | $45,000–$65,000 | Broader production audit scope, interoperability review, deployment hardening, operational testing                                                                                                                         |
+| Documentation                                     | $15,000         | Integration guides, public references                                                                                                                                                                                      |
+| Project management and reporting                  | $15,000         | Quarterly status updates, milestone tracking, committee reporting                                                                                                                                                          |
+
+**Tier 2 Total**: $175K
+
+**Combined Full Expansion**: $440K
 
 ---
 
