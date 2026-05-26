@@ -109,23 +109,45 @@ The synthesis stack (MIT-licensed, [github.com/estmcmxci/synthesis](https://gith
 
 ## 5. Problem
 
-AI agents increasingly take actions across apps, services, and hosted runtimes — but authorization for those actions lives in vendor-specific systems. Each counterparty needs its own way to confirm an action was authorized by the agent's operator, and there is no shared substrate for rotation, revocation, or audit when that authority changes.
+Managed agent systems increasingly operate across apps, services, APIs, and hosted runtimes — but authorization for those actions remains fragmented across vendor-specific identity systems. Each counterparty must independently determine whether an action was authorized by the agent’s operator, with no shared coordination layer for revocation, rotation, lifecycle management, or auditability when authority changes.
 
-A new operator class is emerging — managed agent runtime platforms (MARPs), hosted runtimes providing agent-lifecycle primitives (tool execution and endpoint routing; secrets and credentials; scheduling; policy controls; observability; identity surface). Pilots are moving to governed production with vendors iterating fast: Pinata Agents, Virtuals Protocol, and Bankr Agents are shipping production-grade MARPs today; Microsoft Entra Agent ID's preview marks enterprise-vendor entry; and Anthropic and Cloudflare's [Claude Managed Agents](https://github.com/cloudflare/claude-managed-agents) launched in May 2026 with self-hosted sandboxes, zero-trust policy injection, and custom egress proxies.
+An emerging operational category is forming around managed agent runtimes (MARPs): hosted systems providing agent lifecycle primitives such as execution routing, scheduling, credentials, policy controls, observability, and identity surfaces. These systems are increasingly moving from experimental deployments toward governed production environments with vendors iterating fast: Pinata Agents, Virtuals Protocol, and Bankr Agents are shipping production-grade MARPs today; Microsoft Entra Agent ID's preview marks enterprise-vendor entry; and Anthropic and Cloudflare's [Claude Managed Agents](https://github.com/cloudflare/claude-managed-agents) launched in May 2026 with self-hosted sandboxes, zero-trust policy injection, and custom egress proxies.
 
-What MARPs do not standardize is a portable authorization layer counterparties can verify independently — no outside service can verify, in real time, that an agent-signed action came from a credential the operator currently authorizes. (Full operator-class case in [Steg's ENS forum post, May 2026](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121).)
+What MARPs do not standardize is a portable authorization layer counterparties can verify independently — there is no standardized cross-platform service for independently verifying in real time, that an agent-signed action came from a credential the operator currently authorizes. (Full operator-class case in [Steg's ENS forum post, May 2026](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121).)
 
 ENS is the right surface for this work because the naming, discovery, and registry primitives are already in place — ENSIP-25 (identity binding), ENSIP-26 (discovery), ENSIP-64 (typed records), and ERC-8004 (agent registry). What the current stack does not provide on its own is the **ENS-keyed authority-policy lookup layer** above those primitives: a resolver-level surface that lets any service confirm, in real time, that a signed action came from a credential currently authorized for an ENS name and that the credential has not been rotated, expired, or revoked.
 
 This layer is distinct from wire-protocol auth (MCP, A2A), which answers "did the client present valid credentials," and from on-chain delegation execution (ERC-4337 session keys), which executes scoped permissions onchain. Neither of those tells a relying party which keys and capabilities are currently the ENS-name's authorized ones. That lookup is the gap, and that lookup is what this proposal delivers.
 
-### **Why an ENS name (vs. a wallet address or platform ID).**
+### **Why an ENS name**
 
-A name is the right primary key for agent authority for three load-bearing reasons.
+**ENS names are the natural cross-platform coordination primitive for long-lived agent authority.**
 
-1. **Portability:** the same identity moves across runtimes and counterparties without re-onboarding — a platform ID dies at platform exit, and a raw wallet address carries no human-readable referent that survives key rotation.
-2. **Audit trails:** counterparties, ops teams, and regulators can trace actions against a stable label rather than reconciling rotating addresses across runtimes.
-3. **Ownership semantics:** name transfer atomically transfers authority (see §10, "Atomic role invalidation on name transfer") — the operator-continuity primitive a wallet-address-only model cannot provide. Naming is the substrate layer that turns the rest of the agent stack — registry, wire-protocol auth, capability tokens, account-abstraction execution — into a coherent identity any counterparty can resolve and verify.
+The hard problem is not merely authentication, it is persistent authority coordination across heterogeneous systems. Agents move across runtimes, keys rotate, platforms change, permissions evolve, and execution environments upgrade over time.
+Without a shared coordination surface, each platform builds its own identity graph, trust model, and authority registry. This creates fragmented vendor-local identity systems, non-portable authorization, incompatible trust assumptions, and increasing ecosystem lock-in.
+
+ENS is uniquely positioned to solve this because it already provides:
+
+- global naming
+- ownership semantics
+- delegation semantics
+- resolvable state
+- composability
+- and Ethereum-native neutrality
+- within an open, ecosystem-shared identity substrate.
+
+**Why names matter more than addresses**
+Wallet addresses are implementation-level credentials.
+
+ENS names are persistent coordination identities.
+
+Addresses rotate. Keys rotate. Smart accounts upgrade. Execution environments change.
+
+But the identity surface persists.
+
+Wallet addresses identify cryptographic endpoints. ENS names identify persistent operational entities that counterparties, services, runtimes, and users can continuously resolve and verify over time.
+
+As managed agent infrastructure matures, the ecosystem needs identities that survive underlying infrastructure changes while remaining globally resolvable, portable, and vendor-neutral. ENS is uniquely positioned to provide that coordination surface.
 
 ENSv2's specified primitives (in preview at [ensdomains/contracts-v2](https://github.com/ensdomains/contracts-v2), mainnet deployment forthcoming) provide persistent storage and revocable write permissions, but no native TTL or _selective_ per-record revocation primitive for record contents — records remain valid until the name owner rewrites or wholesale-wipes via `clearRecords()`. The AuthResolver fills this gap without modifying ENS core: it composes those v2 primitives into a verification orchestration surface carrying validity metadata (expiry timestamps, explicit revocation flags) and a Verifier contract that enforces them at lookup time. ENS Registry and existing resolver implementations are unchanged. This is schema and orchestration work on top of existing primitives — the same extension pattern ENSIP-24, ENSIP-25, and ENSIP-26 use to extend ENS into new domains without core modification.
 
