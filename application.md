@@ -231,12 +231,12 @@ This proposal is not only funding a software deliverable; it is funding an infra
 
 **Ecosystem Activation + Production Hardening**
 
-| Line item                                         | Amount          | Purpose                                                                                                                                                                                                                    |
-| ------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Wave-1 ecosystem validation                       | $80,000         | Wave-1 ecosystem validation across early MARP environments, including reference integrations, interoperability testing, deployment support, and integration reports validating the architecture under operating conditions |
-| Expanded production audit and ecosystem hardening | $45,000–$65,000 | Broader production audit scope, interoperability review, deployment hardening, operational testing                                                                                                                         |
-| Documentation                                     | $15,000         | Integration guides, public references                                                                                                                                                                                      |
-| Project management and reporting                  | $15,000         | Quarterly status updates, milestone tracking, committee reporting                                                                                                                                                          |
+| Line item                                         | Amount  | Purpose                                                                                                                                                                                                                    |
+| ------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wave-1 ecosystem validation                       | $80,000 | Wave-1 ecosystem validation across early MARP environments, including reference integrations, interoperability testing, deployment support, and integration reports validating the architecture under operating conditions |
+| Expanded production audit and ecosystem hardening | $65,000 | Broader production audit scope, interoperability review, deployment hardening, operational testing                                                                                                                         |
+| Documentation                                     | $15,000 | Integration guides, public references                                                                                                                                                                                      |
+| Project management and reporting                  | $15,000 | Quarterly status updates, milestone tracking, committee reporting                                                                                                                                                          |
 
 **Tier 2 Total**: $175K
 
