@@ -31,13 +31,13 @@ The value proposition is infrastructure leverage: creating an open ENS-native ve
 
 ## 3. Abstract
 
-ENS lacks a standardized, resolver-native authorization and verification layer for dynamic permissions, credential validity, revocation, and portable agent identity.
-
-The agent stack today has naming and discovery (ENSIP-25, ENSIP-26), registry (ERC-8004, ERC-8122), wire-protocol authentication (MCP, A2A), on-chain delegated execution (ERC-4337), and attestation (EAS) — but no neutral, ENS-keyed, resolver-level authority surface tying those systems to _current_ authorization state.
-
 No service today can verify, in real time, whether an action attributed to an ENS-named agent is currently authorized.
 
-This SPP fills that gap as a defined ENS-native interoperability and verification layer for teams building apps, APIs, relying services, and managed agent runtimes (MARPs). It delivers a practical ENS verification and revocation toolkit composed on top of ENSv2 primitives:
+ENS lacks a standardized, resolver-native authorization and verification layer for dynamic permissions, credential validity, revocation, and portable agent identity.
+
+The agent stack today has naming and discovery (ENSIP-25/26 — ENS standards for binding agent records to a name), registry (ERC-8004/8122 — onchain agent registry standards), wire-protocol authentication (MCP, A2A — client-to-server and agent-to-agent message protocols), on-chain delegated execution (ERC-4337 — account abstraction with session keys), and attestation (EAS — Ethereum Attestation Service) — but no layer above them ties those systems to _current_ authority under an ENS name.
+
+This SPP fills that gap as a defined ENS-native interoperability and verification layer for teams building apps, APIs, relying services, and managed agent runtimes (MARPs). It ships an ENS-native authorization toolkit — a Verifier, AuthResolver, SDK, and conformance suite — composed on top of ENSv2 primitives:
 
 **Tier 1 (core infrastructure)**:
 
