@@ -55,7 +55,7 @@ This SPP fills that gap as a defined ENS-native interoperability and verificatio
 
 **Success measured by**: shipped contracts/tooling, successful end-to-end validation, conformance coverage, audit completion, operational metrics.
 
-**Tier (strategic upside)**:
+**Tier 2 (strategic upside)**:
 
 - One external Wave-1 ecosystem integration
 - integration engineering support
@@ -137,7 +137,7 @@ ENS is uniquely positioned to solve this because it already provides:
 - resolvable state
 - composability
 - and Ethereum-native neutrality
-- within an open, ecosystem-shared identity substrate.
+- within an open, shared identity substrate.
 
 **Why names matter more than addresses**
 Wallet addresses are implementation-level credentials.
@@ -154,7 +154,7 @@ As managed agent infrastructure matures, the ecosystem needs identities that sur
 
 ENSv2's specified primitives (in preview at [ensdomains/contracts-v2](https://github.com/ensdomains/contracts-v2), mainnet deployment forthcoming) provide persistent storage and revocable write permissions, but no native TTL or _selective_ per-record revocation primitive for record contents — records remain valid until the name owner rewrites or wholesale-wipes via `clearRecords()`. The AuthResolver fills this gap without modifying ENS core: it composes those v2 primitives into a verification orchestration surface carrying validity metadata (expiry timestamps, explicit revocation flags) and a Verifier contract that enforces them at lookup time. ENS Registry and existing resolver implementations are unchanged. This is schema and orchestration work on top of existing primitives — the same extension pattern ENSIP-24, ENSIP-25, and ENSIP-26 use to extend ENS into new domains without core modification.
 
-This gap matters now because agent identity systems are being defined in parallel: [Microsoft Entra Agent ID](https://learn.microsoft.com/en-us/entra/agent-id) is currently in preview as a dedicated identity-and-authorization framework for AI agents, and other vendor systems are taking shape alongside it. ENS-native agent standards are still early — ERC-8004 reached mainnet in January 2026 and relevant ENSIPs are fresh — which makes the next twelve months the window in which ENS can establish a practical cross-vendor verification pattern for MARPs rather than retrofit one later. The §6 toolkit is scoped to ship inside that window; the funding case for shipping it through SPP3 — and the cost of not — is in §9.
+Agent identity systems are being defined in parallel right now: [Microsoft Entra Agent ID](https://learn.microsoft.com/en-us/entra/agent-id) is in preview as a dedicated identity-and-authorization framework for AI agents, and other vendor systems are taking shape alongside it. ENS-native agent standards are still early — ERC-8004 reached mainnet in January 2026 and relevant ENSIPs are fresh — which makes the next twelve months the window in which ENS can establish a practical cross-vendor verification pattern for MARPs rather than retrofit one later. The §6 toolkit is scoped to ship inside that window; the funding case is in §9.
 
 ---
 
@@ -307,11 +307,11 @@ This proposal funds a defined ENS-native authority and verification infrastructu
 The proposal is structured in two tiers:
 
 - **Tier 1 ($265k)** delivers the core infrastructure scope: the Verifier and AuthResolver contracts, SDK, conformance suite, integration guides, end-to-end operational validation flows, third-party security audit, and a mainnet-ready hardened release.
-- **Tier 2 ($175k)** is an expanded ecosystem expansion scope focused on external interoperability validation, deployment support, and an early ecosystem integration across a potential operator environment.
+- **Tier 2 ($175k)** is an expanded scope focused on external interoperability validation, deployment support, and an early ecosystem integration across a potential operator environment.
 
 Over a 12-month cycle, the work ships through quarterly milestones: initial deployment artifacts and SDK alpha; completed third-party audit and remediation alongside SDK v1.0 and conformance coverage; operational validation of the verification and authorization flows across supported signing models; and a Tier 2 scope for ecosystem expansion phase centered on external interoperability, integration and support.
 
-The service operationalizes existing ENS standards (ENSIP-25, ENSIP-26, ENSIP-64, ERC-8004) and optionally composes with EIP-8121 as an extensible discovery mechanism for emerging agent environments. The proposal’s purpose is not to prove adoption across the MARP ecosystem, but to establish and validate:
+The service builds on existing ENS standards (ENSIP-25, ENSIP-26, ENSIP-64, ERC-8004) and optionally composes with EIP-8121 as a discovery mechanism for emerging agent environments. What this proposal validates:
 
 - the architecture,
 - the interoperability pattern,
