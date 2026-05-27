@@ -28,7 +28,7 @@ has been rotated, expired, or revoked. Built on ENSv2 primitives; complements co
   a design framework that maps resolver architectures across trust model, proof system, lifecycle, and
   verification path to find which verifier unlocks the most namespaces per unit of effort. This
   proposal productionizes the cell that analysis surfaced as highest-leverage: agent authority resolution.
-- **`mouza.eth`** (Mouz Delbourgo) — production smart-contract systems across DeFi and NFT finance at Arcade.xyz ([NFT lending](https://github.com/arcadexyz/arcade-protocol/blob/main/contracts/rollover/CrossCurrencyRollover.sol), collateral/accounting, [LP staking](https://github.com/arcadexyz/dao-contracts), [governance contracts](https://github.com/arcadexyz/governance/blob/main/contracts/NFTBoostVault.sol)), and a Uniswap Foundation competition-winning [Uniswap v4 hook](https://github.com/Mouzayan/dex-profit-wars); specializing in security and authorization-surface design.
+- **`mouz.eth`** (Mouz Delbourgo) — production smart-contract systems across DeFi and NFT finance at Arcade.xyz ([NFT lending](https://github.com/arcadexyz/arcade-protocol/blob/main/contracts/rollover/CrossCurrencyRollover.sol), collateral/accounting, [LP staking](https://github.com/arcadexyz/dao-contracts), [governance contracts](https://github.com/arcadexyz/governance/blob/main/contracts/NFTBoostVault.sol)), and a Uniswap Foundation competition-winning [Uniswap v4 hook](https://github.com/Mouzayan/dex-profit-wars); specializing in security and authorization-surface design.
 
 ## Status & references
 

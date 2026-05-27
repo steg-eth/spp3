@@ -272,17 +272,14 @@ The current agent stack still lacks one layer ENS is well positioned to provide 
 
 **Why SPP3 funding matters.** The ENS growth wedge at the operator layer is subname issuance by new operator classes that find new payload to publish under ENS. MARPs are the new operator class; the AuthResolver + Verifier toolkit is the new payload that lets them build managed agent identity platforms (MAIPs, per §10) — without it, ENS-bound agent identity remains vendor-local and non-portable across operator environments, and the per-platform-user subname-issuance pathway stays closed. The next 12–24 months likely represent the formative window in which cross-vendor agent identity patterns are established. Enterprise-managed agent platforms are beginning to operationalize identity and authorization layers (Microsoft Entra Agent ID preview; Anthropic + Cloudflare's Claude Managed Agents). If ENS doesn't ship the open MAIP substrate before the category locks in, the work ships as single-runtime tooling on a 24–36 month part-time arc, by which point enterprise platforms have shipped their own identity surfaces and ENS becomes a thin naming label over vendor-fragmented trust — Web2 SSO redux for the agent economy.
 
-### Why interoperability infrastructure compounds
+**Why interoperability infrastructure compounds.** The strategic value of this proposal is not tied to a single runtime or integration. The leverage comes from establishing an open ENS-native coordination and verification pattern before vendor-local identity systems harden into fragmented ecosystems.
 
-The strategic value of this proposal is not tied to a single runtime or integration. The leverage comes from establishing an open ENS-native coordination and verification pattern before vendor-local identity systems harden into fragmented ecosystems.
+Historical infrastructure layers such as OAuth, WalletConnect, and ERC standards became valuable not because they directly owned end users, but because ecosystems converged around shared coordination surfaces that reduced integration cost and increased composability.
 
-Historical infrastructure layers such as ENS, OAuth, WalletConnect, and ERC standards became valuable not because they directly owned end users, but because ecosystems converged around shared coordination surfaces that reduced integration cost and increased composability.
+Early signs of the same interoperability dynamic are already emerging around managed agent runtimes.
+As agents move from experimental tools into persistent production systems, managed runtimes increasingly become the operational coordination layer between agents, wallets, APIs, users, and counterparties.
 
-The same dynamic may emerge around managed agent runtimes.
-
-As agents move from experimental tools into persistent production systems, managed runtimes increasingly become the operational coordination layer between agents, wallets, APIs, users, and counterparties. If each runtime develops proprietary identity and authorization systems independently, authorization becomes fragmented, credentials become non-portable, relying parties become dependent on vendor-local trust systems, and cross-platform interoperability weakens.
-
-This proposal attempts to establish an open ENS-native authority and verification layer before those patterns ossify. The architecture compounds through reuse: once relying parties integrate a shared verification pattern, additional runtimes can adopt the same model with lower integration cost, increasing incentives for ecosystem convergence around interoperable standards rather than proprietary identity silos.
+This proposal establishes an open ENS-native authority and verification layer before those patterns ossify. The architecture compounds through reuse: once relying parties integrate a shared verification pattern, additional runtimes can adopt the same model with lower integration cost, increasing incentives for ecosystem convergence around interoperable standards rather than proprietary identity silos.
 
 The category is still emerging, but the underlying operator pattern is already visible across hosted agent runtimes, smart-account-backed agent systems, enterprise-managed agent infrastructure, and ERC-4337-based execution environments.
 
