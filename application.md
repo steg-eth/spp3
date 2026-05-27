@@ -1,6 +1,6 @@
 # ENS Verification and Revocation Toolkit for Managed Agent Runtimes (MARPs)
 
-_A practical ENS-native authorization and verification toolkit for managed agent runtimes: Verifier + AuthResolver contracts, a TypeScript SDK, a conformance suite, integration guides, and end-to-end operational validation flows establishing an open interoperability pattern for agent identity and authorization._
+_A practical, open-source ENS-native authorization and verification toolkit for managed agent runtimes: Verifier + AuthResolver contracts, a TypeScript SDK, a conformance suite, integration guides, and end-to-end operational validation flows establishing an open interoperability pattern for agent identity and authorization._
 
 ---
 
@@ -24,7 +24,7 @@ _A practical ENS-native authorization and verification toolkit for managed agent
 
 **Probable customers are production-scale managed agent runtime platforms (MARPs) whose current signing models the v1 toolkit already covers:** Pinata Agents is the live hosting runtime for Steg's [reference agent](https://estmcmxci.co/agent/emilemarcelagustin.eth) on `emilemarcelagustin.eth`; Virtuals Protocol's ACP CLI generates P-256 signers natively (per §6); Bankr Agents' `/agent/sign` + EIP-7702/EIP-1271 wallet model has been end-to-end verified for day-zero compatibility with the v1 Verifier (per [Appendix D](./appendices/appendix-d-deliverables-operationalization.md)). x402 (Coinbase's open agentic payments protocol) is the currently-targeted capability-publisher pilot.
 
-Steg is a participant in **Pinata Agents' Partner Templates program** (April 2026 onboarding; Drew Trombley, Pinata Sales & BD lead). Two reference templates in active development: **OpenClaw** (general-purpose agent template) and **Hermes** (target-specific template). These templates require verification of agent-signed actions against ENS-published authorization state — the core capability the v1 Verifier + AuthResolver ships.
+Steg is a participant in **Pinata Agents' Partner Templates program** (April 2026 onboarding; Drew Trombley, Pinata Sales & BD lead). Two reference templates in active development: **OpenClaw** (general-purpose agent template) and **Hermes** (target-specific template). These templates require verification of agent-signed actions against ENS-published authorization state — the core capability the v1 Verifier + AuthResolver ships as shared, forkable open-source infrastructure.
 
 **The strategic bet is that managed agent runtimes represent an emerging operator category** ([full case in Steg's ENS forum post, May 2026](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121)), and that this category will require shared verification, revocation, and authorization infrastructure as it matures. The goal of this proposal is to establish an ENS-native authority and interoperability layer before vendor-specific identity and authorization systems harden into fragmented silos. Concretely, the proposal ships a verification and revocation toolkit (Verifier + AuthResolver + SDK + conformance suite + integration guides) that MARP platforms can integrate into subname issuance and agent authorization flows.
 
@@ -164,7 +164,7 @@ This gap matters now because agent identity systems are being defined in paralle
 
 ## 6. Proposed Service
 
-This proposal funds a defined integration service for teams building apps, APIs, managed agent runtimes (MARPs), and relying services that need to verify whether an action attributed to an ENS-named agent is currently authorized. MARPs represent the initial operator class with strong need for a portable, ENS-bound verification and authorization layer.
+This proposal funds a defined integration service for teams building apps, APIs, managed agent runtimes (MARPs), and relying services that need to verify whether an action attributed to an ENS-named agent is currently authorized. MARPs represent the initial operator class with strong need for a portable, ENS-bound verification and authorization layer — shared, forkable open-source infrastructure new operator classes adopt rather than each one reimplementing locally.
 
 The service ships as a toolkit:
 
