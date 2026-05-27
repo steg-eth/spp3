@@ -234,6 +234,8 @@ The committee and the public evaluate the same evidence on the same cadence.
 
 **Core Public-Good Deliverable**
 
+**Budget structure.** Tier 1's $265k covers the 12-month cycle (Jul 2026 – Jul 2027): ~12 person-months of senior engineering work at a $18,750/mo blended rate, delivered by two co-leads — `estmcmxci.eth` (ENS architecture, spec, ecosystem integration) and `mouz.eth` (smart-contract delivery and security). The $40k Core security review line is a third-party audit pass-through.
+
 | Line item                                   | Amount   | Purpose                                                                                                                                                                                                                                                |
 | ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Onchain engineering and contract deployment | $140,000 | Contract implementation, integration with ENSv2 access-control substrate (`EnhancedAccessControl`, `HCAContextUpgradeable`), deployment, and reference deployment artifacts for the verification and resolver infrastructure (Verifier + AuthResolver) |
