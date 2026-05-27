@@ -272,7 +272,7 @@ The current agent stack still lacks one layer ENS is well positioned to provide 
 
 **Why SPP3 funding matters.** The ENS growth wedge at the operator layer is subname issuance by new operator classes that find new payload to publish under ENS. MARPs are the new operator class; the AuthResolver + Verifier toolkit is the new payload that lets them build managed agent identity platforms (MAIPs, per §10) — without it, ENS-bound agent identity remains vendor-local and non-portable across operator environments, and the per-platform-user subname-issuance pathway stays closed. The next 12–24 months likely represent the formative window in which cross-vendor agent identity patterns are established. Enterprise-managed agent platforms are beginning to operationalize identity and authorization layers (Microsoft Entra Agent ID preview; Anthropic + Cloudflare's Claude Managed Agents). If ENS doesn't ship the open MAIP substrate before the category locks in, the work ships as single-runtime tooling on a 24–36 month part-time arc, by which point enterprise platforms have shipped their own identity surfaces and ENS becomes a thin naming label over vendor-fragmented trust — Web2 SSO redux for the agent economy.
 
-#### Why interoperability infrastructure compounds
+### Why interoperability infrastructure compounds
 
 The strategic value of this proposal is not tied to a single runtime or integration. The leverage comes from establishing an open ENS-native coordination and verification pattern before vendor-local identity systems harden into fragmented ecosystems.
 
