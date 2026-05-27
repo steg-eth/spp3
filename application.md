@@ -26,9 +26,7 @@ _A practical, open-source ENS-native authorization and verification toolkit for 
 
 Steg is a participant in **Pinata Agents' Partner Templates program** (April 2026 onboarding; Drew Trombley, Pinata Sales & BD lead). Two reference templates in active development: **OpenClaw** (general-purpose agent template) and **Hermes** (target-specific template). These templates require verification of agent-signed actions against ENS-published authorization state — the core capability the v1 Verifier + AuthResolver ships as shared, forkable open-source infrastructure.
 
-**The strategic bet is that managed agent runtimes represent an emerging operator category** ([full case in Steg's ENS forum post, May 2026](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121)), and that this category will require shared verification, revocation, and authorization infrastructure as it matures. The goal of this proposal is to establish an ENS-native authority and interoperability layer before vendor-specific identity and authorization systems harden into fragmented silos. Concretely, the proposal ships a verification and revocation toolkit (Verifier + AuthResolver + SDK + conformance suite + integration guides) that MARP platforms can integrate into subname issuance and agent authorization flows.
-
-The value proposition is infrastructure leverage: creating an open ENS-native verification and authorization pattern that future agent ecosystems can compose around rather than reimplement independently. If this operator category scales, ENS becomes the natural coordination surface for agent identity, authority, and revocation rather than fragmented vendor-local identity systems.
+The proposal ships a verification and revocation toolkit — Verifier + AuthResolver + SDK + conformance suite + integration guides — that MARP platforms integrate into subname issuance and agent authorization flows. The strategic shape: an open coordination surface for agent authority across MARP environments ([full case in Steg's ENS forum post, May 2026](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121)).
 
 ---
 
@@ -227,10 +225,6 @@ The committee functions as a third seat in an oversight and capital-allocation c
 - and independently verifiable deliverables.
 
 The committee and the public evaluate the same evidence on the same cadence.
-
-### Why this framing matters
-
-This proposal is not only funding a software deliverable; it is funding an infrastructure thesis: that managed agent runtimes represent an emerging operator category, and that ENS has an opportunity to become the neutral authority and coordination layer for that category before vendor-specific identity systems harden into closed ecosystems (§2; [forum post](https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121)). The toolkit is the implementation surface of that thesis: an ENS-native verification and authorization layer designed to establish open interoperability patterns early in the formation of the category.
 
 ---
 
