@@ -329,3 +329,15 @@ required for portable ENS-native agent identity and authorization.
 The proposal does not replace existing ENS primitives; it operationalizes ENS as an interoperable authority-policy lookup layer for persistent agent identity and authorization across heterogeneous systems.
 
 ---
+
+## 12. Compliance & Attestations
+
+**Licensing.** All Recipient-Developed Materials shipped under this proposal will be licensed under the MIT License per Program Terms clause 8.1 (consistent with the repository's existing `LICENSE`). Documentation, integration guides, and the prototype specification will be licensed under CC BY-SA 4.0 per clause 8.2. Steg anticipates no Mandated Copyleft Dependency at the date of application.
+
+**Material relationships.** Steg confirms no active conflict of interest with any ENS DAO member, ENS Labs employee, or other SPP3 applicant. All operational and vendor relationships material to the proposal are disclosed in the body (§2, §4).
+
+**Approved Wallet.** Upon issuance of the Award Notice and prior to disbursement, Steg will designate a project-dedicated Safe multisig — 2-of-3 controlled by `estmcmxci.eth`, `mouz.eth`, and `steg.eth` (org-level signer, for redundancy) — as the Approved Wallet under clause 5.8. Service Fees will be held in and disbursed from this wallet exclusively, with no commingling with personal or unrelated working capital.
+
+**Reporting cadence.** Steg commits to the dual quarterly reporting cadence under clause 6.3: a detailed private report to the Foundation within 30 days of each quarter's end, and a public ENS Forum summary within the same window. This complements the milestone verification cadence already described in §7.
+
+---
