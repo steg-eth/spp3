@@ -4,7 +4,11 @@
 
 **Purpose:** Normative specification of the Authority tier for AI-agent identity on ENS. Defines two contracts: a **Verifier** (signature-verification dispatch with three v1 schemes — WebAuthn-ES256, ECDSA-secp256k1, EIP-1271) and an **AuthResolverImpl** (per-name UUPS proxy on top of ENSv2's PermissionedResolver) that together let any ENS name serve as an authentication anchor for an agent's signed actions.
 
-**Status:** NORMATIVE for §3 (Verifier), §4 (AuthResolverImpl), §5 (`verifyAction` orchestration), with inline conformance criteria tables at §3.6, §4.8, §5.4. Other sections are non-normative context, deferred surface, or references. Items still open (full signed-freshness wire format, CBOR field-level layouts, expanded threat model, concrete reference-implementation pointer) carry forward to later v1.0-draft revisions and v1.0-final per §9.
+**Status:** NORMATIVE for §3 (Verifier), §4 (AuthResolverImpl), and §5 (`verifyAction` orchestration), with inline conformance criteria tables at §3.6, §4.8, and §5.4.
+
+This document is a technical blueprint and normative draft specification for the proposed implementation. The funded work will deliver the reference implementation, finalized conformance tests, concrete CBOR field layouts, expanded security/threat-model analysis, signed-freshness semantics, and production deployment guidance.
+
+This revision intentionally focuses on the core authority/authentication architecture and verification orchestration surfaces. Other sections are non-normative context, deferred surface, or references. Deferred items and future revisions are tracked in §9.
 
 **Pillar role:** Implements the Authority tier of the MAIP architecture (one of three architectural tiers: Display, Discovery, Authority).
 
@@ -18,11 +22,11 @@
 
 ### 1.1 In scope (NORMATIVE in this revision)
 
-| Surface | Section | Normative content |
-|---|---|---|
-| **Verifier** contract | §3 | Three registered schemes; dispatch surface; `IVerifier` interface; statelessness invariants |
-| **AuthResolverImpl** contract | §4 | Inheritance, deployment model, EIP-165 advertisement, record profile, HCA attribution, upgrade authority |
-| **`verifyAction` orchestration** | §5 | Required ordering, return-type semantics, `DenyReason` enum, name-lifecycle caveats |
+| Surface                          | Section | Normative content                                                                                        |
+| -------------------------------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| **Verifier** contract            | §3      | Three registered schemes; dispatch surface; `IVerifier` interface; statelessness invariants              |
+| **AuthResolverImpl** contract    | §4      | Inheritance, deployment model, EIP-165 advertisement, record profile, HCA attribution, upgrade authority |
+| **`verifyAction` orchestration** | §5      | Required ordering, return-type semantics, `DenyReason` enum, name-lifecycle caveats                      |
 
 ### 1.2 Normative conventions
 
@@ -34,38 +38,38 @@ A conformant Verifier or AuthResolverImpl is one that satisfies every **MUST** a
 
 These terms have specific meanings in this spec. Defined here so the normative body (§3–§5) and conformance tables (§3.6, §4.8, §5.4) can use them without re-introducing them.
 
-| Term | Definition |
-|---|---|
-| **MARP** | Managed Agent Runtime Platform — an operator that runs AI agents on behalf of end users (e.g., Bankr Agents, Pinata Agents, ZeroDev/Kernel-based platforms). The Authority-tier surface this spec defines is what MARPs publish under an ENS name so counterparties can verify their agents' signed actions. |
-| **AuthResolver** | The runtime entity (`AuthResolverImpl` per-name UUPS proxy) that holds an ENS name's credential, capability, and revocation records and exposes the `verifyAction` orchestration call. When unqualified, "AuthResolver" refers to a deployed proxy instance; `AuthResolverImpl` refers to the shared implementation contract behind those proxies. |
-| **AuthResolverImpl** | The single shared implementation contract deployed once per chain. Per-name AuthResolver proxies are UUPS proxies pointing at this implementation, deployed via `VerifiableFactory.deployProxy` (§4.3). |
-| **Verifier** | The single shared signature-verification dispatch contract (§3). Stateless, permissionless, dispatches by `schemeId` to one of three v1 handlers (P-256/WebAuthn, secp256k1/ECDSA, EIP-1271). |
-| **Credential** | A registered public key + signature scheme + validity window published under an ENS name as `auth.credential[<id>]`. The thing the Verifier verifies signatures against. |
-| **Capability** | A scope declaration published as `auth.capability[<id>]`. Reserved in v1 (publishable but not consumed by `verifyAction`); active enforcement deferred to v1.1. |
-| **Revocation** | An explicit revocation flag published as `auth.revocation[<id>]`. Presence (non-empty bytes) = revoked, regardless of decoded content. Absence = not revoked. |
-| **Name owner** | The address that holds `ROLE_UPGRADE` on a per-name AuthResolver proxy. Typically the address controlling the ENS name itself, though the two can diverge (per §4.3 deployer caveat — proxy address is keyed to the deployer at `deployProxy` time, not the name owner per se). |
-| **Operator EOA** | A delegated writer to which the name owner grants `ROLE_SET_DATA` (with optional `ROLE_SET_DATA_ADMIN` per §4.5.2) for a specific credential key. The operator can publish or revoke that credential without holding broader name authority. |
-| **Controlling EOA** | The end-user wallet that owns a smart-account proxy registered with an HCAFactory. Under HCA attribution (§4.6), `HCAContextUpgradeable._msgSender` returns this EOA, not the smart-account proxy address. The address that should hold EAC roles for smart-account-backed deployments. |
-| **HCA proxy** | A smart-account proxy registered with an HCAFactory. When such a proxy calls AuthResolver, the HCA layer rewrites `_msgSender` to the controlling EOA so EAC role checks resolve correctly. |
-| **HCAFactory** | A registry contract implementing `IHCAFactoryBasic.getAccountOwner(address)` that maps HCA proxies to their controlling EOAs. The production deployment is operated by Rhinestone; the AuthResolverImpl constructor accepts any `IHCAFactoryBasic` implementation (or `address(0)` to disable HCA entirely). |
-| **Relying party** | A counterparty receiving a signed action from an agent who wants to verify the signature is currently valid under the agent's published credentials. Calls `verifyAction` (or `data` + `Verifier.verify` directly) after resolving the AuthResolver proxy address via Universal Resolver V2. |
-| **Reference deployment** | A live ENS name + AuthResolver setup cited in this spec for illustrative purposes (e.g., `emilemarcelagustin.eth`, `alpha-go.bankrtest.eth`). Not normative; implementers MUST NOT hard-code reference-deployment addresses. |
-| **Frozen snapshot** | A spec revision file that has been promoted to v1.0-draft.0N and MUST NOT be edited in place. Corrections ship as v1.0-draft.0(N+1). |
+| Term                     | Definition                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **MARP**                 | Managed Agent Runtime Platform — an operator that runs AI agents on behalf of end users (e.g., Bankr Agents, Pinata Agents, ZeroDev/Kernel-based platforms). The Authority-tier surface this spec defines is what MARPs publish under an ENS name so counterparties can verify their agents' signed actions.                                       |
+| **AuthResolver**         | The runtime entity (`AuthResolverImpl` per-name UUPS proxy) that holds an ENS name's credential, capability, and revocation records and exposes the `verifyAction` orchestration call. When unqualified, "AuthResolver" refers to a deployed proxy instance; `AuthResolverImpl` refers to the shared implementation contract behind those proxies. |
+| **AuthResolverImpl**     | The single shared implementation contract deployed once per chain. Per-name AuthResolver proxies are UUPS proxies pointing at this implementation, deployed via `VerifiableFactory.deployProxy` (§4.3).                                                                                                                                            |
+| **Verifier**             | The single shared signature-verification dispatch contract (§3). Stateless, permissionless, dispatches by `schemeId` to one of three v1 handlers (P-256/WebAuthn, secp256k1/ECDSA, EIP-1271).                                                                                                                                                      |
+| **Credential**           | A registered public key + signature scheme + validity window published under an ENS name as `auth.credential[<id>]`. The thing the Verifier verifies signatures against.                                                                                                                                                                           |
+| **Capability**           | A scope declaration published as `auth.capability[<id>]`. Reserved in v1 (publishable but not consumed by `verifyAction`); active enforcement deferred to v1.1.                                                                                                                                                                                    |
+| **Revocation**           | An explicit revocation flag published as `auth.revocation[<id>]`. Presence (non-empty bytes) = revoked, regardless of decoded content. Absence = not revoked.                                                                                                                                                                                      |
+| **Name owner**           | The address that holds `ROLE_UPGRADE` on a per-name AuthResolver proxy. Typically the address controlling the ENS name itself, though the two can diverge (per §4.3 deployer caveat — proxy address is keyed to the deployer at `deployProxy` time, not the name owner per se).                                                                    |
+| **Operator EOA**         | A delegated writer to which the name owner grants `ROLE_SET_DATA` (with optional `ROLE_SET_DATA_ADMIN` per §4.5.2) for a specific credential key. The operator can publish or revoke that credential without holding broader name authority.                                                                                                       |
+| **Controlling EOA**      | The end-user wallet that owns a smart-account proxy registered with an HCAFactory. Under HCA attribution (§4.6), `HCAContextUpgradeable._msgSender` returns this EOA, not the smart-account proxy address. The address that should hold EAC roles for smart-account-backed deployments.                                                            |
+| **HCA proxy**            | A smart-account proxy registered with an HCAFactory. When such a proxy calls AuthResolver, the HCA layer rewrites `_msgSender` to the controlling EOA so EAC role checks resolve correctly.                                                                                                                                                        |
+| **HCAFactory**           | A registry contract implementing `IHCAFactoryBasic.getAccountOwner(address)` that maps HCA proxies to their controlling EOAs. The production deployment is operated by Rhinestone; the AuthResolverImpl constructor accepts any `IHCAFactoryBasic` implementation (or `address(0)` to disable HCA entirely).                                       |
+| **Relying party**        | A counterparty receiving a signed action from an agent who wants to verify the signature is currently valid under the agent's published credentials. Calls `verifyAction` (or `data` + `Verifier.verify` directly) after resolving the AuthResolver proxy address via Universal Resolver V2.                                                       |
+| **Reference deployment** | A live ENS name + AuthResolver setup cited in this spec for illustrative purposes (e.g., `emilemarcelagustin.eth`, `alpha-go.bankrtest.eth`). Not normative; implementers MUST NOT hard-code reference-deployment addresses.                                                                                                                       |
+| **Frozen snapshot**      | A spec revision file that has been promoted to v1.0-draft.0N and MUST NOT be edited in place. Corrections ship as v1.0-draft.0(N+1).                                                                                                                                                                                                               |
 
 ### 1.4 Parties
 
 The Authority-tier surface involves these actors. Each row says what the actor controls and how the spec constrains them.
 
-| Party | What they control | Where they appear |
-|---|---|---|
-| **Name Owner** | The ENS name, the per-name AuthResolver proxy upgrade authority (`ROLE_UPGRADE` on `ROOT_RESOURCE`), and which operators get delegated write access | §4.3 (deployment), §4.5.1 (grants), §4.7 (upgrade) |
-| **Operator** | Permission to publish or rotate one or more `auth.credential[<id>]` / `auth.capability[<id>]` / `auth.revocation[<id>]` records under one ENS name, scoped via EAC role grants | §4.5.1, §4.5.2 (admin layer governs whether they can re-delegate) |
-| **MARP Platform** | The agent runtime that signs actions on behalf of end users. May ALSO be the Name Owner or Operator (when the platform itself owns the ENS name) or may be neither (when end users own their ENS names and grant the platform Operator scope) | §4.6 (HCA attribution for smart-account-backed MARPs), §5 (signed-action flow) |
-| **Smart-Account User** | An end user controlling a smart-account proxy (Safe, ERC-4337, ZeroDev/Kernel) registered with an HCAFactory. Their controlling EOA appears as `_msgSender` for EAC checks via HCA rewriting | §4.6 |
-| **Relying Party** | A counterparty (another contract, a backend, a wallet) that verifies signed actions from an agent before honoring them. Bears the §5.3 normative rules (UR-routed discovery, no address caching, ENSIP-15 normalization in tooling) | §5, §5.3, §5.4 |
-| **HCAFactory** | A contract that authoritatively maps HCA proxies to controlling EOAs. The AuthResolverImpl makes a single `getAccountOwner` call per request via the HCA layer; HCAFactory correctness is out of scope for this spec | §4.6 |
-| **Implementation Author** | The party deploying `AuthResolverImpl` (the shared implementation) on each chain. Distinct from the per-name proxy deployer. Should be the project / DAO maintaining the audited implementation registry (deferred per §4.7) | §4.3, §4.7 |
-| **Verifier Maintainer** | The party deploying and operating the singleton Verifier contract (per chain). Scheme set is immutable post-deployment (§3.4); maintenance is limited to chain-level operational concerns (e.g., re-deployment after a major EIP-7951 precompile change) | §3, §3.1, §3.4 |
+| Party                     | What they control                                                                                                                                                                                                                                        | Where they appear                                                              |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Name Owner**            | The ENS name, the per-name AuthResolver proxy upgrade authority (`ROLE_UPGRADE` on `ROOT_RESOURCE`), and which operators get delegated write access                                                                                                      | §4.3 (deployment), §4.5.1 (grants), §4.7 (upgrade)                             |
+| **Operator**              | Permission to publish or rotate one or more `auth.credential[<id>]` / `auth.capability[<id>]` / `auth.revocation[<id>]` records under one ENS name, scoped via EAC role grants                                                                           | §4.5.1, §4.5.2 (admin layer governs whether they can re-delegate)              |
+| **MARP Platform**         | The agent runtime that signs actions on behalf of end users. May ALSO be the Name Owner or Operator (when the platform itself owns the ENS name) or may be neither (when end users own their ENS names and grant the platform Operator scope)            | §4.6 (HCA attribution for smart-account-backed MARPs), §5 (signed-action flow) |
+| **Smart-Account User**    | An end user controlling a smart-account proxy (Safe, ERC-4337, ZeroDev/Kernel) registered with an HCAFactory. Their controlling EOA appears as `_msgSender` for EAC checks via HCA rewriting                                                             | §4.6                                                                           |
+| **Relying Party**         | A counterparty (another contract, a backend, a wallet) that verifies signed actions from an agent before honoring them. Bears the §5.3 normative rules (UR-routed discovery, no address caching, ENSIP-15 normalization in tooling)                      | §5, §5.3, §5.4                                                                 |
+| **HCAFactory**            | A contract that authoritatively maps HCA proxies to controlling EOAs. The AuthResolverImpl makes a single `getAccountOwner` call per request via the HCA layer; HCAFactory correctness is out of scope for this spec                                     | §4.6                                                                           |
+| **Implementation Author** | The party deploying `AuthResolverImpl` (the shared implementation) on each chain. Distinct from the per-name proxy deployer. Should be the project / DAO maintaining the audited implementation registry (deferred per §4.7)                             | §4.3, §4.7                                                                     |
+| **Verifier Maintainer**   | The party deploying and operating the singleton Verifier contract (per chain). Scheme set is immutable post-deployment (§3.4); maintenance is limited to chain-level operational concerns (e.g., re-deployment after a major EIP-7951 precompile change) | §3, §3.1, §3.4                                                                 |
 
 The spec does NOT mandate a specific governance structure for the Implementation Author or Verifier Maintainer roles. Each MARP-owned proxy is independently upgradeable by its Name Owner (§4.7); the shared implementation contract has no central upgrade authority.
 
@@ -75,20 +79,20 @@ The spec does NOT mandate a specific governance structure for the Implementation
 
 The Verifier and AuthResolverImpl compose existing standards rather than introducing new core protocol changes. The AuthResolverImpl is a **verification orchestration layer** on top of v2 primitives, not a source of new Authority-tier primitives.
 
-| Standard | Composition role |
-|---|---|
-| **ENSIP-25** | Verifiable agent identity binding (ENS name ↔ ERC-8004 record). **Identity-layer precondition** for AuthResolverImpl use; not enforced inside `verifyAction` (see §5.3). |
-| **ENSIP-26** | Agent-context records (attribution: services, endpoints, description). **Attribution-layer composition** alongside AuthResolverImpl — coexists on the same name under a separate namespace (`services[*]` text records vs. `auth.*` data records). Read by relying parties for context alongside `verifyAction`; not enforced inside `verifyAction` (see §5.3). |
-| **ENSIP-64** | Typed text records. Used only for human-readable metadata under sibling namespaces (e.g., `auth.credential.label[<id>]`); not for credential bytes (those live in `data` records per §4.5). |
-| **EIP-165 / ENSIP-22 (`IERC7996`)** | Resolver capability discovery via `supportsFeature(bytes4 featureId)` (parallel to EIP-165's `supportsInterface(bytes4)`). AuthResolverImpl advertises a custom feature id (§4.4). Inherited from PermissionedResolver. |
-| **EIP-1967** | Standard implementation slot for UUPS proxies (`UUPSProxyLogic.sol:9` — `_IMPLEMENTATION_SLOT = 0x360894...2bbc`). The verifiable salt itself is **not** in a storage slot — it is appended as the **last 32 bytes of the clone proxy's runtime bytecode** (`CloneProxyBytecode.sol:14,28-30`) and read on demand via `extcodecopy` (`UUPSProxyLogic.sol:73-79`). |
-| **EIP-3668** | CCIP-Read protocol. Reserved for the deferred `getFreshSignedState` path; the basic `data` read path does NOT revert with `OffchainLookup`. |
-| **EIP-7951** | P-256 precompile. Verifier dispatch handler for the `WebAuthn-ES256` scheme (§3.2). |
-| **ERC-8004** | Agent identity registry. Referenced by ENSIP-25 binding; AuthResolverImpl does not call the registry directly. |
-| **ENSv2 PermissionedResolver** | Parent contract of AuthResolverImpl. Source: `PermissionedResolver.sol` in `ensdomains/contracts-v2`. 17-base inheritance chain (full list in §4.2): substrate (HCA, UUPS, EAC) + capability advertisement (`IERC7996`) + batched reads (`IMulticallable`) + 11 record-profile interfaces (`IDataResolver`, `ITextResolver`, `IAddrResolver`, etc.) + `IProxyAuthorization` (verifiable-factory hook) + `IPermissionedResolver` (self-interface). |
-| **ENSv2 `EnhancedAccessControl`** | Per-(node, recordKey) write delegation inherited from PermissionedResolver. AuthResolverImpl uses this for credential / capability writes (§4.5). |
-| **ENSv2 `HCAContextUpgradeable`** | Smart-account attribution inherited from PermissionedResolver. AuthResolverImpl uses this for HCA-aware role grants (§4.6). |
-| **ENSv2 `VerifiableFactory`** | CREATE2 proxy factory. AuthResolverImpl proxies are deployed via `deployProxy(impl, salt, data)`. |
+| Standard                            | Composition role                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ENSIP-25**                        | Verifiable agent identity binding (ENS name ↔ ERC-8004 record). **Identity-layer precondition** for AuthResolverImpl use; not enforced inside `verifyAction` (see §5.3).                                                                                                                                                                                                                                                                          |
+| **ENSIP-26**                        | Agent-context records (attribution: services, endpoints, description). **Attribution-layer composition** alongside AuthResolverImpl — coexists on the same name under a separate namespace (`services[*]` text records vs. `auth.*` data records). Read by relying parties for context alongside `verifyAction`; not enforced inside `verifyAction` (see §5.3).                                                                                   |
+| **ENSIP-64**                        | Typed text records. Used only for human-readable metadata under sibling namespaces (e.g., `auth.credential.label[<id>]`); not for credential bytes (those live in `data` records per §4.5).                                                                                                                                                                                                                                                       |
+| **EIP-165 / ENSIP-22 (`IERC7996`)** | Resolver capability discovery via `supportsFeature(bytes4 featureId)` (parallel to EIP-165's `supportsInterface(bytes4)`). AuthResolverImpl advertises a custom feature id (§4.4). Inherited from PermissionedResolver.                                                                                                                                                                                                                           |
+| **EIP-1967**                        | Standard implementation slot for UUPS proxies (`UUPSProxyLogic.sol:9` — `_IMPLEMENTATION_SLOT = 0x360894...2bbc`). The verifiable salt itself is **not** in a storage slot — it is appended as the **last 32 bytes of the clone proxy's runtime bytecode** (`CloneProxyBytecode.sol:14,28-30`) and read on demand via `extcodecopy` (`UUPSProxyLogic.sol:73-79`).                                                                                 |
+| **EIP-3668**                        | CCIP-Read protocol. Reserved for the deferred `getFreshSignedState` path; the basic `data` read path does NOT revert with `OffchainLookup`.                                                                                                                                                                                                                                                                                                       |
+| **EIP-7951**                        | P-256 precompile. Verifier dispatch handler for the `WebAuthn-ES256` scheme (§3.2).                                                                                                                                                                                                                                                                                                                                                               |
+| **ERC-8004**                        | Agent identity registry. Referenced by ENSIP-25 binding; AuthResolverImpl does not call the registry directly.                                                                                                                                                                                                                                                                                                                                    |
+| **ENSv2 PermissionedResolver**      | Parent contract of AuthResolverImpl. Source: `PermissionedResolver.sol` in `ensdomains/contracts-v2`. 17-base inheritance chain (full list in §4.2): substrate (HCA, UUPS, EAC) + capability advertisement (`IERC7996`) + batched reads (`IMulticallable`) + 11 record-profile interfaces (`IDataResolver`, `ITextResolver`, `IAddrResolver`, etc.) + `IProxyAuthorization` (verifiable-factory hook) + `IPermissionedResolver` (self-interface). |
+| **ENSv2 `EnhancedAccessControl`**   | Per-(node, recordKey) write delegation inherited from PermissionedResolver. AuthResolverImpl uses this for credential / capability writes (§4.5).                                                                                                                                                                                                                                                                                                 |
+| **ENSv2 `HCAContextUpgradeable`**   | Smart-account attribution inherited from PermissionedResolver. AuthResolverImpl uses this for HCA-aware role grants (§4.6).                                                                                                                                                                                                                                                                                                                       |
+| **ENSv2 `VerifiableFactory`**       | CREATE2 proxy factory. AuthResolverImpl proxies are deployed via `deployProxy(impl, salt, data)`.                                                                                                                                                                                                                                                                                                                                                 |
 
 **Three-layer framing.** ENSIP-25, ENSIP-26, and the AuthResolver `auth.*` records form a three-layer agent-identity story:
 
@@ -119,11 +123,11 @@ A conformant Verifier:
 
 v1 ships exactly **three** registered schemes, chosen to cover the EOA, smart-contract-account, and passkey signing models present across named Wave-1 MARP candidates from day zero:
 
-| schemeId | Scheme | Verification primitive | Covers |
-|---|---|---|---|
-| `keccak256("WebAuthn-ES256")` | ECDSA over P-256 with SHA-256 challenge hashing | EIP-7951 P-256 precompile | Passkey-backed signing (WebAuthn authenticators) |
-| `keccak256("ECDSA-secp256k1")` | ECDSA over secp256k1 with keccak256 challenge hashing | `ecrecover` | EOA signing, including standard agent-runtime signing endpoints (e.g., Bankr Agents' `/agent/sign`) |
-| `keccak256("EIP-1271")` | Contract-account signature | staticcall to `pubKey`-encoded contract's `isValidSignature(bytes32, bytes)` returning the EIP-1271 magic value | Smart-contract-account signing (EIP-7702-delegated wallets, ZeroDev/Kernel, generic ERC-4337 accounts) |
+| schemeId                       | Scheme                                                | Verification primitive                                                                                          | Covers                                                                                                 |
+| ------------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `keccak256("WebAuthn-ES256")`  | ECDSA over P-256 with SHA-256 challenge hashing       | EIP-7951 P-256 precompile                                                                                       | Passkey-backed signing (WebAuthn authenticators)                                                       |
+| `keccak256("ECDSA-secp256k1")` | ECDSA over secp256k1 with keccak256 challenge hashing | `ecrecover`                                                                                                     | EOA signing, including standard agent-runtime signing endpoints (e.g., Bankr Agents' `/agent/sign`)    |
+| `keccak256("EIP-1271")`        | Contract-account signature                            | staticcall to `pubKey`-encoded contract's `isValidSignature(bytes32, bytes)` returning the EIP-1271 magic value | Smart-contract-account signing (EIP-7702-delegated wallets, ZeroDev/Kernel, generic ERC-4337 accounts) |
 
 A conformant Verifier:
 
@@ -167,31 +171,31 @@ A conformant Verifier **MUST NOT** expose a setter that adds, removes, or modifi
 - **No batch entry point.** v1 does not expose a batched `verifyMany`. Relying parties needing to verify N signatures call `verify` N times. Deferred to v1.1 if pilot integrations request it.
 - **No replay protection.** Replay binding is the caller's responsibility (typically via `stateHash` in `VerificationResult` per §5.1, or via EIP-712 typed-data nonces in the application-layer message).
 - **Scheme handler trust.** The EIP-1271 path executes a staticcall to a contract address the caller controls (via `pubKey`). The Verifier MUST treat the call as untrusted (gas-bounded, revert-safe). Implementations SHOULD cap the staticcall gas to a documented limit (e.g., 100,000 gas) and treat any revert as `valid = false`.
-  - *Empirical note.* This edge case already exists in deployed environments. Live EIP-7702-delegated wallets in the wild reject invalid signatures by reverting with a typed error rather than returning `0xffffffff`. Observed on Base mainnet (2026-05-24): a Bankr agent wallet (`eth_getCode` returns the `0xef0100…` 7702 designator) delegates to an implementation whose `isValidSignature(bytes32,bytes)` reverts with `InvalidSignature()` (selector `0x8baa579f`) on a junk signature. This is spec-compliant — EIP-1271 only mandates the magic value on *valid* signatures — but it means a `staticcall` whose return data is naively compared against `0x1626ba7e` will treat the revert as a bubble-up rather than a "no", and any verifier that does not wrap the call and treat reverts as `valid = false` will mis-handle a meaningful subset of deployed smart-account implementations.
+  - _Empirical note._ This edge case already exists in deployed environments. Live EIP-7702-delegated wallets in the wild reject invalid signatures by reverting with a typed error rather than returning `0xffffffff`. Observed on Base mainnet (2026-05-24): a Bankr agent wallet (`eth_getCode` returns the `0xef0100…` 7702 designator) delegates to an implementation whose `isValidSignature(bytes32,bytes)` reverts with `InvalidSignature()` (selector `0x8baa579f`) on a junk signature. This is spec-compliant — EIP-1271 only mandates the magic value on _valid_ signatures — but it means a `staticcall` whose return data is naively compared against `0x1626ba7e` will treat the revert as a bubble-up rather than a "no", and any verifier that does not wrap the call and treat reverts as `valid = false` will mis-handle a meaningful subset of deployed smart-account implementations.
 - **Precompile availability.** The EIP-7951 precompile MUST be live on the target chain at the AuthResolverImpl deployment block. Per ENS documentation (search "EIP-7951"), the precompile is available on Ethereum mainnet **after the Fusaka hardfork**. Per-L2 availability is not uniformly enumerated; deployment targets MUST confirm precompile presence on each chain before the AuthResolverImpl proxy is deployed there.
 
 ### 3.6 Conformance criteria (NORMATIVE)
 
 A conformant Verifier satisfies every MUST/MUST NOT and SHOULD/MAY in this table. This restates the normative content in §3.1–§3.5; the source sections remain authoritative for any discrepancy.
 
-| # | Requirement | Type | Source |
-|---|---|---|---|
-| V1 | Permissionlessly callable; no per-call state | MUST | §3.1 |
-| V2 | `verify` is `view`; no replay protection at this layer | MUST | §3.1, §3.5 |
-| V3 | Return `false` (not revert) for unsupported `schemeId` | MUST | §3.1 |
-| V4 | Deployed once per chain | MUST | §3.1 |
-| V5 | Register all three v1 schemes (`WebAuthn-ES256`, `ECDSA-secp256k1`, `EIP-1271`) at construction | MUST | §3.2 |
-| V6 | Dispatch by `schemeId` per the §3.2 table | MUST | §3.2 |
-| V7 | For `WebAuthn-ES256`: pass `message` as the pre-hashed challenge to the EIP-7951 precompile | MUST | §3.2 |
-| V8 | For `WebAuthn-ES256`: NOT re-hash the message before precompile invocation | MUST NOT | §3.2 |
-| V9 | For `ECDSA-secp256k1`: `pubKey` is 64 bytes uncompressed (no `0x04` prefix); recover via `ecrecover` and compare against `keccak256(pubKey)[12:]` | MUST | §3.2 |
-| V10 | For `EIP-1271`: take rightmost 20 bytes of `pubKey` as the contract address | MUST | §3.2 |
-| V11 | For `EIP-1271`: staticcall `isValidSignature(bytes32, bytes)`; return `true` iff returned 4 bytes equal `0x1626ba7e` | MUST | §3.2 |
-| V12 | NOT expose any setter that adds, removes, or modifies scheme handlers post-deployment | MUST NOT | §3.4 |
-| V13 | EIP-7951 precompile MUST be live on target chain at deployment block (per Fusaka hardfork status for mainnet; per-L2 confirmation required) | MUST | §3.5 |
-| V14 | Treat EIP-1271 staticcall as untrusted (gas-bounded, revert-safe) | MUST | §3.5 |
-| V15 | Cap EIP-1271 staticcall gas to a documented limit (e.g., 100K) and treat any revert as `valid = false` | SHOULD | §3.5 |
-| V16 | Expose a batched `verifyMany` entry point | MAY (deferred to v1.1) | §3.5 |
+| #   | Requirement                                                                                                                                       | Type                   | Source     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ---------- |
+| V1  | Permissionlessly callable; no per-call state                                                                                                      | MUST                   | §3.1       |
+| V2  | `verify` is `view`; no replay protection at this layer                                                                                            | MUST                   | §3.1, §3.5 |
+| V3  | Return `false` (not revert) for unsupported `schemeId`                                                                                            | MUST                   | §3.1       |
+| V4  | Deployed once per chain                                                                                                                           | MUST                   | §3.1       |
+| V5  | Register all three v1 schemes (`WebAuthn-ES256`, `ECDSA-secp256k1`, `EIP-1271`) at construction                                                   | MUST                   | §3.2       |
+| V6  | Dispatch by `schemeId` per the §3.2 table                                                                                                         | MUST                   | §3.2       |
+| V7  | For `WebAuthn-ES256`: pass `message` as the pre-hashed challenge to the EIP-7951 precompile                                                       | MUST                   | §3.2       |
+| V8  | For `WebAuthn-ES256`: NOT re-hash the message before precompile invocation                                                                        | MUST NOT               | §3.2       |
+| V9  | For `ECDSA-secp256k1`: `pubKey` is 64 bytes uncompressed (no `0x04` prefix); recover via `ecrecover` and compare against `keccak256(pubKey)[12:]` | MUST                   | §3.2       |
+| V10 | For `EIP-1271`: take rightmost 20 bytes of `pubKey` as the contract address                                                                       | MUST                   | §3.2       |
+| V11 | For `EIP-1271`: staticcall `isValidSignature(bytes32, bytes)`; return `true` iff returned 4 bytes equal `0x1626ba7e`                              | MUST                   | §3.2       |
+| V12 | NOT expose any setter that adds, removes, or modifies scheme handlers post-deployment                                                             | MUST NOT               | §3.4       |
+| V13 | EIP-7951 precompile MUST be live on target chain at deployment block (per Fusaka hardfork status for mainnet; per-L2 confirmation required)       | MUST                   | §3.5       |
+| V14 | Treat EIP-1271 staticcall as untrusted (gas-bounded, revert-safe)                                                                                 | MUST                   | §3.5       |
+| V15 | Cap EIP-1271 staticcall gas to a documented limit (e.g., 100K) and treat any revert as `valid = false`                                            | SHOULD                 | §3.5       |
+| V16 | Expose a batched `verifyMany` entry point                                                                                                         | MAY (deferred to v1.1) | §3.5       |
 
 ---
 
@@ -241,11 +245,14 @@ A conformant deployment:
 
 - **MUST** deploy `AuthResolverImpl` once per chain as the shared implementation.
 - **MUST** deploy each per-name AuthResolver as a UUPS proxy via the canonical factory:
- ```solidity
- function deployProxy(address implementation, uint256 salt, bytes memory data)
- external returns (address proxy);
- ```
- (Source: `VerifiableFactory.sol:32` + `IVerifiableFactory.sol:7`.)
+
+```solidity
+function deployProxy(address implementation, uint256 salt, bytes memory data)
+external returns (address proxy);
+```
+
+(Source: `VerifiableFactory.sol:32` + `IVerifiableFactory.sol:7`.)
+
 - **MUST** pass the application-level salt as a `uint256` value derived from `keccak256(abi.encode("AuthResolverV1", ownerAddress, versionId))`, cast to `uint256`, where `ownerAddress` is the name owner that will hold `ROLE_UPGRADE` on the proxy and `versionId` is a `uint256` bumped per Verifier-major release.
 - **SHOULD** expose `getDeployedFor external view returns (address owner, uint256 versionId, address verifier)` returning the immutable values baked into the proxy's init data. This is the only way a relying party can verify resolver-to-owner binding without an external registry lookup.
 
@@ -295,9 +302,9 @@ A conformant AuthResolverImpl:
 
 - **MUST** store credential, capability, and revocation records under the inherited `IDataResolver.data(node, key) → bytes` profile (`PermissionedResolver.sol` Supported Record Types). It **MUST NOT** store these records as `text` records. Text records are reserved for human-readable metadata (e.g., `auth.credential.label[<id>]` = "Pinata signer for Émile"), not for credential bytes.
 - **MUST** use the key convention:
- - `auth.credential[<id>]` — CBOR-encoded `CredentialRecord` (§6.1)
- - `auth.capability[<id>]` — CBOR-encoded `CapabilityRecord` (§6.2)
- - `auth.revocation[<id>]` — CBOR-encoded `RevocationRecord` (§6.3). Empty bytes (or absence) MUST be interpreted as "not revoked."
+- `auth.credential[<id>]` — CBOR-encoded `CredentialRecord` (§6.1)
+- `auth.capability[<id>]` — CBOR-encoded `CapabilityRecord` (§6.2)
+- `auth.revocation[<id>]` — CBOR-encoded `RevocationRecord` (§6.3). Empty bytes (or absence) MUST be interpreted as "not revoked."
 - **MUST** gate writes via the inherited EAC `ROLE_SET_DATA = 1 << 36` (`PermissionedResolverLib.sol:52`). Read access is ungated.
 
 The `<id>` segment is a free string identifier chosen by the name owner. Conformant implementations MUST NOT impose a format constraint on `<id>` beyond the inherited PermissionedResolver key-length limits. Counterparties select among multiple published credentials by the credential record's validity window (§6.1) and revocation status.
@@ -339,11 +346,11 @@ A grant on `resource(0, 0)` (root) is held only by `grantRootRoles` and satisfie
 
 For every primary role, `PermissionedResolverLib.sol` defines a paired **admin role** at the upper-128-bit half of the role bitmap:
 
-| Primary role | Value | Admin role | Value | Required to grant primary |
-|---|---|---|---|---|
-| `ROLE_SET_DATA` | `1 << 36` | `ROLE_SET_DATA_ADMIN` | `ROLE_SET_DATA << 128` | yes |
-| `ROLE_SET_ALIAS` | `1 << 28` | `ROLE_SET_ALIAS_ADMIN` | `ROLE_SET_ALIAS << 128` | yes |
-| `ROLE_UPGRADE` | `1 << 124` | `ROLE_UPGRADE_ADMIN` | `ROLE_UPGRADE << 128` | yes |
+| Primary role     | Value      | Admin role             | Value                   | Required to grant primary |
+| ---------------- | ---------- | ---------------------- | ----------------------- | ------------------------- |
+| `ROLE_SET_DATA`  | `1 << 36`  | `ROLE_SET_DATA_ADMIN`  | `ROLE_SET_DATA << 128`  | yes                       |
+| `ROLE_SET_ALIAS` | `1 << 28`  | `ROLE_SET_ALIAS_ADMIN` | `ROLE_SET_ALIAS << 128` | yes                       |
+| `ROLE_UPGRADE`   | `1 << 124` | `ROLE_UPGRADE_ADMIN`   | `ROLE_UPGRADE << 128`   | yes                       |
 
 This is a **bit-packed admin pattern, not an OpenZeppelin-style `roleAdmin` mapping**. EAC's `_checkCanGrantRoles` (`EnhancedAccessControl.sol:370-379`) computes the caller's grantable roles by taking their bitmap, right-shifting 128 bits to project the admin-half onto the primary-half, then OR-ing — so an account holding `ROLE_SET_DATA_ADMIN` (and only `ROLE_SET_DATA_ADMIN`) **can grant `ROLE_SET_DATA`** to others on the same resource, even without holding `ROLE_SET_DATA` itself for that resource.
 
@@ -405,34 +412,34 @@ The Verifier is the only centralized governance surface in the v1 system (§3.1 
 
 A conformant AuthResolverImpl satisfies every MUST/MUST NOT and SHOULD/MAY in this table. This restates the normative content in §4.2–§4.7; the source sections remain authoritative for any discrepancy.
 
-| # | Requirement | Type | Source |
-|---|---|---|---|
-| A1 | Extend `PermissionedResolver` directly (17-base inheritance chain inherited) | MUST | §4.2 |
-| A2 | NOT re-implement primitives already present on PermissionedResolver | MUST NOT | §4.2 |
-| A3 | Add only: (a) custom auth profile methods (§5), (b) EIP-165 feature id advertisement (§4.4), (c) optional `getDeployedFor` view (§4.3) | MUST | §4.2 |
-| A4 | NOT override or disable inherited `setAlias` | MUST NOT | §4.2 |
-| A5 | Deploy `AuthResolverImpl` once per chain as the shared implementation | MUST | §4.3 |
-| A6 | Deploy each per-name AuthResolver as a UUPS proxy via `VerifiableFactory.deployProxy(address implementation, uint256 salt, bytes data)` | MUST | §4.3 |
-| A7 | Pass salt = `uint256(keccak256(abi.encode("AuthResolverV1", ownerAddress, versionId)))` | MUST | §4.3 |
-| A8 | Use `verifyContract(proxy, expectedImplementation)` (two args) for provenance verification | MUST (when verifying provenance) | §4.3 |
-| A9 | Expose `getDeployedFor returns (address owner, uint256 versionId, address verifier)` | SHOULD | §4.3 |
-| A10 | NOT assume the existence of a centralized registry of MARP-deployed proxies | MUST NOT | §4.3 |
-| A11 | Advertise a 4-byte feature id derived from `keccak256("auth-resolver-v1")` via `IERC7996.supportsFeature(bytes4 featureId)` | MUST | §4.4 |
-| A12 | Advertise custom auth profile selectors (`verifyAction`, `getFreshSignedState`) via inherited `supportsInterface(bytes4)` | MUST | §4.4 |
-| A13 | Advertise per-category feature ids (e.g., `auth-resolver-credential-v1`) | MAY (deferred to v1.1) | §4.4 |
-| A14 | Store credential/capability/revocation records under `IDataResolver.data(node, key) → bytes` profile | MUST | §4.5 |
-| A15 | NOT store these records as `text` records | MUST NOT | §4.5 |
-| A16 | Use key convention `auth.credential[<id>]` / `auth.capability[<id>]` / `auth.revocation[<id>]`, CBOR-encoded | MUST | §4.5 |
-| A17 | Interpret empty bytes or absence at `auth.revocation[<id>]` as "not revoked" | MUST | §4.5 |
-| A18 | Gate writes via inherited EAC `ROLE_SET_DATA = 1 << 36`; reads ungated | MUST | §4.5 |
-| A19 | Grant the deploying name owner BOTH `ROLE_X` and `ROLE_X_ADMIN` at `initialize` time for any role they need to both publish and delegate | SHOULD | §4.5.2 |
-| A20 | NOT impose format constraints on `<id>` beyond inherited PermissionedResolver key-length limits | MUST NOT | §4.5 |
-| A21 | For smart-account-backed MARPs under HCA: grant `ROLE_SET_DATA` to the **controlling EOA**, not the smart-account proxy address | MUST | §4.6 |
-| A22 | Deploy with `address(0)` as the HCA factory parameter to disable HCA | MAY | §4.6 |
-| A23 | Use UUPS upgrade plumbing inherited via OpenZeppelin's `UUPSUpgradeable` | MUST | §4.7 |
-| A24 | Gate `_authorizeUpgrade` on holder of `ROLE_UPGRADE = 1 << 124` on the proxy's `ROOT_RESOURCE` | MUST | §4.7 |
-| A25 | Grant `ROLE_UPGRADE` (typically with `ROLE_UPGRADE_ADMIN`) to the deploying name owner at proxy initialization | MUST | §4.7 |
-| A26 | NOT assume or require a central multisig, ENS DAO timelock, or other off-proxy upgrade authority | MUST NOT | §4.7 |
+| #   | Requirement                                                                                                                              | Type                             | Source |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ------ |
+| A1  | Extend `PermissionedResolver` directly (17-base inheritance chain inherited)                                                             | MUST                             | §4.2   |
+| A2  | NOT re-implement primitives already present on PermissionedResolver                                                                      | MUST NOT                         | §4.2   |
+| A3  | Add only: (a) custom auth profile methods (§5), (b) EIP-165 feature id advertisement (§4.4), (c) optional `getDeployedFor` view (§4.3)   | MUST                             | §4.2   |
+| A4  | NOT override or disable inherited `setAlias`                                                                                             | MUST NOT                         | §4.2   |
+| A5  | Deploy `AuthResolverImpl` once per chain as the shared implementation                                                                    | MUST                             | §4.3   |
+| A6  | Deploy each per-name AuthResolver as a UUPS proxy via `VerifiableFactory.deployProxy(address implementation, uint256 salt, bytes data)`  | MUST                             | §4.3   |
+| A7  | Pass salt = `uint256(keccak256(abi.encode("AuthResolverV1", ownerAddress, versionId)))`                                                  | MUST                             | §4.3   |
+| A8  | Use `verifyContract(proxy, expectedImplementation)` (two args) for provenance verification                                               | MUST (when verifying provenance) | §4.3   |
+| A9  | Expose `getDeployedFor returns (address owner, uint256 versionId, address verifier)`                                                     | SHOULD                           | §4.3   |
+| A10 | NOT assume the existence of a centralized registry of MARP-deployed proxies                                                              | MUST NOT                         | §4.3   |
+| A11 | Advertise a 4-byte feature id derived from `keccak256("auth-resolver-v1")` via `IERC7996.supportsFeature(bytes4 featureId)`              | MUST                             | §4.4   |
+| A12 | Advertise custom auth profile selectors (`verifyAction`, `getFreshSignedState`) via inherited `supportsInterface(bytes4)`                | MUST                             | §4.4   |
+| A13 | Advertise per-category feature ids (e.g., `auth-resolver-credential-v1`)                                                                 | MAY (deferred to v1.1)           | §4.4   |
+| A14 | Store credential/capability/revocation records under `IDataResolver.data(node, key) → bytes` profile                                     | MUST                             | §4.5   |
+| A15 | NOT store these records as `text` records                                                                                                | MUST NOT                         | §4.5   |
+| A16 | Use key convention `auth.credential[<id>]` / `auth.capability[<id>]` / `auth.revocation[<id>]`, CBOR-encoded                             | MUST                             | §4.5   |
+| A17 | Interpret empty bytes or absence at `auth.revocation[<id>]` as "not revoked"                                                             | MUST                             | §4.5   |
+| A18 | Gate writes via inherited EAC `ROLE_SET_DATA = 1 << 36`; reads ungated                                                                   | MUST                             | §4.5   |
+| A19 | Grant the deploying name owner BOTH `ROLE_X` and `ROLE_X_ADMIN` at `initialize` time for any role they need to both publish and delegate | SHOULD                           | §4.5.2 |
+| A20 | NOT impose format constraints on `<id>` beyond inherited PermissionedResolver key-length limits                                          | MUST NOT                         | §4.5   |
+| A21 | For smart-account-backed MARPs under HCA: grant `ROLE_SET_DATA` to the **controlling EOA**, not the smart-account proxy address          | MUST                             | §4.6   |
+| A22 | Deploy with `address(0)` as the HCA factory parameter to disable HCA                                                                     | MAY                              | §4.6   |
+| A23 | Use UUPS upgrade plumbing inherited via OpenZeppelin's `UUPSUpgradeable`                                                                 | MUST                             | §4.7   |
+| A24 | Gate `_authorizeUpgrade` on holder of `ROLE_UPGRADE = 1 << 124` on the proxy's `ROOT_RESOURCE`                                           | MUST                             | §4.7   |
+| A25 | Grant `ROLE_UPGRADE` (typically with `ROLE_UPGRADE_ADMIN`) to the deploying name owner at proxy initialization                           | MUST                             | §4.7   |
+| A26 | NOT assume or require a central multisig, ENS DAO timelock, or other off-proxy upgrade authority                                         | MUST NOT                         | §4.7   |
 
 ---
 
@@ -504,7 +511,7 @@ Capability-scope policy enforcement (step that would set `reason: PolicyDenied`)
 
 1. **Fresh-proxy deployment (registry-side).** New owner deploys a fresh AuthResolver proxy via VerifiableFactory. Per §4.3, the proxy address depends on `msg.sender` at deploy time, so a new owner (or a new deployer) yields a different CREATE2 address. New owner passes the fresh proxy as the resolver parameter to `register`, or replaces the subregistry wholesale. Universal Resolver V2 now routes the name to the new proxy. The **old proxy still holds its old records onchain** — clearing is an artifact of the registry no longer pointing to it, not a state change on the old proxy.
 
-2. **`clearRecords(node)` (resolver-side, single tx).** `PermissionedResolver.sol:136,250-255` exposes `clearRecords(bytes32 node)` which bumps an internal per-node version counter `_versions[node]` and orphans all prior records for that node in a single transaction. This is the right mechanism when the *same* AuthResolver proxy is retained across an ownership change (e.g., transferring control of an existing setup) and the new owner wants a clean slate without redeploying. `clearRecords` is gated by `ROLE_SET_DATA` (same as `setData`).
+2. **`clearRecords(node)` (resolver-side, single tx).** `PermissionedResolver.sol:136,250-255` exposes `clearRecords(bytes32 node)` which bumps an internal per-node version counter `_versions[node]` and orphans all prior records for that node in a single transaction. This is the right mechanism when the _same_ AuthResolver proxy is retained across an ownership change (e.g., transferring control of an existing setup) and the new owner wants a clean slate without redeploying. `clearRecords` is gated by `ROLE_SET_DATA` (same as `setData`).
 
 Both mechanisms exist; an implementer chooses based on whether the AuthResolver proxy itself is being replaced (mechanism 1) or retained (mechanism 2).
 
@@ -512,7 +519,7 @@ Relying parties **MUST NOT** cache resolver addresses across sessions. They **MU
 
 For names re-registered to a new owner who deliberately reuses the previous owner's resolver address as the `resolver` parameter to `register` (rare; requires intent + knowledge of the old address) and does NOT call `clearRecords`, the old credentials remain live until explicitly cleared. The relying-party caching rule above is the primary mitigation; an optional `verifyContract(proxy, expectedImplementation)` provenance check (see §4.3) is the belt-and-suspenders mitigation.
 
-**Aliasing.** If the AuthResolver name has been aliased to another name via `setAlias` (inherited from PermissionedResolver), the alias rewrite happens only inside UR's `resolve` path. Direct calls to `verifyAction` using the aliased name's namehash return the *unaliased* records. Callers using `verifyAction` directly on an aliased name **MUST** pre-resolve the alias via UR before calling, or accept that the unaliased records are what they see. Full alias semantics for multi-name MARPs are deferred to v1.1.
+**Aliasing.** If the AuthResolver name has been aliased to another name via `setAlias` (inherited from PermissionedResolver), the alias rewrite happens only inside UR's `resolve` path. Direct calls to `verifyAction` using the aliased name's namehash return the _unaliased_ records. Callers using `verifyAction` directly on an aliased name **MUST** pre-resolve the alias via UR before calling, or accept that the unaliased records are what they see. Full alias semantics for multi-name MARPs are deferred to v1.1.
 
 **ENSIP-25 binding (identity layer).** AuthResolverImpl assumes — but does not enforce — that the ENS name has a valid ENSIP-25 binding to an ERC-8004 identity. Relying parties that need atomic binding+authentication verification **SHOULD** compose the two reads themselves (e.g., via `IMulticallable`) in a single batched call. Adding ENSIP-25 enforcement inside `verifyAction` is deferred to v1.1 pending NCCoE position-paper discussion.
 
@@ -522,21 +529,21 @@ For names re-registered to a new owner who deliberately reuses the previous owne
 
 A conformant `verifyAction` implementation (on the AuthResolverImpl side) and a conformant relying-party integration satisfy the requirements in this table. The implementation-side rows are MUST/MUST NOT for the AuthResolverImpl; the relying-party-side rows are MUST/MUST NOT/SHOULD for SDKs and integrators consuming the spec.
 
-| # | Requirement | Type | Source | Applies to |
-|---|---|---|---|---|
-| F1 | Expose `verifyAction(bytes32 node, string credentialId, bytes message, bytes signature) external view returns (VerificationResult memory)` | MUST | §5.1 | AuthResolverImpl |
-| F2 | Return `VerificationResult { bool allowed; DenyReason reason; uint64 resolvedAt; bytes32 stateHash; }` | MUST | §5.1 | AuthResolverImpl |
-| F3 | Compute `stateHash` deterministically over the inputs that informed the decision (reference computation per §5.1) | MUST | §5.1 | AuthResolverImpl |
-| F4 | Execute the §5.2 7-step ordering: credential lookup → CBOR decode → validity window → revocation check → scheme support → signature verification → success | MUST | §5.2 | AuthResolverImpl |
-| F5 | On first failed step, return immediately with `allowed = false` and the corresponding `DenyReason`; NOT continue evaluating subsequent steps | MUST | §5.2 | AuthResolverImpl |
-| F6 | NOT perform additional checks beyond steps 1–7 (capability-scope `PolicyDenied` and endpoint-binding `EndpointUnproven` are reserved for v1.1) | MUST NOT | §5.2 | AuthResolverImpl |
-| F7 | First resolve `name → resolver address` via `UniversalResolverV2.findResolver(name)`, then call `verifyAction` directly on the resolver contract address | MUST | §5.3 | Relying party |
-| F8 | Normalize user-typed ENS names via ENSIP-15 (`@adraffy/ens-normalize`) before constructing namehash | MUST | §5.3 | SDK / CLI tooling |
-| F9 | NOT cache resolver addresses across sessions | MUST NOT | §5.3 | Relying party |
-| F10 | Re-resolve via Universal Resolver V2 on every authentication check | MUST | §5.3 | Relying party |
-| F11 | On aliased names: pre-resolve the alias via UR before calling `verifyAction` directly (or accept that unaliased records are returned) | MUST | §5.3 | Relying party |
-| F12 | When atomic binding+authentication verification is required: compose ENSIP-25 binding read and `verifyAction` in a single batched call (e.g., via `IMulticallable`) | SHOULD | §5.3 | Relying party |
-| F13 | When implementation integrity matters: verify the proxy's impl slot against a known-audited registry on every critical `verifyAction` call | SHOULD | §8 | Relying party |
+| #   | Requirement                                                                                                                                                         | Type     | Source | Applies to        |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ----------------- |
+| F1  | Expose `verifyAction(bytes32 node, string credentialId, bytes message, bytes signature) external view returns (VerificationResult memory)`                          | MUST     | §5.1   | AuthResolverImpl  |
+| F2  | Return `VerificationResult { bool allowed; DenyReason reason; uint64 resolvedAt; bytes32 stateHash; }`                                                              | MUST     | §5.1   | AuthResolverImpl  |
+| F3  | Compute `stateHash` deterministically over the inputs that informed the decision (reference computation per §5.1)                                                   | MUST     | §5.1   | AuthResolverImpl  |
+| F4  | Execute the §5.2 7-step ordering: credential lookup → CBOR decode → validity window → revocation check → scheme support → signature verification → success          | MUST     | §5.2   | AuthResolverImpl  |
+| F5  | On first failed step, return immediately with `allowed = false` and the corresponding `DenyReason`; NOT continue evaluating subsequent steps                        | MUST     | §5.2   | AuthResolverImpl  |
+| F6  | NOT perform additional checks beyond steps 1–7 (capability-scope `PolicyDenied` and endpoint-binding `EndpointUnproven` are reserved for v1.1)                      | MUST NOT | §5.2   | AuthResolverImpl  |
+| F7  | First resolve `name → resolver address` via `UniversalResolverV2.findResolver(name)`, then call `verifyAction` directly on the resolver contract address            | MUST     | §5.3   | Relying party     |
+| F8  | Normalize user-typed ENS names via ENSIP-15 (`@adraffy/ens-normalize`) before constructing namehash                                                                 | MUST     | §5.3   | SDK / CLI tooling |
+| F9  | NOT cache resolver addresses across sessions                                                                                                                        | MUST NOT | §5.3   | Relying party     |
+| F10 | Re-resolve via Universal Resolver V2 on every authentication check                                                                                                  | MUST     | §5.3   | Relying party     |
+| F11 | On aliased names: pre-resolve the alias via UR before calling `verifyAction` directly (or accept that unaliased records are returned)                               | MUST     | §5.3   | Relying party     |
+| F12 | When atomic binding+authentication verification is required: compose ENSIP-25 binding read and `verifyAction` in a single batched call (e.g., via `IMulticallable`) | SHOULD   | §5.3   | Relying party     |
+| F13 | When implementation integrity matters: verify the proxy's impl slot against a known-audited registry on every critical `verifyAction` call                          | SHOULD   | §8     | Relying party     |
 
 ---
 
@@ -595,9 +602,10 @@ The method body — including the `OffchainLookup` revert format, gateway URL co
 This signature reservation is included now so that the EIP-165 advertisement (§4.4) covers the selector and so the subsequent spec change is body-only (no interface migration).
 
 **Forward-looking note for the deferred body.** When the method body is spec'd, it MUST conform to ENSIP-22's CCIP-Read resolver requirements (per ENS documentation at "ENSIP-22 / supportsFeature"):
+
 - The resolver MUST support **recursive CCIP-Read calls** (the gateway response may itself trigger another `OffchainLookup`).
 - The gateway MUST serve **CORS headers** so that browser-based relying parties can read freshness responses without proxying.
-- The EIP-712 `AuthorityState` typed message MUST include enough context (resolver address, chain id, block number) for a relying party to verify the attestor signature was issued for *this* AuthResolver instance, not a sibling.
+- The EIP-712 `AuthorityState` typed message MUST include enough context (resolver address, chain id, block number) for a relying party to verify the attestor signature was issued for _this_ AuthResolver instance, not a sibling.
 
 ### 6.5 Reference implementation pointer (org confirmed; repo + impl pending)
 
@@ -667,7 +675,7 @@ This section is intentionally narrow in this revision. Full threat-model treatme
 
 **Per-instance upgrade authority.** Per §4.7, each AuthResolver proxy is independently upgradeable by its owner. A compromised name owner key can upgrade their proxy to a malicious implementation at the same address. Relying parties that care about implementation integrity SHOULD verify the proxy's implementation slot against a known-audited registry on every critical `verifyAction` call. This revision does not mandate this; the optional implementation-version registry is the deferred mechanism.
 
-**Name re-registration.** Per §5.3, relying parties MUST NOT cache resolver addresses across sessions. v2's per-name resolver model auto-clears stale records on ownership change *only if* relying parties re-resolve via Universal Resolver on each check. The narrow attack scenarios (deliberate attacker reusing old resolver, misconfigured registration tool defaulting to "preserve previous resolver") are addressed by the relying-party caching rule plus the optional `verifyContract(proxy, expectedImplementation)` provenance SDK call.
+**Name re-registration.** Per §5.3, relying parties MUST NOT cache resolver addresses across sessions. v2's per-name resolver model auto-clears stale records on ownership change _only if_ relying parties re-resolve via Universal Resolver on each check. The narrow attack scenarios (deliberate attacker reusing old resolver, misconfigured registration tool defaulting to "preserve previous resolver") are addressed by the relying-party caching rule plus the optional `verifyContract(proxy, expectedImplementation)` provenance SDK call.
 
 **HCA attribution misconfiguration.** Per §4.6, granting `ROLE_SET_DATA` to a smart-account proxy address rather than the controlling EOA results in the role check failing silently for smart-account-backed MARPs operating under HCA. This is a deployment-time correctness concern, not a runtime threat — but Wave-1 MARP integration guides MUST cover it explicitly. See also §4.5.2 for the admin-role layer governing role delegation, which is a separate misconfiguration vector (granting `ROLE_SET_DATA` without `ROLE_SET_DATA_ADMIN` means the grantee can publish records but cannot delegate further).
 
@@ -677,21 +685,21 @@ This section is intentionally narrow in this revision. Full threat-model treatme
 
 ## 9. Deferred beyond v1.0-draft.02
 
-| Item | Target revision |
-|---|---|
-| Signed-freshness EIP-712 layout + gateway response framing (incl. ENSIP-22 recursive CCIP-Read + CORS conformance per §6.4) | Later v1.0-draft revision |
-| CBOR field-level layouts for CredentialRecord, CapabilityRecord, RevocationRecord | Later v1.0-draft revision |
-| Threat model expansion (replay, key compromise, gateway trust, governance capture) | Later v1.0-draft revision |
-| Re-verification of normative claims against finalized ENSv2 mainnet docs once published | Carry-forward; ongoing |
+| Item                                                                                                                                          | Target revision                                                                             |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Signed-freshness EIP-712 layout + gateway response framing (incl. ENSIP-22 recursive CCIP-Read + CORS conformance per §6.4)                   | Later v1.0-draft revision                                                                   |
+| CBOR field-level layouts for CredentialRecord, CapabilityRecord, RevocationRecord                                                             | Later v1.0-draft revision                                                                   |
+| Threat model expansion (replay, key compromise, gateway trust, governance capture)                                                            | Later v1.0-draft revision                                                                   |
+| Re-verification of normative claims against finalized ENSv2 mainnet docs once published                                                       | Carry-forward; ongoing                                                                      |
 | Initial test vectors (per-scheme verify + per-record encode/decode + factory address-prediction + HCA rewrite + `verifyAction` orchestration) | M1 deliverable with reference implementation (vectors land in `<impl-repo>/tests/vectors/`) |
-| Reference implementation pointer (concrete impl-repo address + commit range) | v1.0-final (placeholder in §6.5) |
-| ENSIP-10 wildcard resolver path | v1.1 |
-| Resolver-level aliasing semantics for multi-name MARPs | v1.1 |
-| Capability scope structured-enumeration | v1.1 |
-| ENSIP-25 binding enforcement (optional `verifyAction` precondition) | v1.1 if NCCoE position-paper review drives a re-decision |
-| Cross-chain credential discovery via EIP-8121 | v2 cycle |
-| Batched `verifyMany` entry point on the Verifier | v1.1 if pilots request |
-| AuthResolverImpl version registry artifact | optional companion artifact |
+| Reference implementation pointer (concrete impl-repo address + commit range)                                                                  | v1.0-final (placeholder in §6.5)                                                            |
+| ENSIP-10 wildcard resolver path                                                                                                               | v1.1                                                                                        |
+| Resolver-level aliasing semantics for multi-name MARPs                                                                                        | v1.1                                                                                        |
+| Capability scope structured-enumeration                                                                                                       | v1.1                                                                                        |
+| ENSIP-25 binding enforcement (optional `verifyAction` precondition)                                                                           | v1.1 if NCCoE position-paper review drives a re-decision                                    |
+| Cross-chain credential discovery via EIP-8121                                                                                                 | v2 cycle                                                                                    |
+| Batched `verifyMany` entry point on the Verifier                                                                                              | v1.1 if pilots request                                                                      |
+| AuthResolverImpl version registry artifact                                                                                                    | optional companion artifact                                                                 |
 
 ---
 
@@ -723,4 +731,3 @@ Background and source-material pointers. Implementers do not need to read these 
 - **ENSv2 contracts source** — `github.com/ensdomains/contracts-v2` — canonical Solidity for PermissionedResolver, EnhancedAccessControl, HCAContextUpgradeable, HCAEquivalence, UniversalResolverV2.
 - **VerifiableFactory source** — `github.com/ensdomains/verifiable-factory` — canonical Solidity for the UUPS proxy factory used at §4.3.
 - **ENS Resolver Capability Discovery** — `docs.ens.domains` ENSIP-22 page and the `IERC7996` reference for the feature-id pattern at §4.4.
-
