@@ -165,8 +165,6 @@ The current specification draft defines the architecture, verification flow, and
 
 The service ships as a toolkit:
 
-The service ships as a toolkit:
-
 - **Onchain components** — a shared **Verifier** (EIP-7951 P-256, ecrecover, EIP-1271 staticcall) and a per-name **AuthResolver** (`AuthResolverImpl` + UUPS proxies via `VerifiableFactory`) composing ENSv2's EAC + HCA substrate into a verification orchestration layer for credential, capability, and revocation records. v1 scheme set selected to align with currently observable MARP signing environments (see [Appendix D](./appendices/appendix-d-deliverables-operationalization.md)); end-to-end verification flow in [Appendix C](./appendices/appendix-c-verifier-flow.md).
 - **A TypeScript SDK** that resolves ENS-published authorization state, verifies signed requests, and returns normalized allow/deny outputs with reason codes (`verified` / `unverified` / `stale` / `revoked` / `mismatch` / `policy-denied` / `endpoint-unproven`). Includes per-name AuthResolver proxy deployment helpers.
 - **A conformance suite** with reproducible test vectors — schema validity, record integrity, identity/authority binding, freshness/liveness, and adversarial mutation cases.
@@ -189,7 +187,7 @@ An expanded scope extends the infrastructure into an external Wave-1 ecosystem i
 
 ### Milestones
 
-Per SPP3 conventions, milestones are target delivery checkpoints (not funding gates) with shipped artifacts, published specifications, and verification criteria verifiable against public references.
+Per SPP3 conventions, milestones are target delivery checkpoints (not funding gates) with shipped artifacts, published specifications, and verification criteria verifiable against public references. Quarterly status reports summarize progress.
 
 ### **Tier 1 (core infrastructure)**
 
