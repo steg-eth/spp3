@@ -238,7 +238,7 @@ The committee and the public evaluate the same evidence on the same cadence.
 
 **Core Public-Good Deliverable**
 
-**Budget structure.** Tier 1's $265k covers the 12-month cycle (Jul 2026 – Jul 2027): ~12 person-months of senior engineering work at a $18,750/mo blended rate, delivered by two co-leads — `estmcmxci.eth` (ENS architecture, spec, ecosystem integration) and `mouz.eth` (smart-contract delivery and security). The $40k Core security review line is a third-party audit pass-through.
+**Budget structure.** Tier 1's $265k covers a 12-month service cycle (Jul 2026 – Jul 2027): a deliverable-dense build phase (M1 → M9, ~12 person-months of senior engineering at $18,750/mo blended across two co-leads — `estmcmxci.eth` on ENS architecture/spec/ecosystem integration; `mouz.eth` on smart-contract delivery and security) followed by an operational phase (M9 → M12) covering ecosystem support, documentation refinement, hotfix capacity, and quarterly committee reporting. The $40k Core security review line is a third-party audit pass-through.
 
 | Line item                                   | Amount   | Purpose                                                                                                                                                                                                                                                |
 | ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
