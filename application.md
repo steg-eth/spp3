@@ -336,7 +336,7 @@ The proposal does not replace existing ENS primitives; it operationalizes ENS as
 
 **Material relationships.** Steg confirms no active conflict of interest with any ENS DAO member, ENS Labs employee, or other SPP3 applicant. All operational and vendor relationships material to the proposal are disclosed in the body (§2, §4).
 
-**Approved Wallet.** Upon issuance of the Award Notice and prior to disbursement, Steg will designate a project-dedicated Safe multisig — 2-of-3 controlled by `estmcmxci.eth`, `mouz.eth`, and `steg.eth` (org-level signer, for redundancy) — as the Approved Wallet under clause 5.8. Service Fees will be held in and disbursed from this wallet exclusively, with no commingling with personal or unrelated working capital.
+**Approved Wallet.** Upon issuance of the Award Notice and prior to disbursement, Steg will designate a project-dedicated Safe multisig with a 2-of-3 signer structure consisting of `estmcmxci.eth`, `mouz.eth`, and `vault.steg.eth`, a dedicated subname jointly governed by both co-leads, for signing redundancy — as the Approved Wallet under clause 5.8. Service Fees will be held in and disbursed from this wallet exclusively, with no commingling with personal or unrelated working capital.
 
 **Reporting cadence.** Steg commits to the dual quarterly reporting cadence under clause 6.3: a detailed private report to the Foundation within 30 days of each quarter's end, and a public ENS Forum summary within the same window. This complements the milestone verification cadence already described in §7.
 
