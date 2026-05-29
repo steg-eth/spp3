@@ -339,3 +339,15 @@ The proposal does not replace existing ENS primitives; it operationalizes ENS as
 It is the next ENS payload primitive for the next operator class — extending ENS by the same growth pattern (cb.id, Coinbase) that brought millions of users into ENS-bound identity, and built not as a MAIP but as the open ENS substrate MAIPs run on: L1-native, resolvable, adoptable, and forkable by any party, with no vendor in the trust path. The agent economy's authority tier gets anchored either in open, censorship-resistant ENS infrastructure or in a closed vendor control plane — this proposal builds the substrate for the open one.
 
 ---
+
+## 12. Compliance & Attestations
+
+**Licensing.** All Recipient-Developed Materials shipped under this proposal will be licensed under the MIT License per Program Terms clause 8.1 (consistent with the repository's existing `LICENSE`). Documentation, integration guides, and the prototype specification will be licensed under CC BY-SA 4.0 per clause 8.2. Steg anticipates no Mandated Copyleft Dependency at the date of application.
+
+**Material relationships.** Steg confirms no active conflict of interest with any ENS DAO member, ENS Labs employee, or other SPP3 applicant. All operational and vendor relationships material to the proposal are disclosed in the body (§2, §4).
+
+**Approved Wallet.** Upon issuance of the Award Notice and prior to disbursement, Steg will designate a project-dedicated Safe multisig with a 2-of-3 signer structure consisting of `estmcmxci.eth`, `mouz.eth`, and `vault.steg.eth`, a dedicated subname jointly governed by both co-leads, for signing redundancy — as the Approved Wallet under clause 5.8. Service Fees will be held in and disbursed from this wallet exclusively, with no commingling with personal or unrelated working capital.
+
+**Reporting cadence.** Steg commits to the dual quarterly reporting cadence under clause 6.3: a detailed private report to the Foundation within 30 days of each quarter's end, and a public ENS Forum summary within the same window. This complements the milestone verification cadence already described in §7.
+
+---
