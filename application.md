@@ -2,6 +2,8 @@
 
 *A practical, open-source ENS-native authorization and verification toolkit that lets managed agent runtime platforms (MARPs) issue agent identities as ENS subnames carrying scoped, revocable, currently verifiable authority — Verifier \+ AuthResolver contracts, a TypeScript SDK, a conformance suite, integration guides, and end-to-end operational validation flows establishing an open interoperability pattern for agent identity and authorization.*
 
+> **Mirror / fallback:** if this page is unavailable (e.g. an IPFS gateway is down), an authoritative copy is maintained on [Google Docs](https://docs.google.com/document/d/1wAJCRX-gijhBcPvzqs0HcPJw1pMFe_U5QE8gg2KW1Ag/edit?usp=sharing).
+
 ## ---
 
 Team Profile
@@ -153,7 +155,7 @@ By April 2027 the project delivers:
 
 An expanded Tier 2 scope extends the infrastructure through a Wave-1 ecosystem integration, interoperability validation, and deployment support for early operator environments.
 
-Every deliverable is verifiable against a public artifact — deployed contract addresses, a published third-party audit, CI-passing conformance vectors, and the onchain issuance / active-authority dashboard (§2.3) — per the verification columns in §3.2.
+Every deliverable is verifiable against a public artifact — deployed contract addresses, a published third-party audit, CI-passing conformance vectors, and the onchain issuance / active-authority dashboard ([§2.3](#23-verifiable-metric)) — per the verification columns in [§3.2](#32-milestones).
 
 ### 3.2 Milestones
 
@@ -224,7 +226,7 @@ The next 12–24 months are a formative period for cross-vendor agent-identity p
 
 The substrate to build it is already in place — EIP-7951 shipped in Fusaka, ENSIP-25/26 merged, ERC-8004 on mainnet, ENSv2 in preview — so the binding constraint is delivery, not readiness.
 
-The decision is asymmetrical: a bounded one-cycle cost ($440k) against both measurable and strategic upside. Even the narrow, conservative conversion model (\~$400k–$580k in registration and renewal fees over five years, §2.2) reaches a scale comparable to the grant itself. 
+The decision is asymmetrical: a bounded one-cycle cost ($440k) against both measurable and strategic upside. Even the narrow, conservative conversion model (\~$400k–$580k in registration and renewal fees over five years, [§2.2](#22-registrations-and-revenue)) reaches a scale comparable to the grant itself. 
 
 And that likely understates the opportunity cost, which is strategic: the entire agent-identity category, a 480K+ agent population growing monthly, and ENS's standing as the neutral authority layer for an expanding agent-operator surface — all ceded to closed vendors, with high switching costs, once the window closes.
 
@@ -282,10 +284,10 @@ The authority payload has four properties, each mapped to concrete contracts and
 
 The technical foundation builds on two prior artifacts: 
 
-1. **Verification semantics precedent ([WebAuthn-for-ENS specification](https://docs.steg.eth.link/specifications/webauthn-specification/), §4)** — The specification defines the P-256/WebAuthn verification path this proposal inherits, and  
+1. **Verification semantics precedent ([WebAuthn-for-ENS specification](https://docs.steg.eth.link/specifications/webauthn-specification/), [§4](#4-delivery-history))** — The specification defines the P-256/WebAuthn verification path this proposal inherits, and  
 2. **Deployed-topology precedent ([Sepolia TLD Oracle](https://dnssec.eketc.co/tld-oracle))** — TLDMinter \+ DnssecP256Verifier deployment demonstrating the orchestrator/stateless-verifier contract split. 
 
-Accordingly, v1 includes a shared Verifier supporting three signing schemes:  EIP-7951 P-256 (WebAuthn/passkey), ecrecover (secp256k1 ECDSA), and EIP-1271 staticcall (smart-account signatures). 
+Accordingly, v1 includes a shared Verifier supporting three signing schemes:  EIP-7951 P-256 (WebAuthn/passkey), ecrecover (secp256k1 ECDSA), and EIP-1271 staticcall (smart-account signatures). See [Appendix C](https://docs.google.com/document/d/1gkIUNqryO9apu44K2aS3DLWPO1ppZqzjQWkjZHi1I8k/edit?usp=sharing) for the end-to-end publish→act→verify flow and per-branch detail. 
 
 Authority records are published through AuthResolverImpl with per-name UUPS proxies via VerifiableFactory.
 
@@ -329,6 +331,18 @@ As agentic commerce scales, the authority tier will consolidate somewhere — ei
 ## 7\. Compliance & Attestations
 
 - **Licensing**: All Recipient-Developed Materials shipped under this proposal will be licensed under the MIT License per Program Terms clause 8.1 (consistent with the repository's existing LICENSE). Documentation, integration guides, and the prototype specification will be licensed under CC BY-SA 4.0 per clause 8.2. Steg anticipates no Mandated Copyleft Dependency at the date of application.  
-- **Material relationships:** Steg confirms no active conflict of interest with any ENS DAO member, ENS Labs employee, or other SPP3 applicant. All operational and vendor relationships material to the proposal are disclosed in the body (§2, §4).  
+- **Material relationships:** Steg confirms no active conflict of interest with any ENS DAO member, ENS Labs employee, or other SPP3 applicant. All operational and vendor relationships material to the proposal are disclosed in the body ([§2](#2-problem), [§4](#4-delivery-history)).  
 - **Approved Wallet**: Upon issuance of the Award Notice and prior to disbursement, Steg will designate a project-dedicated Safe multisig with a 2-of-3 signer structure consisting of estmcmxci.eth, mouz.eth, and vault.steg.eth, a dedicated subname jointly governed by both co-leads, for signing redundancy — as the Approved Wallet under clause 5.8. Service Fees will be held in and disbursed from this wallet exclusively, with no commingling with personal or unrelated working capital.  
-- **Reporting cadence**: Steg commits to the dual quarterly reporting cadence under clause 6.3: a detailed private report to the Foundation within 30 days of each quarter's end, and a public ENS Forum summary within the same window. This complements the milestone verification cadence already described in §3.2.
+- **Reporting cadence**: Steg commits to the dual quarterly reporting cadence under clause 6.3: a detailed private report to the Foundation within 30 days of each quarter's end, and a public ENS Forum summary within the same window. This complements the milestone verification cadence already described in [§3.2](#32-milestones).
+
+## ---
+
+## Appendices
+
+Supporting reference material, maintained as companion documents to this application and linked from the sections that reference them.
+
+- **[Prototype Spec — Verifier + AuthResolverImpl](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing)** — full architectural map, verification flow, and the normative conformance surface (working copy). Referenced in [§3.1](#31-scope), [§5](#5-technical-foundation).
+- **[MAIP taxonomy](https://docs.google.com/document/d/1zN0Dp9Tm7JCoLb-QYbigZuiB8O9vB7cEr6Pu96ewJRQ/edit?usp=sharing)** — managed-agent-identity-platform taxonomy underpinning the layering. Referenced in [§5](#5-technical-foundation).
+- **[Appendix B — relying-party composition](https://docs.google.com/document/d/1jbIRc5OGImfEI5TAb23FZy0wbDwTDiL2xmcAYtf9F98/edit?usp=sharing)** — how the authority-validity check composes with the non-goal layers (MCP/A2A, ERC-4337 session keys, UCAN/CACAO). Referenced in [§5](#5-technical-foundation).
+- **[Appendix C — Verifier operation](https://docs.google.com/document/d/1gkIUNqryO9apu44K2aS3DLWPO1ppZqzjQWkjZHi1I8k/edit?usp=sharing)** — end-to-end publish→act→verify flow and the three verifier branches (EIP-1271, EIP-7951 P-256, ECDSA). Referenced in [§5](#5-technical-foundation).
+- **[Appendix E — substrate inheritance](https://docs.google.com/document/d/1yWRHaizZyDx6RGK-WIH0qhQE4U4rUTP8p6GdKHgLpog/edit?usp=sharing)** — ENSv2 EAC + HCA substrate-inheritance excerpt. Referenced in [§5](#5-technical-foundation).
