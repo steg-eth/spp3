@@ -279,7 +279,7 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           The initial target integrator is the managed agent runtime platform (MARP): operator platforms
-          offering agent-executable wallets across apps/APIs that need portable  — for more, read our <a href="https://docs.google.com/document/d/1zN0Dp9Tm7JCoLb-QYbigZuiB8O9vB7cEr6Pu96ewJRQ/edit?usp=sharing">taxonomy document</a> in the appendix.
+          offering agent-executable wallets across apps/APIs that need portable authority checks. (For the full taxonomy, see the <a href="#appendix-maip">MAIP taxonomy</a> appendix.)
         </p>
         <p>
           MARP adoption follows an established ENS growth pattern: operator-issued subnames, validated in
@@ -293,7 +293,7 @@ export default function Spp3ApplicationPage() {
           <label className="sidenote-toggle sidenote-number" htmlFor="sn-wave1"></label>
           <input type="checkbox" id="sn-wave1" className="sidenote-toggle" />
           <span className="sidenote">
-            Wave-1 integration partners are in early discussion — pre-commitment, not yet contracted. Steg
+            Wave-1 ecosystem engagement (pre-commitment) — Steg
             is participating in the Pinata Agents Partner Templates program and has ongoing integration
             discussions with Bankr (ENS-agent-identity{" "}
             <a href="https://github.com/BankrBot/skills/pull/189">PR #189</a>), while AuthResolver Phase A has
@@ -313,7 +313,7 @@ export default function Spp3ApplicationPage() {
         <h2>2. Problem</h2>
         <p>
           Onchain actors are increasingly delegating authority to third-party agents — recreating, at
-          machine speed, what researchers call the AI aligment problem in principal–agent transactions. <a href="https://www.jstor.org/stable/2634162">Hadfield &amp; Koh (2025)</a>
+          machine speed, what researchers call the AI alignment problem in principal–agent transactions. <a href="https://www.jstor.org/stable/2634162">Hadfield &amp; Koh (2025)</a>
         </p>
         <p>
           Once authorized, it&rsquo;s difficult to ensure that an agent acts only within bounded authority,
