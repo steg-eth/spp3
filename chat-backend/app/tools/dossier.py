@@ -39,23 +39,54 @@ def _load() -> tuple[dict[str, str], list[dict]]:
     sections: dict[str, str] = {}
     current = "Overview"
     buf: list[str] = []
+
+    def _commit() -> None:
+        body = "\n".join(buf).strip()
+        if not body:
+            return
+        # Append, never overwrite — a repeated heading must not clobber earlier
+        # content under the same key.
+        sections[current] = (sections[current] + "\n\n" + body).strip() if current in sections else body
+
     for line in raw.splitlines():
         m = re.match(r"^#{1,2}\s+(.*)", line)
-        if m:
-            if buf:
-                sections[current] = "\n".join(buf).strip()
-            current = m.group(1).strip()
+        title = m.group(1).strip() if m else ""
+        # Treat "## ---" style rules as content, NOT headings. The doc uses 8 of
+        # them as separators; keying sections by "---" in a dict made each one
+        # overwrite the last, deleting the Team Profile + summary KPI table (which
+        # holds the stated "$440,000 total") from the index entirely.
+        if m and re.search(r"[a-z0-9]", title.lower()):
+            _commit()
+            current = title
             buf = []
         else:
             buf.append(line)
-    if buf:
-        sections[current] = "\n".join(buf).strip()
+    _commit()
 
     chunks: list[dict] = []
     for title, body in sections.items():
         for para in re.split(r"\n\s*\n", body):
             para = para.strip()
-            if len(para) < 40:
+            if not para:
+                continue
+            # Markdown tables have no blank lines between rows, so a whole table
+            # lands in one paragraph — burying figures (totals, line items) in a
+            # single low-density blob. Split tables into per-row chunks so each
+            # figure (e.g. "$440,000 total requested (Tier 1…)") is retrievable.
+            if "|" in para and "\n" in para:
+                for row in para.splitlines():
+                    row = row.strip()
+                    if not row or set(row) <= set("|:- "):  # skip separator rows
+                        continue
+                    if len(row) < 12 and not re.search(r"\d", row):
+                        continue
+                    chunks.append({"section": title, "text": row, "tokens": Counter(_tokenize(row))})
+                continue
+            # Keep short lines only if they carry a number — subtotals like
+            # "Tier 1 Total: $265K" / "Combined Full Expansion: $440K" are <40
+            # chars and were previously dropped, so the agent never saw the
+            # stated total and resorted to (mis-)summing line items.
+            if len(para) < 40 and not re.search(r"\d", para):
                 continue
             chunks.append({"section": title, "text": para, "tokens": Counter(_tokenize(para))})
     return sections, chunks
