@@ -974,7 +974,7 @@ export default function Spp3ApplicationPage() {
           </li>
           <li>
             <strong>External resolution</strong> follows from implementing AuthResolver as a standard ENS
-            resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authority state
+            resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authorization state
             without intermediary infrastructure.
           </li>
           <li>
@@ -1024,7 +1024,7 @@ export default function Spp3ApplicationPage() {
         <p>
           Because AuthResolver lookups are L1-native ENS resolutions, the verification path inherits
           ENS&rsquo;s availability and censorship-resistance properties — no separate uptime SLA, no DNS
-          dependency, no centralized API in the trust path between a counterparty and the authority state it
+          dependency, no centralized API in the trust path between a counterparty and the authorization state it
           reads.
         </p>
         <p>
