@@ -48,6 +48,7 @@ export default function Spp3ApplicationPage() {
           <li><a href="#foundation">Technical Foundation</a></li>
           <li><a href="#conclusion">Conclusion</a></li>
           <li><a href="#compliance">Compliance &amp; Attestations</a></li>
+          <li><a href="#appendices">Appendices</a></li>
         </ol>
       </nav>
 
@@ -1024,7 +1025,8 @@ export default function Spp3ApplicationPage() {
         <p>
           Accordingly, v1 includes a shared Verifier supporting three signing schemes: EIP-7951 P-256
           (WebAuthn/passkey), ecrecover (secp256k1 ECDSA), and EIP-1271 staticcall (smart-account
-          signatures).
+          signatures). See <a href="#appendix-c">Appendix C</a> for the end-to-end publish→act→verify
+          flow and per-branch detail.
         </p>
         <p>
           Authority records are published through AuthResolverImpl with per-name UUPS proxies via
@@ -1094,21 +1096,21 @@ export default function Spp3ApplicationPage() {
         <p>
           The toolkit&rsquo;s role is to provide the authority-validity check the other layers don&rsquo;t natively
           provide (
-          <a href="https://docs.google.com/document/d/1jbIRc5OGImfEI5TAb23FZy0wbDwTDiL2xmcAYtf9F98/edit?usp=sharing">
+          <a href="#appendix-b">
             see Appendix B
           </a>
           ).
           <br />
           Full architectural map + normative detail in the prototype specification (working copy:{" "}
-          <a href="https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing">
+          <a href="#appendix-spec">
             Prototype Spec
           </a>
           ) and the{" "}
-          <a href="https://docs.google.com/document/d/1zN0Dp9Tm7JCoLb-QYbigZuiB8O9vB7cEr6Pu96ewJRQ/edit?usp=sharing">
+          <a href="#appendix-maip">
             MAIP taxonomy
           </a>
           ; substrate-inheritance excerpt in{" "}
-          <a href="https://docs.google.com/document/d/1yWRHaizZyDx6RGK-WIH0qhQE4U4rUTP8p6GdKHgLpog/edit?usp=sharing">
+          <a href="#appendix-e">
             Appendix E
           </a>
           .
@@ -1171,6 +1173,39 @@ export default function Spp3ApplicationPage() {
             clause 6.3: a detailed private report to the Foundation within 30 days of each quarter&rsquo;s
             end, and a public ENS Forum summary within the same window. This complements the milestone
             verification cadence already described in <a href="#approach-milestones">§3.2</a>.
+          </li>
+        </ul>
+      </section>
+
+      <section id="appendices">
+        <h2>Appendices</h2>
+        <p>
+          Supporting reference material, maintained as companion documents to this application and
+          linked from the sections that reference them.
+        </p>
+        <ul>
+          <li id="appendix-spec">
+            <a href="https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing"><strong>Prototype Spec — Verifier + AuthResolverImpl</strong></a> — full
+            architectural map, verification flow, and the normative conformance surface (working copy).
+            Referenced in <a href="#approach-scope">§3.1</a>, <a href="#foundation">§5</a>.
+          </li>
+          <li id="appendix-maip">
+            <a href="https://docs.google.com/document/d/1zN0Dp9Tm7JCoLb-QYbigZuiB8O9vB7cEr6Pu96ewJRQ/edit?usp=sharing"><strong>MAIP taxonomy</strong></a> — managed-agent-identity-platform taxonomy
+            underpinning the layering. Referenced in <a href="#foundation">§5</a>.
+          </li>
+          <li id="appendix-b">
+            <a href="https://docs.google.com/document/d/1jbIRc5OGImfEI5TAb23FZy0wbDwTDiL2xmcAYtf9F98/edit?usp=sharing"><strong>Appendix B — relying-party composition</strong></a> — how the
+            authority-validity check composes with the non-goal layers (MCP/A2A, ERC-4337 session keys,
+            UCAN/CACAO). Referenced in <a href="#foundation">§5</a>.
+          </li>
+          <li id="appendix-c">
+            <a href="https://docs.google.com/document/d/1gkIUNqryO9apu44K2aS3DLWPO1ppZqzjQWkjZHi1I8k/edit?usp=sharing"><strong>Appendix C — Verifier operation</strong></a> — end-to-end
+            publish→act→verify flow and the three verifier branches (EIP-1271, EIP-7951 P-256, ECDSA).
+            Referenced in <a href="#foundation">§5</a>.
+          </li>
+          <li id="appendix-e">
+            <a href="https://docs.google.com/document/d/1yWRHaizZyDx6RGK-WIH0qhQE4U4rUTP8p6GdKHgLpog/edit?usp=sharing"><strong>Appendix E — substrate inheritance</strong></a> — ENSv2 EAC + HCA
+            substrate-inheritance excerpt. Referenced in <a href="#foundation">§5</a>.
           </li>
         </ul>
       </section>
