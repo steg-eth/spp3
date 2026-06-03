@@ -492,3 +492,26 @@ html.dark .spp3-chat-launcher:hover { background: oklch(0.58 0.11 250); }
   .spp3-dossier .agent-prompt { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
   .spp3-dossier .agent-prompt-copy { align-self: flex-start; }
 }
+
+/* Sidenotes float into the right margin (latex.css), but our wider 95ch body
+   leaves little margin room — so margin notes clip until the viewport is very
+   wide. latex.css only switches to inline (click-to-reveal) below 1050px; raise
+   that to 1500px so sidenotes never overflow the right edge. */
+@media (max-width: 1500px) {
+  .spp3-dossier .sidenote {
+    display: none;
+    float: none;
+    width: auto;
+    margin: 0;
+  }
+  .spp3-dossier .sidenote-toggle:checked + .sidenote {
+    display: block;
+    float: none;
+    clear: both;
+    width: auto;
+    margin: 0.5rem 0 1rem;
+    padding: 0.4rem 0 0.4rem 0.85rem;
+    border-left: 2px solid var(--accent-blue);
+    color: var(--muted-fg);
+  }
+}
