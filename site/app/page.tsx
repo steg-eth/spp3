@@ -249,15 +249,14 @@ export default function Spp3ApplicationPage() {
           rotation, revocation, audit, or cross-platform verification.
         </p>
         <p>
-          Agents need names so authority can be discovered and verified across heterogeneous systems. In
-          this context, &lsquo;using ENS&rsquo; means binding an agent to an ENS name that publishes its
-          current authorization state, allowing any relying party to independently verify current authorization state in
+          Agents need names so their current authorization-state can be discovered and verified across heterogeneous systems. In
+          this context, &lsquo;using ENS&rsquo; means binding an agent to an ENS name that publishes this state, allowing any relying party to independently verify the agent&rsquo;s current permissions in
           real time.
         </p>
         <p>
           ENS already provides the naming, discovery, and registry primitives. What it lacks is the layer
           above them: <i>a standardized, resolver-native, neutral authorization-and-verification
-          layer</i> that turns an ENS name into a live authorization-state lookup (auth lookup layer) that allows any
+          layer</i> that turns an ENS name into a live authorization-state lookup (<a href="https://x.com/estmcmxci/status/2058930368892248102">auth lookup layer</a>) that allows any
           service to independently verify, at use time, whether an agent remains authorized. This proposal ships
           that layer.
           <label className="sidenote-toggle sidenote-number" htmlFor="sn-spec"></label>
@@ -316,12 +315,13 @@ export default function Spp3ApplicationPage() {
           machine speed, what researchers call the AI alignment problem in principal–agent transactions. <a href="https://www.jstor.org/stable/2634162">Hadfield &amp; Koh (2025)</a>
         </p>
         <p>
-          Once authorized, it&rsquo;s difficult to ensure that an agent acts only within bounded authority,
-          and the principal has no way to verify in real time that a given action remains within those
+          Once authorized, it&rsquo;s difficult to ensure that an agent acts only within bounded authority, and neither
+          the principal nor the relying party can independently verify in real time that a given action remains within those
           bounds.
         </p>
+        
         <p>
-          Recent exploits leverage prompt-injection to trick an agent into acting beyond its mandate.
+          Recent prompt-injection exploits make this verification failure concrete: attackers trick an agent into acting beyond its mandate by manipulating its intent.
           Because the key the agent holds is itself the permission credential, that manipulated intent can
           still produce a valid signature. The relying party, unable to distinguish &ldquo;authorized&rdquo;
           from merely &ldquo;signed,&rdquo; executes it.
@@ -350,7 +350,7 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>In the real world, delegated authority takes a familiar form: the Power of Attorney.</p>
         <p>
-          Relying parties like banks check a public registry for the document&rsquo;s current status,
+          Relying parties like banks check a trusted registry for the document&rsquo;s current status,
           confirming the agent currently holds the authority to act on behalf of the principal.
         </p>
         <p>In other words, <strong>the relying party trusts the registry, not the agent.</strong></p>
@@ -361,11 +361,11 @@ export default function Spp3ApplicationPage() {
           In agentic finance, no such backstop exists: the key the agent holds <em>is</em> the permission
           credential — we need to decouple the two.
         </p>
-        <p>By publishing each agent&rsquo;s delegated authorization state as a key-value pair within a credibly neutral, externally resolvable store of record such as ENS,
+        <p>By publishing each agent&rsquo;s delegated authorization-state as a key-value pair within a credibly neutral, externally resolvable store of record such as ENS,
           a relying party can perform a freshness check before execution to verify that the requested action is currently authorized under the
-          operator&rsquo;s published authorization state, including any revocation, expiry, or policy updates.</p>
+          operator&rsquo;s published authorization-state, including any revocation, expiry, or policy updates.</p>
         <p>
-          Because the authorization state is published on a shared ENS namespace rather than inside a single
+          Because the authorization-state is published on a shared ENS namespace rather than inside a single
           runtime, any counterparty can independently resolve and verify it. Authorization becomes portable
           across runtimes instead of remaining vendor-local, eliminating the need for each operator platform to maintain its own isolated authority registry.
         </p>
@@ -392,7 +392,7 @@ export default function Spp3ApplicationPage() {
           MARPs increasingly delegate signing authority via session-key primitives (EIP-7702, ERC-4337,
           ERC-7710/7715) that constrain what an agent can sign, but there is no standardized way for
           independently verifying, in real time, that an agent-signed action remains authorized under the
-          operator&rsquo;s current published authorization state. (Full operator-class case in{" "}
+          operator&rsquo;s current published authorization-state. (Full operator-class case in{" "}
           <a href="https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121">
             Steg&rsquo;s ENS forum post, May 2026
           </a>
@@ -421,12 +421,11 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           This proposal closes that gap by introducing an authority schema and resolver-native verification
-          path that lets counterparties query current authorization state directly from ENS.
+          path that lets counterparties query current authorization-state directly from ENS.
         </p>
         <p>
           This lets a MARP verify whether an agent&rsquo;s action is currently authorized under the
-          operator&rsquo;s published authorization state — increasing security guarantees for its users, and
-          with it ENS&rsquo;s value-fit for a prospective integrator. This gives the MARP a strong reason to
+          operator&rsquo;s published authorization-state, increasing security guarantees for its users and strengthening ENS&rsquo;s value-fit for prospective integrators. This gives the MARP a strong reason to
           issue identity under ENS rather than rolling its own or locking into a closed vendor.
         </p>
         <p>
@@ -442,9 +441,9 @@ export default function Spp3ApplicationPage() {
           <a href="https://www.coinbase.com/developer-platform/discover/launches/agentic-market">
             Coinbase, Agentic.Market, April 2026
           </a>
-          ) and is rapidly increasing. Each agent is a candidate ENS subname that holds authorization state. It is an early market
+          ) and is rapidly increasing. Each agent is a candidate ENS subname that holds authorization-state. It is an early market
           signal that demonstrates meaningful demand for agent-native infrastructure. Applying the cb.id
-          subname-issuance growth pattern to it presents a compelling opportunity.
+          subname-issuance growth pattern here presents a compelling opportunity.
         </p>
         <p>
           Although subnames carry no registrar fee, the strategic bet is on widening ENS&rsquo;s adoption
@@ -549,8 +548,7 @@ export default function Spp3ApplicationPage() {
           </li>
         </ul>
         <p>
-          With the toolkit, integrators can resolve an ENS-named agent&rsquo;s published authorization
-          state, verify signed requests against current authorization state published through AuthResolver in real time, and enforce expiry,
+          With the toolkit, integrators can resolve an ENS-named agent&rsquo;s published authorization-state, verify signed requests against current authorization-state published through AuthResolver in real time, and enforce expiry,
           rotation, and revocation through normalized allow/deny reason codes across crypto-native and Web2
           agent environments alike.
         </p>
@@ -834,12 +832,14 @@ export default function Spp3ApplicationPage() {
           authorization layer does not, so the binding constraint is delivery, not readiness.
         </p>
         <p>
-          The decision is asymmetrical: a bounded one-cycle cost ($440k) against both measurable and
-          strategic upside. Even the narrow, conservative conversion model (~$400k–$580k in registration and
+          In that sense, this grant functions as strategic insurance: a bounded one-cycle cost ($440k) against both measurable near-term upside and the longer-term risk that agent authority conssolidates into closed control planes before ENS offers an open alternative.
+        </p>
+        <p>  
+          Even the narrow, conservative conversion model (~$400k–$580k in registration and
           renewal fees over five years, <a href="#problem-revenue">§2.2</a>) reaches a scale comparable to the grant itself.
         </p>
         <p>
-          And that likely understates the opportunity cost, which is strategic: the entire agent-identity
+          And that likely understates the opportunity cost: the entire agent-identity
           category, a 480K+ agent population growing monthly, and ENS&rsquo;s standing as the neutral
           authority layer for an expanding agent-operator surface — all ceded to closed vendors, with high
           switching costs, once the window closes.
@@ -938,6 +938,16 @@ export default function Spp3ApplicationPage() {
             . A position paper submitted to NIST NCCoE describing the ENS agent identity architecture: a
             7-layer stack showing what is production today (ENS, ENSIP-24/25, on.eth) and what is draft
             (ENSIP-26, NMS, AIP), for naming, discovery, verification, and evolution of AI agent identities.
+          </li>
+          <li>
+            <span className="status status-done">published</span>{" "}
+            <a href="https://ens.domains/blog/post/coinbase-strategic-integration-of-ens">
+              <strong>Coinbase&rsquo;s Strategic Integration of ENS</strong>
+            </a>
+            . Strategic analysis of Coinbase&rsquo;s cb.id integration — 11M+ ENS subnames issued at
+            Coinbase Wallet signup (~5&times; all .eth at the time) — establishing the
+            operator-issued-subname growth pattern this proposal extends from wallets to managed agent
+            runtimes (MARPs).
           </li>
           <li>
             <span className="status status-done">delivered</span>{" "}
