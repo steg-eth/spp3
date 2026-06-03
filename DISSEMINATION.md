@@ -21,7 +21,7 @@ is a **derived artifact**, propagated only _after_ merge. Presentation-only deta
 
 ## Current version
 
-**v1.0** — 2026-06-02
+**v1.0** — 2026-06-03
 
 ## Dissemination status
 
@@ -29,11 +29,15 @@ Propagation of the current version to each downstream channel. Uncheck every der
 row whenever the canonical markdown changes; re-check each as it is re-propagated.
 
 - [x] GitHub (canonical) — `application.md`
-- [ ] Website — spp3.steg.eth.link (`/site`)
-- [ ] IPFS — contenthash for `spp3.steg.eth`
-- [ ] Google Docs
+- [x] IPFS — `application.md` pinned, contenthash for `application.steg.eth`
+  - `ipfs://bafkreicdqnkt5befl4bbcorosgu2z7hz2xk7ktb27nzvprhlngyyojcwl4`
+- [x] Website — spp3.steg.eth.link (`/site`)
+- [x] IPFS — `/site` build pinned, contenthash for `spp3.steg.eth`
+  - `ipfs://bafybeichiu4gpdiiiaefm7f62276e4t7srktlfkhlvzz32rgoes2hgwihm`
+- [ ] Google Docs (the `application.md` Mirror / fallback link)
 - [ ] Notion
 
-> Derived artifacts are intentionally unchecked: the 2026-06 site rebuild was authored
-> out-of-process (site-first) and the canonical markdown was reconciled afterward.
-> Re-propagate from `application.md` once the promotion PR merges.
+> Propagated 2026-06-03: the post-reconciliation canonical `application.md` (now content-
+> identical to `/site`) pinned to IPFS and wired to `application.steg.eth`; the `/site`
+> dossier rebuilt from `main` and wired to `spp3.steg.eth`. Both verified live over the
+> eth.link / eth.limo gateways. Google Docs and Notion not yet re-propagated for this version.
