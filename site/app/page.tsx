@@ -25,7 +25,7 @@ export default function Spp3ApplicationPage() {
       <nav className="toc" aria-label="Table of contents">
         <h2>Contents</h2>
         <ol>
-          <li><a href="#team">Team Profile</a></li>
+          <li className="toc-unnumbered"><a href="#team">Team Profile</a></li>
           <li><a href="#abstract">Abstract</a></li>
           <li>
             <a href="#problem">Problem</a>
@@ -596,7 +596,7 @@ export default function Spp3ApplicationPage() {
                 Onchain deployment artifacts (AuthResolverImpl, Verifier addresses, ABI, bytecode hashes);
                 SDK package registry; audit kickoff published (firm, scope, timeline)
               </td>
-              <td>Oct 31, 2026 (M3)</td>
+              <td>Oct 31, 2026 (M3) <span className="status status-pending">target</span></td>
             </tr>
             <tr>
               <td className="dim-label">2</td>
@@ -610,7 +610,7 @@ export default function Spp3ApplicationPage() {
                 layouts published; SDK versioned release; CI-passing conformance suite; integration/deployment
                 documentation published
               </td>
-              <td>Jan 31, 2027 (M6)</td>
+              <td>Jan 31, 2027 (M6) <span className="status status-pending">target</span></td>
             </tr>
             <tr>
               <td className="dim-label">3</td>
@@ -625,7 +625,7 @@ export default function Spp3ApplicationPage() {
                 revocation/rotation enforcement metrics; policy-deny correctness metrics; hardened release
                 artifacts published; deployment readiness checklist completed
               </td>
-              <td>Apr 30, 2027 (M9)</td>
+              <td>Apr 30, 2027 (M9) <span className="status status-pending">target</span></td>
             </tr>
           </tbody>
         </table>
@@ -651,7 +651,7 @@ export default function Spp3ApplicationPage() {
                 Public integration deployment; interoperability findings published; integration and
                 deployment documentation; operational interoperability validation report
               </td>
-              <td>Jul 31, 2027 (M12)</td>
+              <td>Jul 31, 2027 (M12) <span className="status status-pending">target</span></td>
             </tr>
           </tbody>
         </table>
@@ -826,8 +826,12 @@ export default function Spp3ApplicationPage() {
           functions consolidate elsewhere — effectively a Web2 SSO redux for the agent economy.
         </p>
         <p>
-          The substrate to build it is already in place — EIP-7951 shipped in Fusaka, ENSIP-25/26 merged,
-          ERC-8004 on mainnet, ENSv2 in preview — foundational primitives exist; the authorization layer does not, so the binding constraint is delivery, not readiness.
+          The substrate to build it is already in place — EIP-7951{" "}
+          <span className="status status-done">shipped</span> in Fusaka, ENSIP-25/26{" "}
+          <span className="status status-done">merged</span>, ERC-8004{" "}
+          <span className="status status-done">mainnet</span>, ENSv2{" "}
+          <span className="status status-progress">preview</span> — foundational primitives exist; the
+          authorization layer does not, so the binding constraint is delivery, not readiness.
         </p>
         <p>
           The decision is asymmetrical: a bounded one-cycle cost ($440k) against both measurable and
@@ -854,7 +858,7 @@ export default function Spp3ApplicationPage() {
       <section id="delivery">
         <h2>4. Delivery History</h2>
 
-        <h3>Public Goods grant — &ldquo;ENSv2 Interop Research&rdquo; (Sep 2025, 1 ETH, Stage 1 completed)</h3>
+        <h3>Public Goods grant — &ldquo;ENSv2 Interop Research&rdquo; (Sep 2025, 1 ETH, Stage 1 completed) <span className="status status-done">completed</span></h3>
         <p>Two committed deliverables, both completed.</p>
         <ol>
           <li>
@@ -895,7 +899,7 @@ export default function Spp3ApplicationPage() {
           </li>
         </ol>
 
-        <h3>Upstream contribution to canonical ENS contracts (Jan 2026, unfunded)</h3>
+        <h3>Upstream contribution to canonical ENS contracts (Jan 2026, unfunded) <span className="status status-done">merged</span></h3>
         <p>
           Replaced software-implemented EllipticCurve verification with the EIP-7951 P-256 precompile in
           ENS&rsquo;s DNSSEC oracle (Algorithm 13). Merged into ensdomains/ens-contracts as{" "}
@@ -916,6 +920,7 @@ export default function Spp3ApplicationPage() {
         <p>Other prior work.</p>
         <ul>
           <li>
+            <span className="status status-done">shipped</span>{" "}
             <a href="https://discuss.ens.domains/t/reference-implementation-of-an-ens-bound-agent/22100">
               <strong>Reference implementation of ENS-bound agent identity</strong>
             </a>
@@ -926,6 +931,7 @@ export default function Spp3ApplicationPage() {
             <a href="https://estmcmxci.co/agent/emilemarcelagustin.eth">a live ENS-bound agent deployment</a>
           </li>
           <li>
+            <span className="status status-done">submitted</span>{" "}
             <a href="https://nccoe.emilemarcelagustin.eth.link">
               <strong>ENS as a Naming Layer for AI Agent Identity</strong>
             </a>
@@ -934,6 +940,7 @@ export default function Spp3ApplicationPage() {
             (ENSIP-26, NMS, AIP), for naming, discovery, verification, and evolution of AI agent identities.
           </li>
           <li>
+            <span className="status status-done">delivered</span>{" "}
             <a href="https://www.youtube.com/watch?v=e_QBTQGMxPs">
               <strong>Public conference talk — Use Cases for the P256 Precompile (Devcon SEA, Nov 2024)</strong>
             </a>
@@ -942,6 +949,7 @@ export default function Spp3ApplicationPage() {
             specification formalizes and PR #509 makes real.
           </li>
           <li>
+            <span className="status status-done">1st place</span>{" "}
             <a href="https://synthesis.mandate.md/tracks/ens-identity-i4jgf3">
               <strong>Synthesis Hackathon, 1st Place, ENS Identity track (May 2026)</strong>
             </a>
@@ -952,6 +960,7 @@ export default function Spp3ApplicationPage() {
             judged best-in-track on its ENS identity merits.
           </li>
           <li>
+            <span className="status status-done">finalist</span>{" "}
             <a href="https://ethglobal.com/showcase/oikonomos-w6z57">
               <strong>ETHGlobal HackMoney 2026, Finalist + Integrate ENS bounty winner (February, 2026)</strong>
             </a>

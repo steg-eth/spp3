@@ -529,3 +529,7 @@ html.dark .spp3-chat-launcher:hover { background: oklch(0.58 0.11 250); }
   .spp3-dossier .sidenote-hint { display: block; }
 }
 
+
+
+/* Team Profile is unnumbered in the headings; keep the TOC auto-numbering aligned. */
+.spp3-dossier .toc ol > li.toc-unnumbered:before { content: ""; counter-increment: none; }
