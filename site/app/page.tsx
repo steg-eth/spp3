@@ -20,6 +20,8 @@ export default function Spp3ApplicationPage() {
         </p>
       </header>
 
+      <p className="sidenote-hint">Numbered markers expand notes inline — tap one to reveal.</p>
+
       <nav className="toc" aria-label="Table of contents">
         <h2>Contents</h2>
         <ol>

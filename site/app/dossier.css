@@ -497,6 +497,14 @@ html.dark .spp3-chat-launcher:hover { background: oklch(0.58 0.11 250); }
    leaves little margin room — so margin notes clip until the viewport is very
    wide. latex.css only switches to inline (click-to-reveal) below 1050px; raise
    that to 1500px so sidenotes never overflow the right edge. */
+/* Tap-to-expand hint for collapsed sidenotes; only shown at narrow widths above. */
+.spp3-dossier .sidenote-hint {
+  display: none;
+  font-size: 0.8rem;
+  color: var(--muted-fg);
+  margin: 1rem 0 0;
+}
+
 @media (max-width: 1500px) {
   .spp3-dossier .sidenote {
     display: none;
@@ -514,4 +522,10 @@ html.dark .spp3-chat-launcher:hover { background: oklch(0.58 0.11 250); }
     border-left: 2px solid var(--accent-blue);
     color: var(--muted-fg);
   }
+  /* make the (now click-to-reveal) note markers read as interactive */
+  .spp3-dossier label.sidenote-number { cursor: pointer; }
+  .spp3-dossier label.sidenote-number:after { color: var(--accent-blue); font-weight: 600; }
+  /* surface the tap-to-expand hint (hidden on wide screens) */
+  .spp3-dossier .sidenote-hint { display: block; }
 }
+
