@@ -275,7 +275,7 @@ The authority payload has four properties, each mapped to concrete contracts and
 
 1. **Permissions** live in AuthResolver record schemas (credential, capability, revocation) and Verifier dispatch logic.   
 2. **Freshness checks** are enforced by the Verifier resolving current authorization state published through AuthResolver at lookup time.  
-3. **External resolution** follows from implementing AuthResolver as a standard ENS resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authority state without intermediary infrastructure.  
+3. **External resolution** follows from implementing AuthResolver as a standard ENS resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authorization state without intermediary infrastructure.  
 4. **Operator parent-name write authority** is enforced by ENSv2's existing EAC \+ HCA substrate, which scopes write permissions to the parent-name owner and atomically invalidates delegated roles on name transfer.
 
 #### Architectural precedent.
@@ -291,7 +291,7 @@ Authority records are published through AuthResolverImpl with per-name UUPS prox
 
 AuthResolverImpl inherits ENSv2's access-control substrate (EAC \+ HCA) unchanged, preserving per-(node, recordKey) write delegation and atomic role invalidation on name transfer. The new audit surface is bound to Verifier dispatch logic and AuthResolver record schemas; ENS Registry and existing resolver implementations are unchanged.
 
-Because AuthResolver lookups are L1-native ENS resolutions, the verification path inherits ENS's availability and censorship-resistance properties — no separate uptime SLA, no DNS dependency, no centralized API in the trust path between a counterparty and the authority state it reads. 
+Because AuthResolver lookups are L1-native ENS resolutions, the verification path inherits ENS's availability and censorship-resistance properties — no separate uptime SLA, no DNS dependency, no centralized API in the trust path between a counterparty and the authorization state it reads. 
 
 This preserves the proposal’s core property: any counterparty can independently verify current authorization state using standard ENS resolution alone.
 
