@@ -832,7 +832,7 @@ export default function Spp3ApplicationPage() {
           authorization layer does not, so the binding constraint is delivery, not readiness.
         </p>
         <p>
-          In that sense, this grant functions as strategic insurance: a bounded one-cycle cost ($440k) against both measurable near-term upside and the longer-term risk that agent authority conssolidates into closed control planes before ENS offers an open alternative.
+          In that sense, this grant functions as strategic insurance: a bounded one-cycle cost ($440k) against both measurable near-term upside and the longer-term risk that agent authority consolidates into closed control planes before ENS offers an open alternative.
         </p>
         <p>  
           Even the narrow, conservative conversion model (~$400k–$580k in registration and
@@ -1142,7 +1142,7 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           It extends a proven ENS growth path — operator-issued subnames, as demonstrated by Coinbase&rsquo;s
-          cb.id integration —to the next operator class. Because each authority credential is issued as
+          cb.id integration — to the next operator class. Because each authority credential is issued as
           an ENS subname, the same mechanism that increases security guarantees and mitigates execution risk for
           MARP users also broadens ENS adoption. 
         </p>  
