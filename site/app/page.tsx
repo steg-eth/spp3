@@ -1,3 +1,5 @@
+import CopyPrompt from "./CopyPrompt"
+
 export default function Spp3ApplicationPage() {
   return (
     <article>
@@ -127,7 +129,7 @@ export default function Spp3ApplicationPage() {
                 <dd>
                   ENS Public Goods grantee —{" "}
                   <a href="https://discuss.ens.domains/t/ens-research-namechain-ensip-19-multichain-interop/21392/11?u=estmcmxci">
-                    &ldquo;ENS v2 Interop Research&rdquo;
+                    &ldquo;ENSv2 Interop Research&rdquo;
                   </a>
                   ; output, the{" "}
                   <a href="https://discuss.ens.domains/t/universal-resolver-matrix-a-design-framework-for-heterogeneous-resolver-architecture/21734?u=estmcmxci">
@@ -219,6 +221,15 @@ export default function Spp3ApplicationPage() {
         </div>
       </section>
 
+      <div className="agent-block">
+        <CopyPrompt
+          prompt={
+            "Read https://application.steg.eth.link — Steg's ENS SPP3 application — and evaluate it against the SPP3 rubric at https://discuss.ens.domains/t/spp3-submission-timeline-and-artifacts/22124"
+          }
+        />
+        <p className="agent-note">Reviewing with an agent? Point it at the machine-readable application.</p>
+      </div>
+
       <section id="abstract">
         <h2>1. Abstract</h2>
         <p>
@@ -249,7 +260,7 @@ export default function Spp3ApplicationPage() {
               <strong>Prototype spec</strong>
             </a>{" "}
             — defines the Verifier + AuthResolver architecture on ENSv2: authority record schemas (credential, capability,
-            revocation), the verify-action flow across WebAuthn-P256 / ECDSA / EIP-1271, and the normative
+            revocation), the verify-action flow across WebAuthn/P-256 / ECDSA / EIP-1271, and the normative
             conformance criteria that define the layer this proposal ships.
           </span>
         </p>
@@ -414,7 +425,7 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           Latent demand for this authority-lookup layer is already materializing. Operator failures such as
-          Bankr&rsquo;s prompt injection exploit illustrate the cost of not having an independently
+          Bankr&rsquo;s prompt-injection exploit illustrate the cost of not having an independently
           verifiable authorization layer.
         </p>
 
@@ -540,9 +551,9 @@ export default function Spp3ApplicationPage() {
         <p>By April 2027 the project delivers:</p>
         <ul>
           <li>audited Verifier and AuthResolver contracts,</li>
-          <li>SDK v1.0 and integration tooling</li>
-          <li>conformance suite and operational validation flows</li>
-          <li>published deployment guidance and interoperability findings</li>
+          <li>SDK v1.0 and integration tooling,</li>
+          <li>conformance suite and operational validation flows,</li>
+          <li>published deployment guidance and interoperability findings,</li>
           <li>and a production-ready release validated in production-like environments.</li>
         </ul>
         <p>
@@ -552,7 +563,8 @@ export default function Spp3ApplicationPage() {
         <p>
           Every deliverable maps to a public artifact — deployed contract addresses, a
           published third-party audit, CI-passing conformance vectors, and the onchain issuance /
-          active-authority dashboard (§2.3) — per the verification columns in §3.2.
+          active-authority dashboard (<a href="#problem-metric">§2.3</a>) — per the verification columns in{" "}
+          <a href="#approach-milestones">§3.2</a>.
         </p>
 
         <h3 id="approach-milestones">3.2 Milestones</h3>
@@ -654,7 +666,7 @@ export default function Spp3ApplicationPage() {
             ecosystem integration
           </li>
           <li>
-            <a href="https://ens.app/mouz.eth">mouz.eth</a>: protocol architecture, smart contract
+            <a href="https://ens.app/mouz.eth">mouz.eth</a>: protocol architecture, smart-contract
             implementation and security engineering
           </li>
         </ul>
@@ -814,7 +826,7 @@ export default function Spp3ApplicationPage() {
         <p>
           The decision is asymmetrical: a bounded one-cycle cost ($440k) against both measurable and
           strategic upside. Even the narrow, conservative conversion model (~$400k–$580k in registration and
-          renewal fees over five years, §2.2) reaches a scale comparable to the grant itself.
+          renewal fees over five years, <a href="#problem-revenue">§2.2</a>) reaches a scale comparable to the grant itself.
         </p>
         <p>
           And that likely understates the opportunity cost, which is strategic: the entire agent-identity
@@ -836,7 +848,7 @@ export default function Spp3ApplicationPage() {
       <section id="delivery">
         <h2>4. Delivery History</h2>
 
-        <h3>Public Goods grant — &ldquo;ENS v2 Interop Research&rdquo; (Sep 2025, 1 ETH, Stage 1 completed)</h3>
+        <h3>Public Goods grant — &ldquo;ENSv2 Interop Research&rdquo; (Sep 2025, 1 ETH, Stage 1 completed)</h3>
         <p>Two committed deliverables, both completed.</p>
         <ol>
           <li>
@@ -981,9 +993,9 @@ export default function Spp3ApplicationPage() {
               <a href="https://docs.steg.eth.link/specifications/webauthn-specification/">
                 WebAuthn-for-ENS specification
               </a>
-              , §4)
+              , <a href="#delivery">§4</a>)
             </strong>{" "}
-            — The specification defines the P-256/WebAuthn verification path this proposal inherits, and
+            — The specification defines the WebAuthn/P-256 verification path this proposal inherits, and
           </li>
           <li>
             <strong>
@@ -1128,7 +1140,8 @@ export default function Spp3ApplicationPage() {
           <li>
             <strong>Material relationships:</strong> Steg confirms no active conflict of interest with any
             ENS DAO member, ENS Labs employee, or other SPP3 applicant. All operational and vendor
-            relationships material to the proposal are disclosed in the body (§2, §4).
+            relationships material to the proposal are disclosed in the body (<a href="#problem">§2</a>,{" "}
+            <a href="#delivery">§4</a>).
           </li>
           <li>
             <strong>Approved Wallet</strong>: Upon issuance of the Award Notice and prior to disbursement,
@@ -1142,7 +1155,7 @@ export default function Spp3ApplicationPage() {
             <strong>Reporting cadence</strong>: Steg commits to the dual quarterly reporting cadence under
             clause 6.3: a detailed private report to the Foundation within 30 days of each quarter&rsquo;s
             end, and a public ENS Forum summary within the same window. This complements the milestone
-            verification cadence already described in §3.2.
+            verification cadence already described in <a href="#approach-milestones">§3.2</a>.
           </li>
         </ul>
       </section>
