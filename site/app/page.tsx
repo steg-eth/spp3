@@ -88,6 +88,10 @@ export default function Spp3ApplicationPage() {
                 <a href="https://synthesis.mandate.md/projects/trust-resolution-layer-b67a">
                   ENS-identity hackathon
                 </a>
+                ;{" "}
+                <a href="https://ethglobal.com/showcase/oikonomos-w6z57">
+                  ETHGlobal HackMoney 2026 Finalist + ENS bounty
+                </a>
               </td>
             </tr>
           </tbody>
