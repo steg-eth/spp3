@@ -10,6 +10,8 @@
   --sidenote-target-border-color: oklch(0.556 0 0);
   --muted-fg: oklch(0.556 0 0);
   --border-soft: oklch(0.82 0.01 85);
+  --link-hover: oklch(0.50 0.045 250);
+  --accent-blue: oklch(0.45 0.12 250);
   --status-done-bg: oklch(0.88 0.08 145);
   --status-done-fg: oklch(0.35 0.12 145);
   --status-progress-bg: oklch(0.92 0.10 85);
@@ -30,6 +32,8 @@ html.dark {
   --sidenote-target-border-color: oklch(0.708 0 0);
   --muted-fg: oklch(0.708 0 0);
   --border-soft: oklch(0.30 0 0);
+  --link-hover: oklch(0.72 0.04 250);
+  --accent-blue: oklch(0.70 0.11 250);
   --status-done-bg: oklch(0.30 0.08 145);
   --status-done-fg: oklch(0.86 0.10 145);
   --status-progress-bg: oklch(0.30 0.10 85);
@@ -191,6 +195,129 @@ body {
   width: 18%;
 }
 
+/* Milestone tables: fixed columns so the # column stops hogging the left and
+   the Date column gets room ("Oct 31, 2026" should fit on one line). */
+.spp3-dossier table.kpi-milestones {
+  table-layout: fixed;
+}
+.spp3-dossier table.kpi-milestones th:nth-child(1),
+.spp3-dossier table.kpi-milestones td:nth-child(1) {
+  width: 4%;
+}
+.spp3-dossier table.kpi-milestones th:nth-child(2),
+.spp3-dossier table.kpi-milestones td:nth-child(2) {
+  width: 41%;
+}
+.spp3-dossier table.kpi-milestones th:nth-child(3),
+.spp3-dossier table.kpi-milestones td:nth-child(3) {
+  width: 41%;
+}
+.spp3-dossier table.kpi-milestones th:nth-child(4),
+.spp3-dossier table.kpi-milestones td:nth-child(4) {
+  width: 14%;
+}
+
+/* Team Profile — two co-lead cards built from the same tokens as .callout. */
+.spp3-dossier .team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin: 1.5rem 0 2rem;
+}
+@media (max-width: 640px) {
+  .spp3-dossier .team-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.spp3-dossier .team-card {
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--body-color);
+  background: color-mix(in oklch, var(--body-bg-color) 60%, var(--border-soft) 40%);
+  padding: 1.15rem 1.3rem;
+  font-size: 0.95rem;
+}
+.spp3-dossier .team-card .team-name {
+  display: block;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--body-color);
+}
+.spp3-dossier .team-card .team-role {
+  margin: 0.25rem 0 0;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted-fg);
+}
+
+/* Decompose the bio into scannable label/value rows — the milestone-table logic. */
+.spp3-dossier .team-creds {
+  margin: 0;
+}
+.spp3-dossier .team-creds .cred {
+  display: grid;
+  grid-template-columns: 5.25rem 1fr;
+  gap: 0.2rem 0.9rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+.spp3-dossier .team-creds .cred:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.spp3-dossier .team-creds dt {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.66rem;
+  font-weight: 500;
+  color: var(--muted-fg);
+  padding-top: 0.15rem;
+}
+.spp3-dossier .team-creds dt,
+.spp3-dossier .team-creds dd {
+  text-align: left;
+}
+.spp3-dossier .team-creds dd {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Links read as body text, accent (red) only on hover — site-wide, matching the
+   team cards. Overrides latex.css's default `a,a:visited{color:var(--link-visited)}`. */
+.spp3-dossier a,
+.spp3-dossier a:visited {
+  color: inherit;
+  transition: color 0.15s ease;
+}
+.spp3-dossier a:hover {
+  color: var(--link-hover);
+}
+
+/* One accent per card: color lives in the monogram, not in every link. */
+.spp3-dossier .team-card .team-mark {
+  color: var(--accent-blue);
+}
+.spp3-dossier .team-card a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-soft);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.spp3-dossier .team-card .team-name a {
+  border-bottom: 0;
+}
+.spp3-dossier .team-card a:hover {
+  color: var(--link-hover);
+  border-bottom-color: var(--link-hover);
+}
+
 .spp3-dossier .faq {
   margin-top: 1rem;
 }
@@ -215,4 +342,87 @@ body {
 }
 .spp3-dossier .faq-item p + p {
   margin-top: 0.6rem;
+}
+
+/* ── "Ask the dossier" ChatKit floating launcher ─────────────────────────── */
+.spp3-chat {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1000;
+  font-family: "Geist", "Geist Fallback", system-ui, sans-serif;
+}
+.spp3-chat-launcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  background: oklch(0.45 0.12 250);
+  color: oklch(0.98 0 0);
+  font: inherit;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px oklch(0.2 0 0 / 0.18);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.spp3-chat-launcher:hover { background: oklch(0.40 0.12 250); }
+.spp3-chat-launcher:active { transform: translateY(1px); }
+html.dark .spp3-chat-launcher {
+  background: oklch(0.62 0.11 250);
+  color: oklch(0.16 0.02 250);
+}
+html.dark .spp3-chat-launcher:hover { background: oklch(0.58 0.11 250); }
+
+.spp3-chat-panel {
+  position: absolute;
+  right: 0;
+  bottom: 3.4rem;
+  width: min(380px, calc(100vw - 2.5rem));
+  height: min(560px, calc(100vh - 6rem));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--body-bg-color);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  box-shadow: 0 10px 40px oklch(0.2 0 0 / 0.24);
+}
+.spp3-chat-panel[hidden] { display: none; }
+.spp3-chat-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--border-soft);
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--body-color);
+}
+.spp3-chat-panel-head button {
+  border: none;
+  background: transparent;
+  color: var(--muted-fg);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.2rem;
+}
+.spp3-chat-panel-head button:hover { color: var(--body-color); }
+.spp3-chat-mount { flex: 1; min-height: 0; }
+
+/* Budget footer rows: per-tier subtotals in gray, the combined grand total in green. */
+.spp3-dossier table.kpi tfoot tr.kpi-subtotal td {
+  background: var(--status-pending-bg);
+  color: var(--status-pending-fg);
+  font-weight: 600;
+  border-top: 1px solid var(--border-soft);
+}
+.spp3-dossier table.kpi tfoot tr.kpi-total td {
+  background: var(--status-done-bg);
+  color: var(--status-done-fg);
+  font-weight: 700;
+  border-top: 2px solid var(--status-done-fg);
 }
