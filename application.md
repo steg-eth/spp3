@@ -8,7 +8,7 @@
 
 Team Profile
 
-estmcmxci.eth — ENS architecture, specification design, and ecosystem integration. Merged upstream contributor to canonical ENS contracts ([PR \#509](https://github.com/ensdomains/ens-contracts/pull/509), Jan 2026, shipped March 2026 in [v1.7.0](https://github.com/ensdomains/ens-contracts/releases/tag/v1.7.0) — EIP-7951 P-256 precompile integration in ENS's DNSSEC oracle, \~98% gas reduction). ENS Public Goods grantee — ["ENS v2 Interop Research"](https://discuss.ens.domains/t/ens-research-namechain-ensip-19-multichain-interop/21392/11?u=estmcmxci) (Sep 2025, Stage 1 completed), whose research output, the [Universal Resolver Matrix](https://discuss.ens.domains/t/universal-resolver-matrix-a-design-framework-for-heterogeneous-resolver-architecture/21734?u=estmcmxci), seeded the [forthcoming architecture](https://docs.steg.eth.link) this proposal productionizes. Independent jury validation (2026): [1st Place, ENS Identity Track at the Synthesis Hackathon](https://synthesis.mandate.md/projects/trust-resolution-layer-b67a); [ETHGlobal HackMoney 2026 Finalist and Integrate ENS bounty winner](https://ethglobal.com/showcase/oikonomos-w6z57). Public advocacy in the same problem space: a Devcon SEA 2024 talk, ["Universal ECCs"](https://www.youtube.com/watch?v=e_QBTQGMxPs) (Ethereum Foundation YouTube). Together, this work establishes the research, specification, upstream implementation, and independent validation foundation that the proposed Verifier + AuthResolver architecture builds upon.
+estmcmxci.eth — ENS architecture, specification design, and integration. Merged upstream contributor to canonical ENS contracts ([PR \#509](https://github.com/ensdomains/ens-contracts/pull/509), Jan 2026, shipped March 2026 in [v1.7.0](https://github.com/ensdomains/ens-contracts/releases/tag/v1.7.0) — EIP-7951 P-256 precompile integration in ENS's DNSSEC oracle, \~98% gas reduction). ENS Public Goods grantee — ["ENSv2 Interop Research"](https://discuss.ens.domains/t/ens-research-namechain-ensip-19-multichain-interop/21392/11?u=estmcmxci) (Sep 2025, Stage 1 completed), whose research output, the [Universal Resolver Matrix](https://discuss.ens.domains/t/universal-resolver-matrix-a-design-framework-for-heterogeneous-resolver-architecture/21734?u=estmcmxci), seeded the [forthcoming architecture](https://docs.steg.eth.link) this proposal productionizes. Independent jury validation (2026): [1st Place, ENS Identity Track at the Synthesis Hackathon](https://synthesis.mandate.md/projects/trust-resolution-layer-b67a); [ETHGlobal HackMoney 2026 Finalist and Integrate ENS bounty winner](https://ethglobal.com/showcase/oikonomos-w6z57). Public advocacy in the same problem space: a Devcon SEA 2024 talk, ["Universal ECCs"](https://www.youtube.com/watch?v=e_QBTQGMxPs) (Ethereum Foundation YouTube). Together, this work establishes the research, specification, upstream implementation, and independent validation foundation that the proposed Verifier + AuthResolver architecture builds upon.
 
 mouz.eth — Protocol engineering, smart-contract systems, and security. Production smart-contract systems across DeFi and NFT finance at Arcade.xyz ([NFT lending](https://github.com/arcadexyz/arcade-protocol/blob/main/contracts/rollover/CrossCurrencyRollover.sol), collateral/accounting, [LP staking](https://github.com/arcadexyz/dao-contracts), [governance contracts](https://github.com/arcadexyz/governance/blob/main/contracts/NFTBoostVault.sol)). Winner of a Uniswap Foundation prize at the [UHI incubator](https://atrium.academy/uniswap) for a [v4 hook](https://github.com/Mouzayan/dex-profit-wars) implementation.  Focused on adversarial system design, including secure state transitions, permission management, and authorization surfaces.
 
@@ -18,7 +18,7 @@ mouz.eth — Protocol engineering, smart-contract systems, and security. Product
 | Term | July 2026 – July 2027 |
 | Primary category | ENS Infrastructure |
 | Secondary category | Outreach and Integrations |
-| Prior Delivery | Merged contributor to canonical ENS contracts ([PR \#509](https://github.com/ensdomains/ens-contracts/pull/509) / [v1.7.0](https://github.com/ensdomains/ens-contracts/releases/tag/v1.7.0)); Public Goods grantee — [ENSv2 interoperability research](https://discuss.ens.domains/t/ens-research-namechain-ensip-19-multichain-interop/21392/11?u=estmcmxci); 1st-place [ENS-identity hackathon](https://synthesis.mandate.md/projects/trust-resolution-layer-b67a) |
+| Prior Delivery | Merged contributor to canonical ENS contracts ([PR \#509](https://github.com/ensdomains/ens-contracts/pull/509) / [v1.7.0](https://github.com/ensdomains/ens-contracts/releases/tag/v1.7.0)); Public Goods grantee — [ENSv2 interoperability research](https://discuss.ens.domains/t/ens-research-namechain-ensip-19-multichain-interop/21392/11?u=estmcmxci); 1st-place [ENS-identity hackathon](https://synthesis.mandate.md/projects/trust-resolution-layer-b67a); [ETHGlobal HackMoney 2026 Finalist + ENS bounty](https://ethglobal.com/showcase/oikonomos-w6z57) |
 
 ## 1\. Abstract
 
@@ -26,18 +26,16 @@ AI agents increasingly take actions across apps, APIs, and hosted runtimes — b
 
 Authorization remains fragmented within vendor-specific silos, with no shared substrate for rotation, revocation, audit, or cross-platform verification.
 
-*Why agents need ENS names:* 
+Agents need names so their current authorization state can be discovered and verified across heterogeneous systems. In this context, ‘using ENS’ means binding an agent to an ENS name that publishes this state, allowing any relying party to independently verify the agent’s current permissions in real time.
 
-Agents need names so authority can be discovered and verified across heterogeneous systems. In this context, ‘using ENS’ means binding an agent to an ENS name that publishes its current authorization state, allowing any relying party to independently verify current authorization state in real time.
+ENS already provides the naming, discovery, and registry primitives. What it lacks is the layer above them: **a standardized, resolver-native, neutral authorization-and-verification layer** that turns an ENS name into a live authorization-state lookup (auth lookup layer) that allows any service to independently verify, at use time, whether an agent remains authorized. This proposal ships that layer.
 
-ENS already provides the naming, discovery, and registry primitives. What it lacks is the layer above them: **a standardized, resolver-native, neutral authorization-and-verification layer** that turns an ENS name into a live authorization-state lookup (auth lookup layer) that allows any service to independently verify, at use time, whether an agent remains authorized. This SPP ships that layer.
-
-> **[Prototype spec](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing)** — defines the Verifier + AuthResolver architecture on ENSv2: authority record schemas (credential, capability, revocation), the verify-action flow across WebAuthn-P256 / ECDSA / EIP-1271, and the normative conformance criteria that define the layer this proposal ships.
+> **[Prototype spec](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing)** — defines the Verifier + AuthResolver architecture on ENSv2: authority record schemas (credential, capability, revocation), the verify-action flow across WebAuthn/P-256 / ECDSA / EIP-1271, and the normative conformance criteria that define the layer this proposal ships.
 
 
 An ENS-native, vendor neutral authorization toolkit — Verifier, AuthResolver, SDK, and conformance suite built on ENSv2 — lets any integrator resolve ENS-published authority, verify a signed request against current state, and enforce expiry, rotation, and revocation through normalized allow/deny reason codes. 
 
-The initial target integrator is the managed agent runtime platform (MARP): operator platforms offering agent-executable wallets across apps/APIs that need portable authority checks. 
+The initial target integrator is the managed agent runtime platform (MARP): operator platforms offering agent-executable wallets across apps/APIs that need portable authority checks. (For the full managed-agent taxonomy, see the [MAIP taxonomy](https://docs.google.com/document/d/1zN0Dp9Tm7JCoLb-QYbigZuiB8O9vB7cEr6Pu96ewJRQ/edit?usp=sharing) appendix.) 
 
 MARP adoption follows  an established ENS growth pattern: operator-issued subnames, validated in production by Coinbase’s cb.id deployment. The difference is that the payload now carries current authorization state, not identity alone.
 
@@ -45,30 +43,30 @@ Tier 1 delivers the core infrastructure (audited contracts, SDK, conformance sui
 
 > **Wave-1 ecosystem engagement (pre-commitment)** — Steg is participating in the Pinata Agents Partner Templates program and has ongoing integration discussions with Bankr (ENS-agent-identity [PR #189](https://github.com/BankrBot/skills/pull/189)), while AuthResolver Phase A has already been technically validated on a live Bankr test name. Neither the milestone structure nor the Wave-1 floor depends on any single partner.
 
-By July 2027, one production MARP integration issuing ENS agent subnames at measurable volume, with a public dashboard for subname issuance and active authority records, plus externally verifiable delivery artifacts: deployed contracts, a CI-passing conformance suite, and a completed third-party audit.
+By July 2027, Steg delivers production MARP integration issuing ENS agent subnames at measurable volume, with a public dashboard for subname issuance and active authority records, plus externally verifiable delivery artifacts: deployed contracts, a CI-passing conformance suite, and a completed third-party audit.
 
 ## ---
 
 ## 2\. Problem
 
-Onchain actors are increasingly delegating authority to third-party agents — recreating, at machine speed, what economists call the principal–agent problem.
+Onchain actors are increasingly delegating authority to third-party agents — recreating, at machine speed, what economists call the principal–agent problem. [Hadfield & Koh (2025)](https://arxiv.org/abs/2509.01063)
 
-Once authorized, it's difficult to ensure that an agent acts only within bounded authority, and the principal has no way to verify in real time that a given action remains within those bounds.
+Once authorized, it's difficult to ensure that an agent acts only within bounded authority, and neither the principal nor the relying party can independently verify in real time that a given action remains within those bounds.
 
-Recent exploits leverage prompt injection to trick an agent into acting beyond its mandate. Because the key the agent holds is itself the permission credential, that manipulated intent can still produce a valid signature. The relying party, unable to distinguish "authorized" from merely "signed," executes it.
+Recent prompt-injection exploits make this verification failure concrete: attackers trick an agent into acting beyond its mandate by manipulating its intent. Because the key the agent holds is itself the permission credential, that manipulated intent can still produce a valid signature. The relying party, unable to distinguish "authorized" from merely "signed," executes it.
 
-> **The Grok–Bankr exploit (Base, 2026)** — An attacker DMed @grok a Morse-code message; Grok "helpfully" decoded it into a plaintext transfer instruction tagging @bankrbot, which treated the public reply as an executable command and moved ~3B DRB tokens (~80–88% later recovered via negotiation) — [SlowMist analysis](https://slowmist.medium.com/behind-the-grok-exploitation-an-analysis-of-ai-agent-permission-chain-abuse-4d832d1bfc73). The incident is exactly the failure this section describes: the execution layer could not tell an *authorized* action from a merely *signed-or-instructed* one, and executed anyway. Our proposal would not have stopped Grok from being prompt-injected — it touches nothing at the LLM layer — but it supplies the missing authorization check the post-mortem calls for: before executing, the relying party distinguishes "signed" from "currently authorized" by resolving the current authorization state from a trusted registry built on ENSv2. That state is mapped as a key-value pair within the agent's ENS text records, where the AuthResolver exposes the published authority and the Verifier checks the signed request against it — the requested 3B-token transfer fails the published amount/recipient policy. Because authorization is checked against current ENS-published state — including revocation, expiry, and policy updates — rather than a key the agent holds, it protects any MARP that performs the check at execution time, regardless of runtime implementation.
+> **The Grok–Bankr exploit (Base, 2026).** An attacker DMed @grok a Morse-code message; Grok "helpfully" decoded it into a plaintext transfer instruction tagging @bankrbot, which treated the public reply as an executable command and drained ~3B DRB tokens (~80–88% later recovered via negotiation) — [SlowMist analysis](https://slowmist.medium.com/behind-the-grok-exploitation-an-analysis-of-ai-agent-permission-chain-abuse-4d832d1bfc73). The incident is exactly the failure mode described in section 2: the execution layer could not independently verify whether the instruction remained authorized under the operator's current policy, and executed it anyway. Our proposal would not have stopped Grok from being prompt-injected — it touches nothing at the LLM layer — but it supplies the missing authorization check the post-mortem calls for: before executing, a relying party distinguishes "signed" from "currently authorized" by resolving the current authorization state from a trusted registry built on ENSv2. That state is mapped as a key-value pair within the agent's ENS text records, where the AuthResolver exposes the published authority and the Verifier checks the signed request against it — the requested 3B-token transfer fails the published amount/recipient policy. Because authorization is checked against current ENS-published state — including revocation, expiry, and policy updates — rather than a key the agent holds, it protects any MARP that performs the check at execution time, regardless of runtime implementation.
 
 In the real world, delegated authority takes a familiar form: the Power of Attorney.
 
-Relying parties like banks check a public registry for the document's current status, confirming the agent currently holds the authority to act on behalf of the principal. 
+Relying parties like banks check a trusted registry for the document's current status, confirming the agent currently holds the authority to act on behalf of the principal. 
 
 In other words, **the relying party trusts the registry, not the agent.**
 
 If the principal revokes the Power of Attorney, the agent can no longer carry out its intent.  
 In agentic finance, no such backstop exists: the key the agent holds *is* the permission credential — we need to decouple the two.
 
-By publishing each agent's delegated authorization state as a key-value pair in its ENS text records — a credibly neutral, externally resolvable store of record — a relying party can run a freshness check against it before execution, confirming the action is currently authorized under the operator’s published authorization state, including revocation, expiry, and policy updates.
+By publishing each agent's delegated authorization state as a key-value pair within a credibly neutral, externally resolvable store of record such as ENS, a relying party can perform a freshness check before execution to verify that the requested action is currently authorized under the operator’s published authorization state, including any revocation, expiry, or policy updates.
 
 Because the authorization state is published on a shared ENS namespace rather than inside a single runtime, any counterparty can independently resolve and verify it.  Authorization becomes portable across runtimes instead of remaining vendor-local, eliminating the need for each operator platform to maintain its own isolated authority registry.
 
@@ -92,17 +90,17 @@ The blocker: agent runtimes require a more active, independently verifiable auth
 
 This proposal closes that gap by introducing an authority schema and resolver-native verification path that lets counterparties query current authorization state directly from ENS. 
 
-This lets a MARP verify whether an agent's action is currently authorized under the operator’s published authorization state — increasing security guarantees for its users, and with it ENS's value-fit for a prospective integrator. This gives the MARP a strong reason to issue identity under ENS rather than rolling its own or locking into a closed vendor.
+This lets a MARP verify whether an agent's action is currently authorized under the operator’s published authorization state, increasing security guarantees for its users and strengthening ENS's value-fit for prospective integrators. This gives the MARP a strong reason to issue identity under ENS rather than rolling its own or locking into a closed vendor.
 
-Latent demand for this authority-lookup layer is already materializing. Operator failures such as Bankr's prompt injection exploit illustrate the cost of not having an independently verifiable authorization layer. 
+Latent demand for this authority-lookup layer is already materializing. Operator failures such as Bankr's prompt-injection exploit illustrate the cost of not having an independently verifiable authorization layer. 
 
 ### 2.2 Registrations and Revenue
 
-The addressable base already exceeds 480K+ agents transacting across Coinbase's x402 protocol (Source: [Coinbase, Agentic.Market, April 2026](https://www.coinbase.com/developer-platform/discover/launches/agentic-market)) and is rapidly increasing. Each agent is a candidate ENS subname that holds authorization state. It is an early market signal that demonstrates meaningful demand for agent-native infrastructure.  Applying the cb.id subname-issuance growth pattern to it presents a compelling opportunity.
+The addressable base already exceeds 480K+ agents transacting across Coinbase's x402 protocol (Source: [Coinbase, Agentic.Market, April 2026](https://www.coinbase.com/developer-platform/discover/launches/agentic-market)) and is rapidly increasing. Each agent is a candidate ENS subname that holds authorization state. It is an early market signal that demonstrates meaningful demand for agent-native infrastructure.  Applying the cb.id subname-issuance growth pattern here presents a compelling opportunity.
 
 Although subnames carry no registrar fee, the strategic bet is on widening ENS’s adoption surface rather than generating per-subname revenue. Direct DAO revenue accrues downstream: through the .eth names each MARP must register and renew to continue issuing subnames for its users, and through conversion when a share of those agents’ end users register their own .eth.
 
-Even modest conversion of the project agent population into operator registrations and .eth adoption produces measurable registration and renewal demand under existing ENS economics.  Against ENS's \~$3.1M six-month registration-and-renewal base ([Dune query 7549207](https://dune.com/queries/7549207/11500922)), a conservative 3% conversion of the 480k-agent population implies approximately 14,400 registrations — roughly $400k–$580k in registration and renewal fees over five years at ENSv2 pricing. 
+Even modest conversion of the agent population into operator registrations and .eth adoption produces measurable registration and renewal demand under existing ENS economics.  Against ENS's \~$3.1M six-month registration-and-renewal base ([Dune query 7549207](https://dune.com/queries/7549207/11500922)), a conservative 3% conversion of the 480k-agent population implies approximately 14,400 registrations — roughly $400k–$580k in registration and renewal fees over five years at ENSv2 pricing. 
 
 The impact is modest relative to  ENS's existing registration base, but real, attributable, and scalable with growth in the agent economy.
 
@@ -135,8 +133,9 @@ The current [specification draft](https://docs.google.com/document/d/1L5Kj7oxT4d
 
 The toolkit consists of:
 
-- Onchain infrastructure — a shared Verifier and  per-name AuthResolver ( composing ENSv2's access-control substrate into a verification and authorization layer for credential, capability, and revocation records.   
-- TypeScript SDK — resolves ENS-published authorization state, verifies signed requests, and returns normalized allow/deny outputs with machine readable reason codes. Conformance suite — reproducible test vectors covering schema validity, authority binding, freshness, revocation, rotation and adversarial mutation cases.  
+- Onchain infrastructure — a shared Verifier and  per-name AuthResolver composing ENSv2's access-control substrate into a verification and authorization layer for credential, capability, and revocation records.   
+- TypeScript SDK — resolves ENS-published authorization state, verifies signed requests, and returns normalized allow/deny outputs with machine readable reason codes.
+- Conformance suite — reproducible test vectors covering schema validity, authority binding, freshness, revocation, rotation and adversarial mutation cases.  
 - Integration guides — recommended patterns for authorization checks, expiry, rotation, revocation, and policy enforcement across  apps, APIs, and managed agent runtimes   
 - Operational validation flows — end-to-end validation across supported signing schemes in production-like environments.  
 - Security package — third-party audit, threat model, verifier hardening , replay protection review, and deployment  checklist.
@@ -182,7 +181,7 @@ The overall proposal spans a 12-month delivery cycle (Jul 2026 → Jul 2027). Ti
 From M1 to M9, the focus is a deliverable-heavy build phase: Approximately 12 person-months of senior engineering and project management at a blended $18,750/month across two co-leads:
 
 - [estmcmxci.eth](https://ens.app/estmcmxci.eth): ENS architecture, spec design, and ecosystem integration  
-- [mouz.eth](https://ens.app/mouz.eth): protocol architecture, smart contract implementation and security engineering 
+- [mouz.eth](https://ens.app/mouz.eth): protocol architecture, smart-contract implementation and security engineering 
 
 | Line item | Amount | Purpose   |
 | :---- | :---- | :---- |
@@ -224,9 +223,9 @@ The next 12–24 months are a formative period for cross-vendor agent-identity p
 
 The substrate to build it is already in place — EIP-7951 shipped in Fusaka, ENSIP-25/26 merged, ERC-8004 on mainnet, ENSv2 in preview — foundational primitives exist; the authorization layer does not, so the binding constraint is delivery, not readiness.
 
-The decision is asymmetrical: a bounded one-cycle cost ($440k) against both measurable and strategic upside. Even the narrow, conservative conversion model (\~$400k–$580k in registration and renewal fees over five years, [§2.2](#22-registrations-and-revenue)) reaches a scale comparable to the grant itself. 
+In that sense, this grant functions as strategic insurance: a bounded one-cycle cost ($440k) against both measurable near-term upside and the longer-term risk that agent authority consolidates into closed control planes before ENS offers an open alternative. Even the narrow, conservative conversion model (\~$400k–$580k in registration and renewal fees over five years, [§2.2](#22-registrations-and-revenue)) reaches a scale comparable to the grant itself. 
 
-And that likely understates the opportunity cost, which is strategic: the entire agent-identity category, a 480K+ agent population growing monthly, and ENS's standing as the neutral authority layer for an expanding agent-operator surface — all ceded to closed vendors, with high switching costs, once the window closes.
+And that likely understates the opportunity cost: the entire agent-identity category, a 480K+ agent population growing monthly, and ENS's standing as the neutral authority layer for an expanding agent-operator surface — all ceded to closed vendors, with high switching costs, once the window closes.
 
 This outcome is unlikely to self-correct by default. ENS Labs is staffed against core protocol delivery (ENSv2, agent ENSIPs), while individual MARPs are structurally incentivized to build closed, vendor-local paths. 
 
@@ -236,13 +235,13 @@ Steg closes that coordination gap and is positioned to maintain and evolve the s
 
 ## 4\. Delivery History
 
-### Public Goods grant — "ENS v2 Interop Research" (Sep 2025, 1 ETH, Stage 1 completed)
+### Public Goods grant — "ENSv2 Interop Research" (Sep 2025, 1 ETH, Stage 1 completed)
 
 Two committed deliverables, both completed.
 
 1. Analysis of ENSv2 interoperability design questions — ENSIP-19 multichain primary names, CCIP-Read (EIP-3668), migration policies, event/API discoverability, security trade-offs — convened in partnership with Kernel and Nick Johnson (ENS Labs), and shipped as the [Universal Resolver Matrix (URM)](https://discuss.ens.domains/t/universal-resolver-matrix-a-design-framework-for-heterogeneous-resolver-architecture/21734), a reference framework for heterogeneous resolver architectures across L2s, non-EVM chains, DNSSEC, WebAuthn, and offchain systems (published Dec 2025). 
 
-   Reframing ENS as a “trust-routing system that anchors heterogeneous namespaces to Ethereum as the root of trust,” URM identified the agent-authority / WebAuthn-verifier cell that this proposal implements: the verifier pathway that unlocks the most new namespaces per unit of engineering effort. This proposal is therefore a direct continuation of an already-completed research program, rather than a new research direction.. 
+   Reframing ENS as a “trust-routing system that anchors heterogeneous namespaces to Ethereum as the root of trust,” URM identified the agent-authority / WebAuthn-verifier cell that this proposal implements: the verifier pathway that unlocks the most new namespaces per unit of engineering effort. This proposal is therefore a direct continuation of an already-completed research program, rather than a new research direction. 
 
    The grant seeded the thesis of ENS as the verification substrate for an agent economy where *generation is abundant and independent verification of authority is scarce.*
 
@@ -260,6 +259,7 @@ Other prior work.
 
 - [**Reference implementation of ENS-bound agent identity**](https://discuss.ens.domains/t/reference-implementation-of-an-ens-bound-agent/22100)**.** An award-winning  five-layer Trust Resolution Layer (TRL) composing ENSIP-25, ENSIP-26, and ERC-8004 — [shipped as four MIT-licensed TypeScript packages](https://github.com/estmcmxci/synthesis) and [a live ENS-bound agent deployment](https://estmcmxci.co/agent/emilemarcelagustin.eth)   
 - [**ENS as a Naming Layer for AI Agent Identity**](https://nccoe.emilemarcelagustin.eth.link). A position paper submitted to NIST NCCoE describing the ENS agent identity architecture: a 7-layer stack showing what is production today (ENS, ENSIP-24/25, on.eth) and what is draft (ENSIP-26, NMS, AIP), for naming, discovery, verification, and evolution of AI agent identities.  
+- [**Coinbase’s Strategic Integration of ENS**](https://ens.domains/blog/post/coinbase-strategic-integration-of-ens). Strategic analysis of Coinbase’s cb.id integration — 11M+ ENS subnames issued at Coinbase Wallet signup (~5× all .eth at the time) — establishing the operator-issued-subname growth pattern this proposal extends from wallets to managed agent runtimes (MARPs).  
 - [**Public conference talk — Use Cases for the P256 Precompile (Devcon SEA, Nov 2024\)**](https://www.youtube.com/watch?v=e_QBTQGMxPs). \~8 minute talk pitching universal ENS-as-login across Web2 surfaces with the L1 P-256 precompile as the load-bearing technical unlock — the same problem space the WebAuthn-for-ENS specification formalizes and PR \#509 makes real.  
 - [**Synthesis Hackathon, 1st Place, ENS Identity track (May 2026\)**](https://synthesis.mandate.md/tracks/ens-identity-i4jgf3). [Trust Resolution Layer](https://synthesis.mandate.md/projects/trust-resolution-layer-b67a) judged best-in-track on its ENS identity merits.    
 - [**ETHGlobal HackMoney 2026, Finalist \+ Integrate ENS bounty winner (February, 2026\)**](https://ethglobal.com/showcase/oikonomos-w6z57). "Oikonomos," a separate Steg-authored ENS integration, named Finalist (top-of-hackathon across all sponsor tracks) and won an ENS bounty.
@@ -275,14 +275,14 @@ The authority payload has four properties, each mapped to concrete contracts and
 
 1. **Permissions** live in AuthResolver record schemas (credential, capability, revocation) and Verifier dispatch logic.   
 2. **Freshness checks** are enforced by the Verifier resolving current authorization state published through AuthResolver at lookup time.  
-3. **External resolution** follows from implementing AuthResolver as a standard ENS resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authority state without intermediary infrastructure.  
+3. **External resolution** follows from implementing AuthResolver as a standard ENS resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authorization state without intermediary infrastructure.  
 4. **Operator parent-name write authority** is enforced by ENSv2's existing EAC \+ HCA substrate, which scopes write permissions to the parent-name owner and atomically invalidates delegated roles on name transfer.
 
 #### Architectural precedent.
 
 The technical foundation builds on two prior artifacts: 
 
-1. **Verification semantics precedent ([WebAuthn-for-ENS specification](https://docs.steg.eth.link/specifications/webauthn-specification/), [§4](#4-delivery-history))** — The specification defines the P-256/WebAuthn verification path this proposal inherits, and  
+1. **Verification semantics precedent ([WebAuthn-for-ENS specification](https://docs.steg.eth.link/specifications/webauthn-specification/), [§4](#4-delivery-history))** — The specification defines the WebAuthn/P-256 verification path this proposal inherits, and  
 2. **Deployed-topology precedent ([Sepolia TLD Oracle](https://dnssec.eketc.co/tld-oracle))** — TLDMinter \+ DnssecP256Verifier deployment demonstrating the orchestrator/stateless-verifier contract split. 
 
 Accordingly, v1 includes a shared Verifier supporting three signing schemes:  EIP-7951 P-256 (WebAuthn/passkey), ecrecover (secp256k1 ECDSA), and EIP-1271 staticcall (smart-account signatures). See [Appendix C](https://docs.google.com/document/d/1gkIUNqryO9apu44K2aS3DLWPO1ppZqzjQWkjZHi1I8k/edit?usp=sharing) for the end-to-end publish→act→verify flow and per-branch detail. 
@@ -291,7 +291,7 @@ Authority records are published through AuthResolverImpl with per-name UUPS prox
 
 AuthResolverImpl inherits ENSv2's access-control substrate (EAC \+ HCA) unchanged, preserving per-(node, recordKey) write delegation and atomic role invalidation on name transfer. The new audit surface is bound to Verifier dispatch logic and AuthResolver record schemas; ENS Registry and existing resolver implementations are unchanged.
 
-Because AuthResolver lookups are L1-native ENS resolutions, the verification path inherits ENS's availability and censorship-resistance properties — no separate uptime SLA, no DNS dependency, no centralized API in the trust path between a counterparty and the authority state it reads. 
+Because AuthResolver lookups are L1-native ENS resolutions, the verification path inherits ENS's availability and censorship-resistance properties — no separate uptime SLA, no DNS dependency, no centralized API in the trust path between a counterparty and the authorization state it reads. 
 
 This preserves the proposal’s core property: any counterparty can independently verify current authorization state using standard ENS resolution alone.
 
@@ -307,10 +307,10 @@ This proposal does not deliver wire-protocol authentication (MCP, A2A, which ans
 
 #### How it composes. 
 
-The Verifier \+ AuthResolver layer sits above naming and discovery (ENSIP-25/26/64) and registry (ERC-8004/8122), and composes with these non-goal layers at the relying-party boundary: a calling service resolves AuthResolver state to decide *whether to honor* an MCP/A2A request; a counterparty checks AuthResolver state before accepting an ERC-4337 or ERC-7710/7715-delegated session-key signature as currently authorized; capability-token presenters (UCAN, CACAO) are verified *against current ENS-published authority* rather than against frozen issuance-time state. 
+The Verifier \+ AuthResolver layer sits above naming and discovery (ENSIP-25/26/64) and registry (ERC-8004), and composes with these non-goal layers at the relying-party boundary: a calling service resolves AuthResolver state to decide *whether to honor* an MCP/A2A request; a counterparty checks AuthResolver state before accepting an ERC-4337 or ERC-7710/7715-delegated session-key signature as currently authorized; capability-token presenters (UCAN, CACAO) are verified *against current ENS-published authority* rather than against frozen issuance-time state. 
 
 The toolkit's role is to provide the authority-validity check the other layers don't natively provide ([see Appendix B](https://docs.google.com/document/d/1jbIRc5OGImfEI5TAb23FZy0wbDwTDiL2xmcAYtf9F98/edit?usp=sharing)).  
-Full architectural map \+ normative detail in the prototype specification (working copy: [Prototype Spec](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing)) and the [MAIP taxonomy](https://docs.google.com/document/d/1zN0Dp9Tm7JCoLb-QYbigZuiB8O9vB7cEr6Pu96ewJRQ/edit?usp=sharing); substrate-inheritance excerpt in [Appendix E](https://docs.google.com/document/d/1yWRHaizZyDx6RGK-WIH0qhQE4U4rUTP8p6GdKHgLpog/edit?usp=sharing).
+Full architectural map \+ normative detail in the [prototype specification](https://docs.google.com/document/d/1L5Kj7oxT4dzlkYdYh0Sne2jx76XomT7K04P7Bu9zR-w/edit?usp=sharing) and the [MAIP taxonomy](https://docs.google.com/document/d/1zN0Dp9Tm7JCoLb-QYbigZuiB8O9vB7cEr6Pu96ewJRQ/edit?usp=sharing); substrate-inheritance excerpt in [Appendix E](https://docs.google.com/document/d/1yWRHaizZyDx6RGK-WIH0qhQE4U4rUTP8p6GdKHgLpog/edit?usp=sharing).
 
 ## ---
 
@@ -320,9 +320,11 @@ This proposal delivers a defined, narrowly scoped service: ENS-native authority 
 
 It is built on existing ENS standards and executed through verifiable milestones over a 12-month cycle.  The proposal is additive to ENS Labs and does not replace existing ENS primitives. It operationalizes ENS as an interoperable authorization lookup surface, allowing any counterparty to independently verify current authorization state across heterogeneous systems.  
 
-It extends a proven ENS growth path (operator-issued subnames, as demonstrated by Coinbase’s cb.id integration) to the next operator class. Following that same adoption pattern, this proposal upgrades the payload from identity-only signaling to authority-bearing state, while keeping the trust path open: L1-native, resolvable, adoptable, and forkable, with no vendor in the middle.
+It extends a proven ENS growth path — operator-issued subnames, as demonstrated by Coinbase’s cb.id integration — to the next operator class. Because each authority credential is issued as an ENS subname, the same mechanism that increases security guarantees and mitigates execution risk for MARP users also broadens ENS adoption.
 
-As agentic commerce scales, the authority tier will consolidate somewhere — either in open, neutral infrastructure or closed vendor control planes. This proposal builds the open substrate and validates its adoption in production.
+In doing so, it upgrades the payload from identity-only signaling to authority-bearing state, while keeping the trust path open: L1-native, resolvable, adoptable, and forkable, with no vendor in the middle.
+
+As agentic commerce scales, the authority tier will consolidate somewhere — either in open, neutral infrastructure or closed vendor control planes. This work builds the open substrate and validates its adoption in production.
 
 ## ---
 
