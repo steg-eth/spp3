@@ -287,11 +287,11 @@ export default function Spp3ApplicationPage() {
           <input type="checkbox" id="sn-wave1" className="sidenote-toggle" />
           <span className="sidenote">
             Wave-1 integration partners are in early discussion — pre-commitment, not yet contracted. Steg
-            is participating in the Pinata Agents Partner Templates program and has an active Bankr integration discussion
-            (ENS-agent-identity{" "}
-            <a href="https://github.com/BankrBot/skills/pull/189">PR #189</a>; AuthResolver Phase A validated
-            on a live Bankr test name). Neither the milestone structure nor the Wave-1 floor depends on any
-            single partner.
+            is participating in the Pinata Agents Partner Templates program and has ongoing integration
+            discussions with Bankr (ENS-agent-identity{" "}
+            <a href="https://github.com/BankrBot/skills/pull/189">PR #189</a>), while AuthResolver Phase A has
+            already been technically validated on a live Bankr test name. Neither the milestone structure nor
+            the Wave-1 floor depends on any single partner.
           </span>
         </p>
         <p>
@@ -332,10 +332,10 @@ export default function Spp3ApplicationPage() {
             <span style={{ display: "block", marginTop: "0.5em" }}>
               Our proposal would not have stopped Grok from being prompt-injected — it touches nothing at the LLM
             layer — but it supplies the missing authorization check the post-mortem calls for: before executing, a
-            relying party <strong>resolves the current authorization state from a trusted registry built on ENSv2</strong>.
-            That state is mapped as a key-pair value within the agent&rsquo;s ENS text records, where the AuthResolver
+            relying party <strong>distinguishes &ldquo;signed&rdquo; from &ldquo;currently authorized&rdquo; by resolving the current authorization state from a trusted registry built on ENSv2</strong>.
+            That state is mapped as a key-value pair within the agent&rsquo;s ENS text records, where the AuthResolver
             exposes the published authority and the Verifier checks the signed request against it — the requested
-            3B-token transfer fails the published amount/recipient policy. Because authority is checked against current
+            3B-token transfer fails the published amount/recipient policy. Because authorization is checked against current
             ENS-published state — including revocation, expiry, and policy updates — rather than a key the agent holds,
             it protects any MARP that performs the check at execution time, regardless of runtime implementation.
             </span>
@@ -354,12 +354,12 @@ export default function Spp3ApplicationPage() {
           In agentic finance, no such backstop exists: the key the agent holds <em>is</em> the permission
           credential — we need to decouple the two.
         </p>
-        <p>By publishing each agent&rsquo;s delegated authority state as a key-pair value in its ENS text
+        <p>By publishing each agent&rsquo;s delegated authorization state as a key-value pair in its ENS text
           records — a credibly neutral, externally resolvable store of record — a relying party can run a
           freshness check against it before execution, confirming the action is currently authorized under the
-          operator&rsquo;s published authority state, including revocation, expiry, and policy updates.</p>
+          operator&rsquo;s published authorization state, including revocation, expiry, and policy updates.</p>
         <p>
-          Because the authority state is published on a shared ENS namespace rather than inside a single
+          Because the authorization state is published on a shared ENS namespace rather than inside a single
           runtime, any counterparty can independently resolve and verify it. Authorization becomes portable
           across runtimes instead of remaining vendor-local, eliminating the need for each operator platform to maintain its own isolated authority registry.
         </p>
@@ -386,7 +386,7 @@ export default function Spp3ApplicationPage() {
           MARPs increasingly delegate signing authority via session-key primitives (EIP-7702, ERC-4337,
           ERC-7710/7715) that constrain what an agent can sign, but there is no standardized way for
           independently verifying, in real time, that an agent-signed action remains authorized under the
-          operator&rsquo;s current published authority state. (Full operator-class case in{" "}
+          operator&rsquo;s current published authorization state. (Full operator-class case in{" "}
           <a href="https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121">
             Steg&rsquo;s ENS forum post, May 2026
           </a>
@@ -419,7 +419,7 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           This lets a MARP verify whether an agent&rsquo;s action is currently authorized under the
-          operator&rsquo;s published authority state — increasing security guarantees for its users, and
+          operator&rsquo;s published authorization state — increasing security guarantees for its users, and
           with it ENS&rsquo;s value-fit for a prospective integrator. This gives the MARP a strong reason to
           issue identity under ENS rather than rolling its own or locking into a closed vendor.
         </p>
@@ -436,7 +436,7 @@ export default function Spp3ApplicationPage() {
           <a href="https://www.coinbase.com/developer-platform/discover/launches/agentic-market">
             Coinbase, Agentic.Market, April 2026
           </a>
-          ) and is rapidly increasing. Each agent is a candidate ENS subname that holds authority credentials. It is an early market
+          ) and is rapidly increasing. Each agent is a candidate ENS subname that holds authorization state. It is an early market
           signal that demonstrates meaningful demand for agent-native infrastructure. Applying the cb.id
           subname-issuance growth pattern to it presents a compelling opportunity.
         </p>
@@ -544,7 +544,7 @@ export default function Spp3ApplicationPage() {
         </ul>
         <p>
           With the toolkit, integrators can resolve an ENS-named agent&rsquo;s published authorization
-          state, verify signed requests against current AuthResolver state in real time, and enforce expiry,
+          state, verify signed requests against current authorization state published through AuthResolver in real time, and enforce expiry,
           rotation, and revocation through normalized allow/deny reason codes across crypto-native and Web2
           agent environments alike.
         </p>
@@ -562,7 +562,7 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           Every deliverable maps to a public artifact — deployed contract addresses, a
-          published third-party audit, CI-passing conformance vectors, and the onchain issuance /
+          published third-party audit, CI-passing conformance suite results, and the onchain issuance /
           active-authority dashboard (<a href="#problem-metric">§2.3</a>) — per the verification columns in{" "}
           <a href="#approach-milestones">§3.2</a>.
         </p>
@@ -821,7 +821,7 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           The substrate to build it is already in place — EIP-7951 shipped in Fusaka, ENSIP-25/26 merged,
-          ERC-8004 on mainnet, ENSv2 in preview — the required naming, discovery, registry, and verification primitives already exist, so the binding constraint is delivery, not readiness.
+          ERC-8004 on mainnet, ENSv2 in preview — foundational primitives exist; the authorization layer does not, so the binding constraint is delivery, not readiness.
         </p>
         <p>
           The decision is asymmetrical: a bounded one-cycle cost ($440k) against both measurable and
@@ -969,7 +969,7 @@ export default function Spp3ApplicationPage() {
             revocation) and Verifier dispatch logic.
           </li>
           <li>
-            <strong>Freshness checks</strong> are enforced by the Verifier resolving current AuthResolver state at
+            <strong>Freshness checks</strong> are enforced by the Verifier resolving current authorization state published through AuthResolver at
             lookup time.
           </li>
           <li>
