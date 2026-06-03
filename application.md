@@ -37,7 +37,7 @@ ENS already provides the naming, discovery, and registry primitives. What it lac
 
 An ENS-native, vendor neutral authorization toolkit — Verifier, AuthResolver, SDK, and conformance suite built on ENSv2 — lets any integrator resolve ENS-published authority, verify a signed request against current state, and enforce expiry, rotation, and revocation through normalized allow/deny reason codes. 
 
-The initial target integrator is the managed agent runtime platform (MARP): operator platforms offering agent-executable wallets across apps/APIs that need portable authority checks. 
+The initial target integrator is the managed agent runtime platform (MARP): operator platforms offering agent-executable wallets across apps/APIs that need portable authority checks. (For the full managed-agent taxonomy, see the [MAIP taxonomy](https://docs.google.com/document/d/1zN0Dp9Tm7JCoLb-QYbigZuiB8O9vB7cEr6Pu96ewJRQ/edit?usp=sharing) appendix.) 
 
 MARP adoption follows  an established ENS growth pattern: operator-issued subnames, validated in production by Coinbase’s cb.id deployment. The difference is that the payload now carries current authorization state, not identity alone.
 
@@ -51,7 +51,7 @@ By July 2027, one production MARP integration issuing ENS agent subnames at meas
 
 ## 2\. Problem
 
-Onchain actors are increasingly delegating authority to third-party agents — recreating, at machine speed, what economists call the principal–agent problem.
+Onchain actors are increasingly delegating authority to third-party agents — recreating, at machine speed, what economists call the principal–agent problem. [Hadfield & Koh (2025)](https://arxiv.org/abs/2509.01063).
 
 Once authorized, it's difficult to ensure that an agent acts only within bounded authority, and the principal has no way to verify in real time that a given action remains within those bounds.
 

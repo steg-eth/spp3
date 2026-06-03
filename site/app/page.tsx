@@ -249,7 +249,7 @@ export default function Spp3ApplicationPage() {
           rotation, revocation, audit, or cross-platform verification.
         </p>
         <p>
-          Agents need names so their current authorization-state can be discovered and verified across heterogeneous systems. In
+          Agents need names so their current authorization state can be discovered and verified across heterogeneous systems. In
           this context, &lsquo;using ENS&rsquo; means binding an agent to an ENS name that publishes this state, allowing any relying party to independently verify the agent&rsquo;s current permissions in
           real time.
         </p>
@@ -278,16 +278,16 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           The initial target integrator is the managed agent runtime platform (MARP): operator platforms
-          offering agent-executable wallets across apps/APIs that need portable authority checks. (For the full taxonomy, see the <a href="#appendix-maip">MAIP taxonomy</a> appendix.)
+          offering agent-executable wallets across apps/APIs that need portable authority checks. (For the full managed-agent taxonomy, see the <a href="#appendix-maip">MAIP taxonomy</a> appendix.)
         </p>
         <p>
           MARP adoption follows an established ENS growth pattern: operator-issued subnames, validated in
           production by Coinbase&rsquo;s cb.id deployment. The difference is that the payload now carries
-          current authorization-state, not identity alone.
+          current authorization state, not identity alone.
         </p>
         <p>
           Tier 1 delivers the core infrastructure (audited contracts, SDK, conformance suite, reference
-          validation flows for independently verifying current authorization-state); Tier 2 adds one
+          validation flows for independently verifying current authorization state); Tier 2 adds one
           external Wave-1 ecosystem integration, engineering and deployment support.
           <label className="sidenote-toggle sidenote-number" htmlFor="sn-wave1"></label>
           <input type="checkbox" id="sn-wave1" className="sidenote-toggle" />
@@ -312,7 +312,7 @@ export default function Spp3ApplicationPage() {
         <h2>2. Problem</h2>
         <p>
           Onchain actors are increasingly delegating authority to third-party agents — recreating, at
-          machine speed, what researchers call the AI alignment problem in principal–agent transactions. <a href="https://www.jstor.org/stable/2634162">Hadfield &amp; Koh (2025)</a>
+          machine speed, what economists call the principal–agent problem. <a href="https://arxiv.org/abs/2509.01063">Hadfield &amp; Koh (2025)</a>
         </p>
         <p>
           Once authorized, it&rsquo;s difficult to ensure that an agent acts only within bounded authority, and neither
@@ -339,7 +339,7 @@ export default function Spp3ApplicationPage() {
             <span style={{ display: "block", marginTop: "0.5em" }}>
               Our proposal would not have stopped Grok from being prompt-injected — it touches nothing at the LLM
             layer — but it supplies the missing authorization check the post-mortem calls for: before executing, a
-            relying party <strong>distinguishes &ldquo;signed&rdquo; from &ldquo;currently authorized&rdquo; by resolving the current authorization-state from a trusted registry built on ENSv2</strong>.
+            relying party <strong>distinguishes &ldquo;signed&rdquo; from &ldquo;currently authorized&rdquo; by resolving the current authorization state from a trusted registry built on ENSv2</strong>.
             That state is mapped as a key-value pair within the agent&rsquo;s ENS text records, where the AuthResolver
             exposes the published authority and the Verifier checks the signed request against it — the requested
             3B-token transfer fails the published amount/recipient policy. Because authorization is checked against current
@@ -361,11 +361,11 @@ export default function Spp3ApplicationPage() {
           In agentic finance, no such backstop exists: the key the agent holds <em>is</em> the permission
           credential — we need to decouple the two.
         </p>
-        <p>By publishing each agent&rsquo;s delegated authorization-state as a key-value pair within a credibly neutral, externally resolvable store of record such as ENS,
+        <p>By publishing each agent&rsquo;s delegated authorization state as a key-value pair within a credibly neutral, externally resolvable store of record such as ENS,
           a relying party can perform a freshness check before execution to verify that the requested action is currently authorized under the
-          operator&rsquo;s published authorization-state, including any revocation, expiry, or policy updates.</p>
+          operator&rsquo;s published authorization state, including any revocation, expiry, or policy updates.</p>
         <p>
-          Because the authorization-state is published on a shared ENS namespace rather than inside a single
+          Because the authorization state is published on a shared ENS namespace rather than inside a single
           runtime, any counterparty can independently resolve and verify it. Authorization becomes portable
           across runtimes instead of remaining vendor-local, eliminating the need for each operator platform to maintain its own isolated authority registry.
         </p>
@@ -392,7 +392,7 @@ export default function Spp3ApplicationPage() {
           MARPs increasingly delegate signing authority via session-key primitives (EIP-7702, ERC-4337,
           ERC-7710/7715) that constrain what an agent can sign, but there is no standardized way for
           independently verifying, in real time, that an agent-signed action remains authorized under the
-          operator&rsquo;s current published authorization-state. (Full operator-class case in{" "}
+          operator&rsquo;s current published authorization state. (Full operator-class case in{" "}
           <a href="https://discuss.ens.domains/t/the-next-operator-class-managed-agent-runtime-platforms/22121">
             Steg&rsquo;s ENS forum post, May 2026
           </a>
@@ -421,11 +421,11 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           This proposal closes that gap by introducing an authority schema and resolver-native verification
-          path that lets counterparties query current authorization-state directly from ENS.
+          path that lets counterparties query current authorization state directly from ENS.
         </p>
         <p>
           This lets a MARP verify whether an agent&rsquo;s action is currently authorized under the
-          operator&rsquo;s published authorization-state, increasing security guarantees for its users and strengthening ENS&rsquo;s value-fit for prospective integrators. This gives the MARP a strong reason to
+          operator&rsquo;s published authorization state, increasing security guarantees for its users and strengthening ENS&rsquo;s value-fit for prospective integrators. This gives the MARP a strong reason to
           issue identity under ENS rather than rolling its own or locking into a closed vendor.
         </p>
         <p>
@@ -441,7 +441,7 @@ export default function Spp3ApplicationPage() {
           <a href="https://www.coinbase.com/developer-platform/discover/launches/agentic-market">
             Coinbase, Agentic.Market, April 2026
           </a>
-          ) and is rapidly increasing. Each agent is a candidate ENS subname that holds authorization-state. It is an early market
+          ) and is rapidly increasing. Each agent is a candidate ENS subname that holds authorization state. It is an early market
           signal that demonstrates meaningful demand for agent-native infrastructure. Applying the cb.id
           subname-issuance growth pattern here presents a compelling opportunity.
         </p>
@@ -527,7 +527,7 @@ export default function Spp3ApplicationPage() {
             and revocation records.
           </li>
           <li>
-            TypeScript SDK — resolves ENS-published authorization-state, verifies signed requests, and
+            TypeScript SDK — resolves ENS-published authorization state, verifies signed requests, and
             returns normalized allow/deny outputs with machine readable reason codes. 
           </li>
           <li>
@@ -548,7 +548,7 @@ export default function Spp3ApplicationPage() {
           </li>
         </ul>
         <p>
-          With the toolkit, integrators can resolve an ENS-named agent&rsquo;s published authorization-state, verify signed requests against current authorization-state published through AuthResolver in real time, and enforce expiry,
+          With the toolkit, integrators can resolve an ENS-named agent&rsquo;s published authorization state, verify signed requests against current authorization state published through AuthResolver in real time, and enforce expiry,
           rotation, and revocation through normalized allow/deny reason codes across crypto-native and Web2
           agent environments alike.
         </p>
@@ -994,12 +994,12 @@ export default function Spp3ApplicationPage() {
             revocation) and Verifier dispatch logic.
           </li>
           <li>
-            <strong>Freshness checks</strong> are enforced by the Verifier resolving current authorization-state published through AuthResolver at
+            <strong>Freshness checks</strong> are enforced by the Verifier resolving current authorization state published through AuthResolver at
             lookup time.
           </li>
           <li>
             <strong>External resolution</strong> follows from implementing AuthResolver as a standard ENS
-            resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authorization-state
+            resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authorization state
             without intermediary infrastructure.
           </li>
           <li>
@@ -1050,12 +1050,12 @@ export default function Spp3ApplicationPage() {
         <p>
           Because AuthResolver lookups are L1-native ENS resolutions, the verification path inherits
           ENS&rsquo;s availability and censorship-resistance properties — no separate uptime SLA, no DNS
-          dependency, no centralized API in the trust path between a counterparty and the authorization-state it
+          dependency, no centralized API in the trust path between a counterparty and the authorization state it
           reads.
         </p>
         <p>
           This preserves the proposal&rsquo;s core property: any counterparty can independently verify
-          current authorization-state using standard ENS resolution alone.
+          current authorization state using standard ENS resolution alone.
         </p>
         <p>
           A counterparty&rsquo;s authority-validity check therefore shares the same trust assumptions as
@@ -1137,21 +1137,22 @@ export default function Spp3ApplicationPage() {
         <p>
           It is built on existing ENS standards and executed through verifiable milestones over a 12-month
           cycle. The proposal is additive to ENS Labs and does not replace existing ENS primitives. It
-          operationalizes ENS as an interoperable authorization lookup surface, allowing any counterparty to independently verify current authorization-state
+          operationalizes ENS as an interoperable authorization lookup surface, allowing any counterparty to independently verify current authorization state
           across heterogeneous systems.
         </p>
         <p>
-          It extends a proven ENS growth path (operator-issued subnames, as demonstrated by Coinbase&rsquo;s
-          cb.id integration) to the next operator class. Because each authority credential is issued as
-          an ENS subname, the same mechanism that raises security guarantees and lowers execution risk for
-          MARP users also expands ENS&rsquo;s adoption surface. Following
-          that same adoption pattern, this proposal
-          upgrades the payload from identity-only signaling to authority-bearing state, while keeping the
+          It extends a proven ENS growth path — operator-issued subnames, as demonstrated by Coinbase&rsquo;s
+          cb.id integration —to the next operator class. Because each authority credential is issued as
+          an ENS subname, the same mechanism that increases security guarantees and mitigates execution risk for
+          MARP users also broadens ENS adoption. 
+        </p>  
+        <p>
+          In doing so, it upgrades the payload from identity-only signaling to authority-bearing state, while keeping the
           trust path open: L1-native, resolvable, adoptable, and forkable, with no vendor in the middle.
         </p>
         <p>
           As agentic commerce scales, the authority tier will consolidate somewhere — either in open, neutral
-          infrastructure or closed vendor control planes. This proposal builds the open substrate and
+          infrastructure or closed vendor control planes. This work builds the open substrate and
           validates its adoption in production.
         </p>
       </section>
