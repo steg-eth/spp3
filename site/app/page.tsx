@@ -321,7 +321,7 @@ export default function Spp3ApplicationPage() {
           bounds.
         </p>
         <p>
-          Recent exploits leverage prompt injection to trick an agent into acting beyond its mandate.
+          Recent exploits leverage prompt-injection to trick an agent into acting beyond its mandate.
           Because the key the agent holds is itself the permission credential, that manipulated intent can
           still produce a valid signature. The relying party, unable to distinguish &ldquo;authorized&rdquo;
           from merely &ldquo;signed,&rdquo; executes it.
@@ -361,10 +361,9 @@ export default function Spp3ApplicationPage() {
           In agentic finance, no such backstop exists: the key the agent holds <em>is</em> the permission
           credential — we need to decouple the two.
         </p>
-        <p>By publishing each agent&rsquo;s delegated authorization state as a key-value pair in its ENS text
-          records — a credibly neutral, externally resolvable store of record — a relying party can run a
-          freshness check against it before execution, confirming the action is currently authorized under the
-          operator&rsquo;s published authorization state, including revocation, expiry, and policy updates.</p>
+        <p>By publishing each agent&rsquo;s delegated authorization state as a key-value pair within a credibly neutral, externally resolvable store of record such as ENS,
+          a relying party can perform a freshness check before execution to verify that the requested action is currently authorized under the
+          operator&rsquo;s published authorization state, including any revocation, expiry, or policy updates.</p>
         <p>
           Because the authorization state is published on a shared ENS namespace rather than inside a single
           runtime, any counterparty can independently resolve and verify it. Authorization becomes portable
