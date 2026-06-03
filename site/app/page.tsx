@@ -1142,7 +1142,10 @@ export default function Spp3ApplicationPage() {
         </p>
         <p>
           It extends a proven ENS growth path (operator-issued subnames, as demonstrated by Coinbase&rsquo;s
-          cb.id integration) to the next operator class. Following that same adoption pattern, this proposal
+          cb.id integration) to the next operator class. And because each authority credential is issued as
+          an ENS subname, the same mechanism that raises security guarantees and lowers execution risk for
+          MARP users also expands ENS&rsquo;s adoption surface — safety and growth move together. Following
+          that same adoption pattern, this proposal
           upgrades the payload from identity-only signaling to authority-bearing state, while keeping the
           trust path open: L1-native, resolvable, adoptable, and forkable, with no vendor in the middle.
         </p>

@@ -320,7 +320,7 @@ This proposal delivers a defined, narrowly scoped service: ENS-native authority 
 
 It is built on existing ENS standards and executed through verifiable milestones over a 12-month cycle.  The proposal is additive to ENS Labs and does not replace existing ENS primitives. It operationalizes ENS as an interoperable authorization lookup surface, allowing any counterparty to independently verify current authorization state across heterogeneous systems.  
 
-It extends a proven ENS growth path (operator-issued subnames, as demonstrated by Coinbase’s cb.id integration) to the next operator class. Following that same adoption pattern, this proposal upgrades the payload from identity-only signaling to authority-bearing state, while keeping the trust path open: L1-native, resolvable, adoptable, and forkable, with no vendor in the middle.
+It extends a proven ENS growth path (operator-issued subnames, as demonstrated by Coinbase’s cb.id integration) to the next operator class. And because each authority credential is issued as an ENS subname, the same mechanism that raises security guarantees and lowers execution risk for MARP users also expands ENS’s adoption surface — safety and growth move together. Following that same adoption pattern, this proposal upgrades the payload from identity-only signaling to authority-bearing state, while keeping the trust path open: L1-native, resolvable, adoptable, and forkable, with no vendor in the middle.
 
 As agentic commerce scales, the authority tier will consolidate somewhere — either in open, neutral infrastructure or closed vendor control planes. This proposal builds the open substrate and validates its adoption in production.
 
