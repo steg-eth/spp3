@@ -18,7 +18,7 @@ mouz.eth — Protocol engineering, smart-contract systems, and security. Product
 | Term | July 2026 – July 2027 |
 | Primary category | ENS Infrastructure |
 | Secondary category | Outreach and Integrations |
-| Prior Delivery | Merged contributor to canonical ENS contracts ([PR \#509](https://github.com/ensdomains/ens-contracts/pull/509) / [v1.7.0](https://github.com/ensdomains/ens-contracts/releases/tag/v1.7.0)); Public Goods grantee — [ENSv2 interoperability research](https://discuss.ens.domains/t/ens-research-namechain-ensip-19-multichain-interop/21392/11?u=estmcmxci); 1st-place [ENS-identity hackathon](https://synthesis.mandate.md/projects/trust-resolution-layer-b67a) |
+| Prior Delivery | Merged contributor to canonical ENS contracts ([PR \#509](https://github.com/ensdomains/ens-contracts/pull/509) / [v1.7.0](https://github.com/ensdomains/ens-contracts/releases/tag/v1.7.0)); Public Goods grantee — [ENSv2 interoperability research](https://discuss.ens.domains/t/ens-research-namechain-ensip-19-multichain-interop/21392/11?u=estmcmxci); 1st-place [ENS-identity hackathon](https://synthesis.mandate.md/projects/trust-resolution-layer-b67a); [ETHGlobal HackMoney 2026 Finalist + ENS bounty](https://ethglobal.com/showcase/oikonomos-w6z57) |
 
 ## 1\. Abstract
 
