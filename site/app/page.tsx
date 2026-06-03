@@ -283,11 +283,11 @@ export default function Spp3ApplicationPage() {
         <p>
           MARP adoption follows an established ENS growth pattern: operator-issued subnames, validated in
           production by Coinbase&rsquo;s cb.id deployment. The difference is that the payload now carries
-          current authorization state, not identity alone.
+          current authorization-state, not identity alone.
         </p>
         <p>
           Tier 1 delivers the core infrastructure (audited contracts, SDK, conformance suite, reference
-          validation flows for independently verifying current authorization state); Tier 2 adds one
+          validation flows for independently verifying current authorization-state); Tier 2 adds one
           external Wave-1 ecosystem integration, engineering and deployment support.
           <label className="sidenote-toggle sidenote-number" htmlFor="sn-wave1"></label>
           <input type="checkbox" id="sn-wave1" className="sidenote-toggle" />
@@ -339,7 +339,7 @@ export default function Spp3ApplicationPage() {
             <span style={{ display: "block", marginTop: "0.5em" }}>
               Our proposal would not have stopped Grok from being prompt-injected — it touches nothing at the LLM
             layer — but it supplies the missing authorization check the post-mortem calls for: before executing, a
-            relying party <strong>distinguishes &ldquo;signed&rdquo; from &ldquo;currently authorized&rdquo; by resolving the current authorization state from a trusted registry built on ENSv2</strong>.
+            relying party <strong>distinguishes &ldquo;signed&rdquo; from &ldquo;currently authorized&rdquo; by resolving the current authorization-state from a trusted registry built on ENSv2</strong>.
             That state is mapped as a key-value pair within the agent&rsquo;s ENS text records, where the AuthResolver
             exposes the published authority and the Verifier checks the signed request against it — the requested
             3B-token transfer fails the published amount/recipient policy. Because authorization is checked against current
@@ -527,7 +527,7 @@ export default function Spp3ApplicationPage() {
             and revocation records.
           </li>
           <li>
-            TypeScript SDK — resolves ENS-published authorization state, verifies signed requests, and
+            TypeScript SDK — resolves ENS-published authorization-state, verifies signed requests, and
             returns normalized allow/deny outputs with machine readable reason codes. 
           </li>
           <li>
@@ -994,12 +994,12 @@ export default function Spp3ApplicationPage() {
             revocation) and Verifier dispatch logic.
           </li>
           <li>
-            <strong>Freshness checks</strong> are enforced by the Verifier resolving current authorization state published through AuthResolver at
+            <strong>Freshness checks</strong> are enforced by the Verifier resolving current authorization-state published through AuthResolver at
             lookup time.
           </li>
           <li>
             <strong>External resolution</strong> follows from implementing AuthResolver as a standard ENS
-            resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authorization state
+            resolver (UUPS proxies via VerifiableFactory), allowing any client to resolve authorization-state
             without intermediary infrastructure.
           </li>
           <li>
@@ -1050,12 +1050,12 @@ export default function Spp3ApplicationPage() {
         <p>
           Because AuthResolver lookups are L1-native ENS resolutions, the verification path inherits
           ENS&rsquo;s availability and censorship-resistance properties — no separate uptime SLA, no DNS
-          dependency, no centralized API in the trust path between a counterparty and the authorization state it
+          dependency, no centralized API in the trust path between a counterparty and the authorization-state it
           reads.
         </p>
         <p>
           This preserves the proposal&rsquo;s core property: any counterparty can independently verify
-          current authorization state using standard ENS resolution alone.
+          current authorization-state using standard ENS resolution alone.
         </p>
         <p>
           A counterparty&rsquo;s authority-validity check therefore shares the same trust assumptions as
@@ -1110,11 +1110,11 @@ export default function Spp3ApplicationPage() {
           </a>
           ).
           <br />
-          Full architectural map + normative detail in the prototype specification (working copy:{" "}
+          Full architectural map + normative detail in the{" "}
           <a href="#appendix-spec">
-            Prototype Spec
-          </a>
-          ) and the{" "}
+            prototype specification
+          </a>{" "}
+          and the{" "}
           <a href="#appendix-maip">
             MAIP taxonomy
           </a>
@@ -1137,7 +1137,7 @@ export default function Spp3ApplicationPage() {
         <p>
           It is built on existing ENS standards and executed through verifiable milestones over a 12-month
           cycle. The proposal is additive to ENS Labs and does not replace existing ENS primitives. It
-          operationalizes ENS as an interoperable authorization lookup surface, allowing any counterparty to independently verify current authorization state
+          operationalizes ENS as an interoperable authorization lookup surface, allowing any counterparty to independently verify current authorization-state
           across heterogeneous systems.
         </p>
         <p>
