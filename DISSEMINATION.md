@@ -12,23 +12,25 @@ is a **derived artifact**, propagated only _after_ merge. Presentation-only deta
 
 1. Edit the canonical markdown in a GitHub branch.
 2. Open a PR.
-3. Review and merge (required reviewer: @Mouzayan).
+3. Review and merge (per branch-protection requirements).
 4. Bump the version, reset the derived-artifact checkboxes, and re-propagate to each channel.
 
-## Canonical source
+## Version
 
-- `application.md` — the SPP3 submission (canonical)
+Version: v1.0
+Last updated: 2026-06-03
 
-## Current version
+## Status
 
-**v1.0** — 2026-06-03
+Whenever the canonical markdown changes, uncheck all derived artifacts and re-check
+them as updates are propagated.
 
-## Dissemination status
+**Canonical source**
 
-Propagation of the current version to each downstream channel. Uncheck every derived
-row whenever the canonical markdown changes; re-check each as it is re-propagated.
+- [x] `application.md` (GitHub) — the SPP3 submission
 
-- [x] GitHub (canonical) — `application.md`
+**Derived artifacts**
+
 - [x] IPFS — `application.md` pinned, contenthash for `application.steg.eth`
   - `ipfs://bafkreicdqnkt5befl4bbcorosgu2z7hz2xk7ktb27nzvprhlngyyojcwl4`
 - [x] Website — spp3.steg.eth.link (`/site`)
