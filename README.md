@@ -7,6 +7,20 @@ suite, and integration guides that let any service confirm — in real time — 
 attributed to an ENS-named agent is currently authorized, and whether the credential behind it
 has been rotated, expired, or revoked. Built on ENSv2 primitives; complements core ENS Labs work.
 
+## Live
+
+- **The application** — [`spp3.steg.eth.link`](https://spp3.steg.eth.link): the SPP3 application, served over ENS/IPFS.
+- **Machine-readable** — [`application.steg.eth.link`](https://application.steg.eth.link): the raw `application.md`, fetchable by an agent to read and evaluate against the SPP3 rubric.
+- **Docs** — [`docs.steg.eth.link`](https://docs.steg.eth.link).
+
+### Ask the dossier
+
+The application ships with **Ask the dossier** — an in-page Q&A agent that answers questions about
+the proposal, grounded strictly in `application.md`. It retrieves and reasons over the canonical text
+rather than answering from memory, so a reviewer (or another agent) can interrogate the application
+directly. Powered by [`chat-backend/`](./chat-backend) (FastAPI + OpenAI Agents, gpt-4.1); retrieval
+and answer quality are guarded by an eval suite in [`chat-backend/evals/`](./chat-backend/evals).
+
 ## Contents
 
 | Path                                                                                             | What it is                                                            |
@@ -15,6 +29,8 @@ has been rotated, expired, or revoked. Built on ENSv2 primitives; complements co
 | [`appendices/`](./appendices)                                                                    | Supporting appendices (A–E)                                           |
 | [`maip_taxonomy.md`](./maip_taxonomy.md)                                                         | MAIP taxonomy referenced by the application                           |
 | [`spec/prototype_spec.v1.0-draft.02.publish.md`](./spec/prototype_spec.v1.0-draft.02.publish.md) | Normative prototype spec (Verifier + AuthResolverImpl), published cut |
+| [`site/`](./site)                                                                                | The live application site (Next.js static export → IPFS/ENS), incl. the **Ask the dossier** agent |
+| [`chat-backend/`](./chat-backend)                                                                | Backend powering **Ask the dossier** (FastAPI + OpenAI Agents, grounded on `application.md`; `evals/`) |
 
 ## Team
 
