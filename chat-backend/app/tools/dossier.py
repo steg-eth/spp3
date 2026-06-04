@@ -1,5 +1,6 @@
-"""Dossier search tools — dependency-free token-overlap ranking over the
-extracted /site dossier (app/data/dossier.md).
+"""Dossier retrieval tools — dependency-free token-overlap search over
+app/data/dossier.md, the synchronized application corpus (a verbatim copy of the
+canonical application.md, kept in sync by sync_content.py) the Q&A agent grounds on.
 
 No sklearn/numpy: the corpus is one ~5k-word document, so a small pure-Python
 ranker is plenty and keeps the Railway image tiny. The LLM does synthesis; these

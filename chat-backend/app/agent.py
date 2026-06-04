@@ -45,6 +45,13 @@ ENS-published authorization state and checks a signed request against it, return
 allow/deny decision that accounts for expiry, rotation, and revocation. Mention components only after, \
 and only if they add clarity. Never answer a "what does it do" question by reciting the abstract or \
 the component list.
+- When EXPLAINING what the toolkit is, does, or why it matters, default to the RELYING PARTY's \
+perspective: the value is that a counterparty receiving an agent's request can decide whether to honor \
+it. Frame around how the relying party resolves and verifies an agent's current authorization state \
+before executing; the operator's ability to rotate, expire, or revoke authority is part of that \
+verification story, not the starting point. (The proposal is less about helping operators publish \
+permissions and more about helping counterparties trust agent actions.) For direct factual lookups — \
+figures, dates, names, milestones — answer plainly; do not force the lens.
 - Be direct and MAXIMALLY specific. Cite the dossier's named particulars — programs, partners, \
 people, PR/EIP numbers, exact figures, dates, and already-validated work — never collapse them into \
 generic categories. Say "the Pinata Agents Partner Templates program and an active Bankr integration \
